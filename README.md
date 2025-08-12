@@ -332,6 +332,13 @@ Kalco is designed to be production-ready:
 
 ```
 kalco/
+├── 📂 .github/
+│   └── 📂 workflows/       # GitHub Actions workflows
+│       ├── 🔄 ci.yml       # Continuous integration
+│       ├── 🚀 release.yml  # Automated releases
+│       ├── 🐳 docker.yml   # Docker builds
+│       ├── 📦 dependencies.yml # Dependency updates
+│       └── 📋 release-drafter.yml # Release notes
 ├── 📂 cmd/
 │   └── 🎯 root.go          # Main CLI command definition
 ├── 📂 pkg/
@@ -345,7 +352,11 @@ kalco/
 │       └── 📊 reports.go    # Change report generation
 ├── 🚀 main.go              # Application entry point
 ├── 📦 go.mod               # Go module definition
-└── 📖 README.md            # This file
+├── 🐳 Dockerfile           # Container image definition
+├── 🔧 Makefile             # Development and build commands
+├── 📋 CHANGELOG.md         # Version history
+├── 📖 README.md            # This file
+└── 📚 RELEASE_GUIDE.md     # Release workflow guide
 ```
 
 ### Dependencies
@@ -403,6 +414,19 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 4. Commit your changes: `git commit -m 'Add amazing feature'`
 5. Push to the branch: `git push origin feature/amazing-feature`
 6. Open a Pull Request
+
+### 🚀 Automated Workflows
+
+Kalco uses comprehensive GitHub Actions workflows for quality assurance:
+
+- **🔄 CI/CD**: Automated testing, building, and linting on every PR
+- **🚀 Releases**: Automatic package creation for all platforms on tags
+- **🐳 Docker**: Multi-platform container builds and publishing
+- **🔒 Security**: Vulnerability scanning and dependency updates
+
+- **📋 Documentation**: Automatic changelog generation and release notes
+
+See [RELEASE_GUIDE.md](RELEASE_GUIDE.md) for detailed workflow information.
 
 ## 📄 License
 

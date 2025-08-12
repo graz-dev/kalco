@@ -1,0 +1,98 @@
+name-template: 'v$RESOLVED_VERSION'
+tag-template: 'v$RESOLVED_VERSION'
+categories:
+  - title: '🚀 Features'
+    labels:
+      - 'feature'
+      - 'enhancement'
+  - title: '🐛 Bug Fixes'
+    labels:
+      - 'fix'
+      - 'bugfix'
+      - 'bug'
+  - title: '🔧 Maintenance'
+    labels:
+      - 'chore'
+      - 'dependencies'
+      - 'maintenance'
+  - title: '📚 Documentation'
+    labels:
+      - 'documentation'
+      - 'docs'
+  - title: '🧪 Testing'
+    labels:
+      - 'test'
+      - 'testing'
+  - title: '🚀 CI/CD'
+    labels:
+      - 'ci'
+      - 'cd'
+      - 'workflow'
+template: |
+  ## 🚀 What's Changed
+
+  $CHANGES
+
+  ## 📦 Downloads
+
+  **Linux:**
+  - [kalco-linux-amd64.tar.gz](https://github.com/$REPOSITORY/releases/download/$TAG/kalco-linux-amd64.tar.gz)
+  - [kalco-linux-arm64.tar.gz](https://github.com/$REPOSITORY/releases/download/$TAG/kalco-linux-arm64.tar.gz)
+
+  **macOS:**
+  - [kalco-darwin-amd64.tar.gz](https://github.com/$REPOSITORY/releases/download/$TAG/kalco-darwin-amd64.tar.gz)
+  - [kalco-darwin-arm64.tar.gz](https://github.com/$REPOSITORY/releases/download/$TAG/kalco-darwin-arm64.tar.gz)
+
+  **Windows:**
+  - [kalco-windows-amd64.zip](https://github.com/$REPOSITORY/releases/download/$TAG/kalco-windows-amd64.zip)
+  - [kalco-windows-arm64.zip](https://github.com/$REPOSITORY/releases/download/$TAG/kalco-windows-arm64.zip)
+
+  **Docker:**
+  ```bash
+  docker pull ghcr.io/$REPOSITORY:$TAG
+  docker pull ghcr.io/$REPOSITORY:latest
+  ```
+
+  ## 🔧 Installation
+
+  **Linux/macOS:**
+  ```bash
+  # Download and extract
+  wget https://github.com/$REPOSITORY/releases/download/$TAG/kalco-$TAG-$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m).tar.gz
+  tar -xzf kalco-$TAG-$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m).tar.gz
+  
+  # Make executable and move to PATH
+  chmod +x kalco
+  sudo mv kalco /usr/local/bin/
+  ```
+
+  **Windows:**
+  ```powershell
+  # Download and extract
+  Invoke-WebRequest -Uri "https://github.com/$REPOSITORY/releases/download/$TAG/kalco-windows-amd64.zip" -OutFile "kalco.zip"
+  Expand-Archive -Path "kalco.zip" -DestinationPath "."
+  
+  # Add to PATH or run from current directory
+  .\kalco.exe
+  ```
+
+  ## 🚀 Quick Start
+
+  ```bash
+  # Basic usage
+  kalco --output-dir ./cluster-backup
+  
+  # With Git integration
+  kalco --output-dir ./cluster-backup --commit-message "Backup $(date)"
+  
+  # Auto-push to remote
+  kalco --output-dir ./cluster-backup --git-push
+  ```
+
+  ## 📋 Changelog
+
+  $CHANGES
+
+  ---
+
+  *Built with ❤️ for the Kubernetes community*
