@@ -1,0 +1,220 @@
+package git
+
+import (
+	"fmt"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"strings"
+	"time"
+)
+
+// GitRepo handles Git repository operations
+type GitRepo struct {
+	path string
+}
+
+// NewGitRepo creates a new GitRepo instance
+func NewGitRepo(path string) *GitRepo {
+	return &GitRepo{path: path}
+}
+
+// Init initializes a new Git repository if it doesn't exist
+func (g *GitRepo) Init() error {
+	// Check if .git directory already exists
+	if g.IsGitRepo() {
+		fmt.Println("  📦 Using existing Git repository")
+		return nil
+	}
+
+	// Check if directory is new (empty or doesn't exist)
+	if g.isNewDirectory() {
+		fmt.Println("  🆕 New directory detected, initializing Git repository...")
+	} else {
+		fmt.Println("  📦 Initializing Git repository in existing directory...")
+	}
+
+	// Initialize new Git repository
+	cmd := exec.Command("git", "init")
+	cmd.Dir = g.path
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("failed to initialize Git repository: %w", err)
+	}
+
+	// Create .gitignore file
+	if err := g.createGitignore(); err != nil {
+		return fmt.Errorf("failed to create .gitignore: %w", err)
+	}
+
+	fmt.Println("  ✅ Git repository initialized successfully")
+	return nil
+}
+
+// AddAll adds all files to the Git staging area
+func (g *GitRepo) AddAll() error {
+	cmd := exec.Command("git", "add", ".")
+	cmd.Dir = g.path
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("failed to add files to Git: %w", err)
+	}
+	return nil
+}
+
+// Commit commits all staged changes with a timestamp-based message
+func (g *GitRepo) Commit(customMessage string) error {
+	message := customMessage
+	if message == "" {
+		message = fmt.Sprintf("Cluster snapshot: %s", time.Now().Format("2006-01-02 15:04:05"))
+	}
+
+	cmd := exec.Command("git", "commit", "-m", message)
+	cmd.Dir = g.path
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("failed to commit changes: %w", err)
+	}
+
+	fmt.Printf("  📝 Committed changes: %s\n", message)
+	return nil
+}
+
+// Push pushes changes to remote origin if available
+func (g *GitRepo) Push() error {
+	// Check if remote origin exists
+	if !g.HasRemoteOrigin() {
+		fmt.Println("  ℹ️  No remote origin found, skipping push")
+		return nil
+	}
+
+	// Push to remote origin
+	cmd := exec.Command("git", "push", "origin", "main")
+	cmd.Dir = g.path
+	if err := cmd.Run(); err != nil {
+		// Try master branch if main doesn't exist
+		cmd = exec.Command("git", "push", "origin", "master")
+		cmd.Dir = g.path
+		if err := cmd.Run(); err != nil {
+			return fmt.Errorf("failed to push to remote origin: %w", err)
+		}
+	}
+
+	fmt.Println("  🚀 Pushed changes to remote origin")
+	return nil
+}
+
+// SetupAndCommit performs the complete Git workflow
+func (g *GitRepo) SetupAndCommit(customMessage string, shouldPush bool) error {
+	// Initialize repository if needed
+	if err := g.Init(); err != nil {
+		return err
+	}
+
+	// Add all files
+	if err := g.AddAll(); err != nil {
+		return err
+	}
+
+	// Check if there are changes to commit
+	if !g.hasChanges() {
+		fmt.Println("  ℹ️  No changes detected, skipping commit")
+		return nil
+	}
+
+	// Commit changes
+	if err := g.Commit(customMessage); err != nil {
+		return err
+	}
+
+	// Check for remote origin and ask user if they want to push
+	if g.HasRemoteOrigin() {
+		fmt.Println("  🌐 Remote origin detected!")
+		if shouldPush {
+			fmt.Println("  🚀 Auto-push enabled, pushing to remote origin...")
+			if err := g.Push(); err != nil {
+				return err
+			}
+		} else {
+			fmt.Println("  💡 Use --git-push flag to automatically push changes to remote origin")
+		}
+	} else {
+		fmt.Println("  ℹ️  No remote origin found")
+	}
+
+	return nil
+}
+
+// IsGitRepo checks if the directory is already a Git repository
+func (g *GitRepo) IsGitRepo() bool {
+	gitDir := filepath.Join(g.path, ".git")
+	info, err := os.Stat(gitDir)
+	return err == nil && info.IsDir()
+}
+
+// HasRemoteOrigin checks if the repository has a remote origin
+func (g *GitRepo) HasRemoteOrigin() bool {
+	cmd := exec.Command("git", "remote", "get-url", "origin")
+	cmd.Dir = g.path
+	return cmd.Run() == nil
+}
+
+// isNewDirectory checks if the directory is new (empty or doesn't exist)
+func (g *GitRepo) isNewDirectory() bool {
+	// Check if directory exists
+	if _, err := os.Stat(g.path); os.IsNotExist(err) {
+		return true
+	}
+
+	// Check if directory is empty
+	entries, err := os.ReadDir(g.path)
+	if err != nil {
+		return true
+	}
+
+	// Consider directory new if it only contains hidden files (like .DS_Store)
+	for _, entry := range entries {
+		if !strings.HasPrefix(entry.Name(), ".") {
+			return false
+		}
+	}
+
+	return true
+}
+
+// hasChanges checks if there are uncommitted changes
+func (g *GitRepo) hasChanges() bool {
+	// Check if there are staged changes
+	cmd := exec.Command("git", "diff", "--cached", "--quiet")
+	cmd.Dir = g.path
+	return cmd.Run() != nil
+}
+
+// createGitignore creates a .gitignore file for the repository
+func (g *GitRepo) createGitignore() error {
+	gitignoreContent := `# Kubernetes cluster dumps
+# This file is automatically generated by kalco
+
+# Temporary files
+*.tmp
+*.temp
+
+# Log files
+*.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+`
+	gitignorePath := filepath.Join(g.path, ".gitignore")
+	return os.WriteFile(gitignorePath, []byte(gitignoreContent), 0644)
+}
