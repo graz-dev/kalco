@@ -156,7 +156,7 @@ jobs:
             
             ### 📋 What's New
             
-            Check the [changelog](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for detailed information about this release.
+            Check the [releases page](https://github.com/${{ github.repository }}/releases) for detailed information about this release.
             
             ### 🚀 Quick Start
             

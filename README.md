@@ -354,7 +354,6 @@ kalco/
 ├── 📦 go.mod               # Go module definition
 ├── 🐳 Dockerfile           # Container image definition
 ├── 🔧 Makefile             # Development and build commands
-├── 📋 CHANGELOG.md         # Version history
 ├── 📖 README.md            # This file
 └── 📚 RELEASE_GUIDE.md     # Release workflow guide
 ```
@@ -424,7 +423,7 @@ Kalco uses comprehensive GitHub Actions workflows for quality assurance:
 - **🐳 Docker**: Multi-platform container builds and publishing
 - **🔒 Security**: Vulnerability scanning and dependency updates
 
-- **📋 Documentation**: Automatic changelog generation and release notes
+- **📋 Documentation**: Automatic release note generation
 
 See [RELEASE_GUIDE.md](RELEASE_GUIDE.md) for detailed workflow information.
 

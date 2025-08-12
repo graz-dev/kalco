@@ -37,7 +37,7 @@ help:
 	@echo ""
 	@echo "🚀 Release:"
 	@echo "  release        - Create a new release"
-	@echo "  changelog      - Generate changelog"
+	@echo ""
 	@echo ""
 	@echo "📋 Information:"
 	@echo "  version        - Show current version"
@@ -162,13 +162,7 @@ release-local: build-all
 	done
 	@echo "✅ Local release packages created in dist/ directory"
 
-changelog:
-	@echo "📋 Generating changelog..."
-	@if command -v conventional-changelog >/dev/null 2>&1; then \
-		conventional-changelog -p angular -i CHANGELOG.md -s; \
-	else \
-		echo "⚠️  conventional-changelog not installed. Install with: npm install -g conventional-changelog-cli"; \
-	fi
+
 
 # Information targets
 version:

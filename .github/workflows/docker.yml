@@ -2,7 +2,7 @@ name: Docker
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
     tags: [ 'v*' ]
 
 env:
@@ -54,6 +54,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
-            VERSION=${{ github.ref_name == 'main' && 'dev' || github.ref_name }}
+            VERSION=${{ github.ref_name == 'master' && 'dev' || github.ref_name }}
             COMMIT=${{ github.sha }}
             DATE=${{ github.event.head_commit.timestamp }}

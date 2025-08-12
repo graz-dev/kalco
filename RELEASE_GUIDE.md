@@ -12,12 +12,12 @@ Kalco now has comprehensive GitHub Actions workflows that automatically:
 - 🚀 **Release** on GitHub with detailed release notes
 - 🔒 **Scan** for security vulnerabilities
 - 🧪 **Test** the quickstart script and all functionality
-- 📋 **Generate** changelogs automatically
+- 📋 **Generate** release notes automatically
 
 ## 🔄 Workflow Types
 
 ### 1. **CI Workflow** (`.github/workflows/ci.yml`)
-- **Triggers**: Push to main, Pull requests
+- **Triggers**: Push to master, Pull requests
 - **Purpose**: Continuous integration testing
 - **Actions**:
   - Run tests with race detection
@@ -57,7 +57,7 @@ Kalco now has comprehensive GitHub Actions workflows that automatically:
 - **Triggers**: Push to main, Pull requests
 - **Purpose**: Generate release notes
 - **Actions**:
-  - Auto-generate changelog
+  - Auto-generate release notes
   - Categorize changes
   - Create release drafts
 
@@ -68,7 +68,7 @@ Kalco now has comprehensive GitHub Actions workflows that automatically:
 # Ensure all changes are committed and pushed
 git add .
 git commit -m "feat: add new feature"
-git push origin main
+git push origin master
 ```
 
 ### **Step 2: Create and Push a Tag**
@@ -145,7 +145,7 @@ act push -W .github/workflows/ci.yml
 ## 📊 Workflow Status
 
 ### **Required Status Checks**
-Before merging to main, ensure:
+Before merging to master, ensure:
 - ✅ **CI** - All tests pass
 - ✅ **Lint** - Code quality checks pass
 - ✅ **Security** - No vulnerabilities detected
@@ -232,7 +232,7 @@ gh run rerun <run-id>
 ### **Version Management**
 - Use semantic versioning (`v1.0.0`, `v1.1.0`, `v2.0.0`)
 - Create tags from main branch only
-- Use conventional commit messages for auto-changelog
+- Use conventional commit messages for auto-release notes
 
 ### **Release Process**
 - Test locally before tagging
@@ -259,12 +259,12 @@ gh run rerun <run-id>
 
 Before creating a release:
 
-- [ ] All changes committed and pushed to main
+- [ ] All changes committed and pushed to master
 - [ ] CI workflow passing
 - [ ] Security scan clean
 - [ ] Quickstart test successful
 - [ ] Documentation updated
-- [ ] Changelog reviewed
+- [ ] Release notes reviewed
 - [ ] Version number decided
 - [ ] Release notes prepared
 
