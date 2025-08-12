@@ -18,7 +18,7 @@
 - 🧹 **Clean YAML** - Intelligently removes metadata fields that aren't useful for re-application
 - ⚡ **Lightning Fast** - Optimized for speed and efficiency in production environments
 - 🚀 **Git Integration** - Automatic version control with commit history and change tracking
-- 📊 **Smart Reporting** - Generates detailed change reports for every snapshot
+- 📊 **Smart Reporting** - Generates detailed change reports with before/after comparisons and specific field modifications
 
 ## 🚀 Quick Start
 
@@ -27,6 +27,7 @@
 - 🐹 **Go 1.21+** - [Download here](https://golang.org/dl/)
 - ☸️ **Kubernetes Access** - Valid kubeconfig or in-cluster access
 - 🔑 **Git** - For version control functionality (optional but recommended)
+- 🏗️ **KIND** - For local testing (optional) - [Installation Guide](https://kind.sigs.k8s.io/docs/user/quick-start/)
 
 ### Installation
 
@@ -42,6 +43,22 @@ go build -o kalco
 # Make it available system-wide (optional)
 sudo mv kalco /usr/local/bin/
 ```
+
+### Quick Demo
+
+Want to see kalco in action? Run our comprehensive quickstart:
+
+```bash
+# Run the complete quickstart demo
+./examples/quickstart.sh
+```
+
+This will:
+- 🏗️ Create a test Kubernetes cluster
+- 📦 Export resources with automatic Git setup
+- 🔄 Modify cluster resources
+- 📊 Generate enhanced change reports
+- 🧹 Clean up the test environment
 
 ### Basic Usage
 
@@ -98,6 +115,123 @@ cluster-backup/
 └── README.md               # Repository documentation
 ```
 
+## 📊 Enhanced Change Reports
+
+Kalco automatically generates comprehensive change reports for every cluster snapshot, providing detailed insights into what actually changed in each resource.
+
+### 🔍 What Reports Include
+
+#### **Initial Snapshot Reports**
+- **📋 Resource Summary** - Complete overview of all exported resources
+- **🏷️ Namespace Coverage** - List of all namespaces and resource types
+- **📅 Timestamp Information** - When the snapshot was taken
+- **🔧 Git Setup** - Confirmation of repository initialization
+
+#### **Change Tracking Reports**
+- **📊 Change Summary** - Total files changed, namespaces affected, resource types modified
+- **🔄 Detailed Changes** - File-by-file breakdown of modifications
+- **🌐 Namespace Grouping** - Changes organized by namespace and resource type
+- **📈 Resource Statistics** - Counts of new, modified, and deleted resources
+- **💻 Git Commands** - Reference commands for further investigation
+
+#### **Enhanced Resource Details**
+- **🆕 New Resources** - Complete YAML content of newly created resources
+- **🗑️ Deleted Resources** - Full YAML content of removed resources
+- **✏️ Modified Resources** - Git diff output showing exact changes with before/after comparisons
+- **📋 Change Analysis** - Human-readable summary of what sections and fields were modified
+- **🔍 Field-Level Tracking** - Identification of specific YAML sections that changed
+
+### 📁 Report File Naming
+
+Reports are automatically named based on your commit messages:
+- **Custom Message**: `Production-backup-2025-08-13.md`
+- **Timestamp Default**: `Cluster-snapshot-2025-08-13-15-04-05.md`
+- **Special Characters**: Automatically cleaned for valid filenames
+
+### 📋 Report Content Example
+
+```markdown
+# Cluster Change Report
+
+**Generated**: 2025-08-13 15:04:05 UTC
+**Commit Message**: Production backup
+
+## Changes Since Previous Snapshot
+
+**Previous Commit**: `abc1234`
+
+### Change Summary
+- **Total Files Changed**: 15
+- **Namespaces Affected**: 3
+- **Resource Types Changed**: 4
+- **New Resources**: 2
+- **Modified Resources**: 13
+- **Deleted Resources**: 0
+
+### Detailed Changes
+
+#### 📁 Namespace: `production`
+**ConfigMap**:
+- ✏️ `app-config.yaml`
+- 🆕 `feature-flags.yaml`
+
+**Deployment**:
+- ✏️ `web-app.yaml`
+
+#### 🌐 Cluster-Scoped Resources
+**StorageClass**:
+- ✏️ `fast-storage.yaml`
+
+## 🔍 Detailed Resource Changes
+
+### 📁 Namespace: `production`
+
+#### ConfigMap
+
+**✏️ `app-config` (app-config.yaml)**
+
+**Resource Modified**
+
+**Changes Detected:**
+```diff
+--- a/production/ConfigMap/app-config.yaml
++++ b/production/ConfigMap/app-config.yaml
+@@ -4,6 +4,7 @@
+   name: app-config
+   namespace: production
+ data:
++  feature-flags: "new-feature=true"
+   environment: "staging"
+   log-level: "debug"
+   version: "1.1.0"
+```
+
+**Resource Details:**
+- Type: Modified resource
+- Status: Updated in this snapshot
+- File: `production/ConfigMap/app-config.yaml`
+
+**Change Summary:**
+- **Lines Added**: 1
+- **Lines Removed**: 0
+- **Sections Modified**:
+  - `data`
+
+### Git Commands for Reference
+```bash
+# View this commit
+git show def5678
+
+# Compare with previous snapshot
+git diff abc1234..def5678
+
+# View file changes
+git diff --name-status abc1234..def5678
+
+# View specific file diff
+git diff abc1234..def5678 -- <filename>
+```
+
 ## 📊 Output Structure
 
 Kalco creates an intuitive directory layout that makes navigation simple:
@@ -131,13 +265,13 @@ Kalco creates an intuitive directory layout that makes navigation simple:
 
 ## 🧪 Examples & Testing
 
-### Complete Git Workflow Demo
+### Complete Quickstart Demo
 
-We provide a comprehensive test script that demonstrates kalco's capabilities:
+We provide a comprehensive quickstart script that demonstrates all of kalco's capabilities:
 
 ```bash
-# Run the automated Git workflow test
-./examples/test-git-workflow.sh
+# Run the complete quickstart demo
+./examples/quickstart.sh
 ```
 
 This script demonstrates:
@@ -148,6 +282,9 @@ This script demonstrates:
 - 📋 Automatic change report generation
 - 🌐 Remote integration guidance
 - 🧹 Proper cleanup and summary
+- 🔍 **Enhanced reporting with detailed resource changes**
+
+Perfect for learning kalco's capabilities, testing your setup, and understanding the enhanced reporting features!
 
 ### Manual Testing Example
 

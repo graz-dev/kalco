@@ -152,7 +152,7 @@ func (r *ReportGenerator) generateReportContent(commitMessage string) (string, e
 	content.WriteString(fmt.Sprintf("- **Deleted Resources**: %d\n", changes.DeletedResources))
 	content.WriteString("\n")
 
-	// Write detailed changes
+	// Write detailed changes with diff information
 	content.WriteString("### Detailed Changes\n\n")
 
 	// Group by namespace
@@ -173,22 +173,58 @@ func (r *ReportGenerator) generateReportContent(commitMessage string) (string, e
 		}
 	}
 
+	// Write detailed diff information for each changed file
+	content.WriteString("## 🔍 Detailed Resource Changes\n\n")
+	content.WriteString("This section shows the specific changes made to each resource:\n\n")
+
+	for namespace, resources := range changes.ByNamespace {
+		if namespace == "_cluster" {
+			content.WriteString("### 🌐 Cluster-Scoped Resources\n\n")
+		} else {
+			content.WriteString(fmt.Sprintf("### 📁 Namespace: `%s`\n\n", namespace))
+		}
+
+		for resourceType, files := range resources {
+			content.WriteString(fmt.Sprintf("#### %s\n\n", resourceType))
+
+			for _, file := range files {
+				status := r.getFileStatus(file, prevCommit, commitHash)
+				filename := filepath.Base(file)
+				resourceName := strings.TrimSuffix(filename, ".yaml")
+
+				content.WriteString(fmt.Sprintf("**%s** `%s` (%s)\n\n", status, resourceName, filename))
+
+				// Get detailed diff information
+				diffInfo, err := r.getDetailedDiff(file, prevCommit, commitHash, status)
+				if err != nil {
+					content.WriteString(fmt.Sprintf("⚠️ Error getting diff: %v\n\n", err))
+					continue
+				}
+
+				content.WriteString(diffInfo)
+				content.WriteString("\n---\n\n")
+			}
+		}
+	}
+
 	// Write resource type summary
-	content.WriteString("### Resource Type Summary\n\n")
+	content.WriteString("## 📊 Resource Type Summary\n\n")
 	for resourceType, count := range changes.ResourceTypes {
 		content.WriteString(fmt.Sprintf("- **%s**: %d changes\n", resourceType, count))
 	}
 	content.WriteString("\n")
 
 	// Write Git commands for reference
-	content.WriteString("### Git Commands for Reference\n\n")
+	content.WriteString("## 💻 Git Commands for Reference\n\n")
 	content.WriteString("```bash\n")
 	content.WriteString(fmt.Sprintf("# View this commit\n"))
 	content.WriteString(fmt.Sprintf("git show %s\n\n", commitHash))
 	content.WriteString(fmt.Sprintf("# Compare with previous snapshot\n"))
 	content.WriteString(fmt.Sprintf("git diff %s..%s\n\n", prevCommit, commitHash))
 	content.WriteString(fmt.Sprintf("# View file changes\n"))
-	content.WriteString(fmt.Sprintf("git diff --name-status %s..%s\n", prevCommit, commitHash))
+	content.WriteString(fmt.Sprintf("git diff --name-status %s..%s\n\n", prevCommit, commitHash))
+	content.WriteString(fmt.Sprintf("# View specific file diff\n"))
+	content.WriteString(fmt.Sprintf("git diff %s..%s -- <filename>\n", prevCommit, commitHash))
 	content.WriteString("```\n\n")
 
 	// Footer
@@ -196,6 +232,168 @@ func (r *ReportGenerator) generateReportContent(commitMessage string) (string, e
 	content.WriteString("*Report generated automatically by kalco*\n")
 
 	return content.String(), nil
+}
+
+// getDetailedDiff gets detailed diff information for a specific file
+func (r *ReportGenerator) getDetailedDiff(file, prevCommit, currentCommit, status string) (string, error) {
+	var content strings.Builder
+
+	switch status {
+	case "🆕":
+		// New file - show the complete content
+		content.WriteString("**New Resource Created**\n\n")
+		content.WriteString("```yaml\n")
+		currentContent, err := r.getFileContent(file, currentCommit)
+		if err != nil {
+			return fmt.Sprintf("⚠️ Error reading file content: %v", err), nil
+		}
+		content.WriteString(currentContent)
+		content.WriteString("\n```\n\n")
+
+		// Add metadata summary
+		content.WriteString("**Resource Details**:\n")
+		content.WriteString("- Type: New resource\n")
+		content.WriteString("- Status: Created in this snapshot\n")
+		content.WriteString("- File: `" + file + "`\n\n")
+
+	case "🗑️":
+		// Deleted file - show what was removed
+		content.WriteString("**Resource Deleted**\n\n")
+		content.WriteString("```yaml\n")
+		previousContent, err := r.getFileContent(file, prevCommit)
+		if err != nil {
+			return fmt.Sprintf("⚠️ Error reading previous file content: %v", err), nil
+		}
+		content.WriteString(previousContent)
+		content.WriteString("\n```\n\n")
+
+		// Add metadata summary
+		content.WriteString("**Resource Details**:\n")
+		content.WriteString("- Type: Deleted resource\n")
+		content.WriteString("- Status: Removed in this snapshot\n")
+		content.WriteString("- File: `" + file + "`\n\n")
+
+	case "✏️":
+		// Modified file - show the diff
+		content.WriteString("**Resource Modified**\n\n")
+
+		// Get the actual diff output
+		diffOutput, err := r.getGitDiff(file, prevCommit, currentCommit)
+		if err != nil {
+			content.WriteString(fmt.Sprintf("⚠️ Error getting diff: %v\n\n", err))
+			// Fallback to showing before/after
+			content.WriteString("**Before (Previous Snapshot):**\n")
+			content.WriteString("```yaml\n")
+			previousContent, err := r.getFileContent(file, prevCommit)
+			if err != nil {
+				content.WriteString(fmt.Sprintf("Error reading previous content: %v", err))
+			} else {
+				content.WriteString(previousContent)
+			}
+			content.WriteString("\n```\n\n")
+
+			content.WriteString("**After (Current Snapshot):**\n")
+			content.WriteString("```yaml\n")
+			currentContent, err := r.getFileContent(file, currentCommit)
+			if err != nil {
+				content.WriteString(fmt.Sprintf("Error reading current content: %v", err))
+			} else {
+				content.WriteString(currentContent)
+			}
+			content.WriteString("\n```\n\n")
+		} else {
+			content.WriteString("**Changes Detected:**\n")
+			content.WriteString("```diff\n")
+			content.WriteString(diffOutput)
+			content.WriteString("\n```\n\n")
+		}
+
+		// Add metadata summary
+		content.WriteString("**Resource Details**:\n")
+		content.WriteString("- Type: Modified resource\n")
+		content.WriteString("- Status: Updated in this snapshot\n")
+		content.WriteString("- File: `" + file + "`\n\n")
+
+		// Add change summary
+		changeSummary, err := r.getChangeSummary(file, prevCommit, currentCommit)
+		if err == nil && changeSummary != "" {
+			content.WriteString("**Change Summary:**\n")
+			content.WriteString(changeSummary)
+			content.WriteString("\n")
+		}
+	}
+
+	return content.String(), nil
+}
+
+// getFileContent gets the content of a file at a specific commit
+func (r *ReportGenerator) getFileContent(file, commit string) (string, error) {
+	cmd := exec.Command("git", "show", fmt.Sprintf("%s:%s", commit, file))
+	cmd.Dir = r.repoPath
+	output, err := cmd.Output()
+	if err != nil {
+		return "", fmt.Errorf("failed to get file content: %w", err)
+	}
+	return string(output), nil
+}
+
+// getGitDiff gets the git diff output for a file between two commits
+func (r *ReportGenerator) getGitDiff(file, prevCommit, currentCommit string) (string, error) {
+	cmd := exec.Command("git", "diff", prevCommit, currentCommit, "--", file)
+	cmd.Dir = r.repoPath
+	output, err := cmd.Output()
+	if err != nil {
+		return "", fmt.Errorf("failed to get git diff: %w", err)
+	}
+	return string(output), nil
+}
+
+// getChangeSummary provides a human-readable summary of what changed
+func (r *ReportGenerator) getChangeSummary(file, prevCommit, currentCommit string) (string, error) {
+	// Get the diff and analyze it for common patterns
+	diffOutput, err := r.getGitDiff(file, prevCommit, currentCommit)
+	if err != nil {
+		return "", err
+	}
+
+	var summary strings.Builder
+	lines := strings.Split(diffOutput, "\n")
+
+	addedLines := 0
+	removedLines := 0
+	changedSections := make(map[string]bool)
+
+	for _, line := range lines {
+		if strings.HasPrefix(line, "+") && !strings.HasPrefix(line, "+++") {
+			addedLines++
+			// Try to identify what section changed
+			if strings.Contains(line, ":") {
+				parts := strings.SplitN(line, ":", 2)
+				if len(parts) > 0 {
+					section := strings.TrimSpace(parts[0])
+					if section != "" {
+						changedSections[section] = true
+					}
+				}
+			}
+		} else if strings.HasPrefix(line, "-") && !strings.HasPrefix(line, "---") {
+			removedLines++
+		}
+	}
+
+	if addedLines > 0 || removedLines > 0 {
+		summary.WriteString(fmt.Sprintf("- **Lines Added**: %d\n", addedLines))
+		summary.WriteString(fmt.Sprintf("- **Lines Removed**: %d\n", removedLines))
+	}
+
+	if len(changedSections) > 0 {
+		summary.WriteString("- **Sections Modified**:\n")
+		for section := range changedSections {
+			summary.WriteString(fmt.Sprintf("  - `%s`\n", section))
+		}
+	}
+
+	return summary.String(), nil
 }
 
 // ChangeSummary represents a summary of changes
