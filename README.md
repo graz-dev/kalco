@@ -2,10 +2,6 @@
 
 > **Kubernetes Cluster Resource Dumper** - Extract, organize, and version control your entire cluster with Git integration
 
-[![Go Version](https://img.shields.io/badge/Go-1.21+-blue.svg)](https://golang.org)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Go Report Card](https://goreportcard.com/badge/github.com/graz-dev/kalco)](https://goreportcard.com/report/github.com/graz-dev/kalco)
-
 ## 📖 Overview
 
 **Kalco** is a powerful, production-ready Go CLI tool that performs comprehensive dumps of all resources from your Kubernetes cluster into beautifully organized YAML files. It automatically discovers and exports every available API resource - including native Kubernetes resources and Custom Resources (CRDs) - with zero configuration required.
