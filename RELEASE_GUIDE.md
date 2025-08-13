@@ -31,7 +31,7 @@ Kalco now has comprehensive GitHub Actions workflows that automatically:
 - **Actions**:
   - Build binaries for all platforms
   - Create GitHub release with assets
-  - Push Docker images to GHCR
+
   - Generate comprehensive release notes
 
 

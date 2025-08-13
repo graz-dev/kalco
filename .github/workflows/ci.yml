@@ -10,7 +10,6 @@ on:
 permissions:
   contents: read
   security-events: write
-  actions: read
 
 env:
   GO_VERSION: '1.21'
@@ -126,11 +125,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
-        with:
-          languages: go
-
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
@@ -144,7 +138,3 @@ jobs:
         if: always()
         with:
           sarif_file: 'trivy-results.sarif'
-
-      - name: Finalize CodeQL
-        uses: github/codeql-action/finalize@v3
-        if: always()
