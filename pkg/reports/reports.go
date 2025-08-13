@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"kalco/pkg/orphaned"
 	"kalco/pkg/validation"
 )
 
@@ -551,10 +552,12 @@ func (r *ReportGenerator) generateValidationReport() (string, error) {
 
 	// Validation Summary
 	content.WriteString("### 📊 Validation Summary\n\n")
-	content.WriteString(fmt.Sprintf("- **Total References**: %d\n", result.Summary.TotalReferences))
-	content.WriteString(fmt.Sprintf("- **✅ Valid References**: %d\n", result.Summary.ValidReferences))
-	content.WriteString(fmt.Sprintf("- **❌ Broken References**: %d\n", result.Summary.BrokenReferences))
-	content.WriteString(fmt.Sprintf("- **⚠️  Warning References**: %d\n", result.Summary.WarningReferences))
+	content.WriteString(fmt.Sprintf("| Metric | Count |\n"))
+	content.WriteString(fmt.Sprintf("|--------|-------|\n"))
+	content.WriteString(fmt.Sprintf("| **Total References** | **%d** |\n", result.Summary.TotalReferences))
+	content.WriteString(fmt.Sprintf("| **✅ Valid References** | **%d** |\n", result.Summary.ValidReferences))
+	content.WriteString(fmt.Sprintf("| **❌ Broken References** | **%d** |\n", result.Summary.BrokenReferences))
+	content.WriteString(fmt.Sprintf("| **⚠️  Warning References** | **%d** |\n", result.Summary.WarningReferences))
 	content.WriteString("\n")
 
 	// Broken References (most important)
@@ -570,17 +573,17 @@ func (r *ReportGenerator) generateValidationReport() (string, error) {
 
 		for sourceType, refs := range grouped {
 			content.WriteString(fmt.Sprintf("#### %s\n\n", sourceType))
+			content.WriteString(fmt.Sprintf("| Source Resource | Target Resource | Field | Namespace | Impact |\n"))
+			content.WriteString(fmt.Sprintf("|-----------------|-----------------|-------|-----------|---------|\n"))
 			for _, ref := range refs {
-				content.WriteString(fmt.Sprintf("**❌ BROKEN**: %s `%s` references %s `%s`\n\n",
-					ref.SourceType, ref.SourceName, ref.TargetType, ref.TargetName))
-				content.WriteString(fmt.Sprintf("- **Problem**: The %s `%s` does not exist\n", ref.TargetType, ref.TargetName))
-				content.WriteString(fmt.Sprintf("- **Location**: `%s` in %s `%s`\n", ref.Field, ref.SourceType, ref.SourceName))
-				content.WriteString(fmt.Sprintf("- **Namespace**: `%s`\n", ref.SourceNamespace))
+				targetNamespace := ref.SourceNamespace
 				if ref.TargetNamespace != ref.SourceNamespace {
-					content.WriteString(fmt.Sprintf("- **Target Namespace**: `%s`\n", ref.TargetNamespace))
+					targetNamespace = ref.TargetNamespace
 				}
-				content.WriteString(fmt.Sprintf("- **Impact**: This resource will fail to apply\n\n"))
+				content.WriteString(fmt.Sprintf("| **%s** `%s` | **%s** `%s` | `%s` | `%s` | **Will fail to apply** |\n",
+					ref.SourceType, ref.SourceName, ref.TargetType, ref.TargetName, ref.Field, targetNamespace))
 			}
+			content.WriteString("\n")
 		}
 	} else {
 		content.WriteString("### ✅ No Broken References Found\n\n")
@@ -600,15 +603,13 @@ func (r *ReportGenerator) generateValidationReport() (string, error) {
 
 		for sourceType, refs := range grouped {
 			content.WriteString(fmt.Sprintf("#### %s\n\n", sourceType))
+			content.WriteString(fmt.Sprintf("| Source Resource | External Resource | Field | Namespace | Action Required |\n"))
+			content.WriteString(fmt.Sprintf("|-----------------|-------------------|-------|-----------|-----------------|\n"))
 			for _, ref := range refs {
-				content.WriteString(fmt.Sprintf("**⚠️  EXTERNAL**: %s `%s` references %s `%s`\n\n",
-					ref.SourceType, ref.SourceName, ref.TargetType, ref.TargetName))
-				content.WriteString(fmt.Sprintf("- **Type**: External %s reference\n", ref.TargetType))
-				content.WriteString(fmt.Sprintf("- **Location**: `%s` in %s `%s`\n", ref.Field, ref.SourceType, ref.SourceName))
-				content.WriteString(fmt.Sprintf("- **Namespace**: `%s`\n", ref.SourceNamespace))
-				content.WriteString(fmt.Sprintf("- **Action**: Verify this %s exists in your authentication system\n", ref.TargetType))
-				content.WriteString(fmt.Sprintf("- **Note**: This is normal for system resources and external users/groups\n\n"))
+				content.WriteString(fmt.Sprintf("| **%s** `%s` | **%s** `%s` | `%s` | `%s` | **Verify manually** |\n",
+					ref.SourceType, ref.SourceName, ref.TargetType, ref.TargetName, ref.Field, ref.SourceNamespace))
 			}
+			content.WriteString("\n")
 		}
 	}
 
@@ -623,8 +624,10 @@ func (r *ReportGenerator) generateValidationReport() (string, error) {
 			grouped[ref.SourceType]++
 		}
 
+		content.WriteString(fmt.Sprintf("| Resource Type | Valid References | Status |\n"))
+		content.WriteString(fmt.Sprintf("|---------------|------------------|---------|\n"))
 		for sourceType, count := range grouped {
-			content.WriteString(fmt.Sprintf("- **%s**: %d valid references ✅\n", sourceType, count))
+			content.WriteString(fmt.Sprintf("| **%s** | **%d** | ✅ **Safe** |\n", sourceType, count))
 		}
 		content.WriteString("\n")
 	}
@@ -646,6 +649,92 @@ func (r *ReportGenerator) generateValidationReport() (string, error) {
 	}
 
 	content.WriteString("**📝 Note**: This validation only checks for missing resources. It does not validate resource configurations, permissions, or runtime behavior.\n\n")
+
+	// Add orphaned resource detection
+	orphanedContent, err := r.generateOrphanedResourceReport()
+	if err != nil {
+		content.WriteString("\n⚠️  **Warning**: Orphaned resource detection failed: " + err.Error() + "\n\n")
+	} else {
+		content.WriteString("\n" + orphanedContent)
+	}
+
+	return content.String(), nil
+}
+
+// generateOrphanedResourceReport generates an orphaned resource detection report
+func (r *ReportGenerator) generateOrphanedResourceReport() (string, error) {
+	var content strings.Builder
+
+	// Run orphaned resource detection
+	detector := orphaned.NewOrphanedDetector(r.outputDir)
+	result, err := detector.Detect()
+	if err != nil {
+		return "", fmt.Errorf("failed to run orphaned resource detection: %w", err)
+	}
+
+	content.WriteString("## 🗑️  Orphaned Resource Detection Report\n\n")
+	content.WriteString("This section identifies resources that are no longer managed by higher-level controllers and may be consuming unnecessary resources.\n\n")
+	content.WriteString("> **💡 Tip**: Orphaned resources can be safely cleaned up to free up cluster resources and reduce clutter.\n\n")
+
+	// Orphaned Resource Summary
+	content.WriteString("### 📊 Orphaned Resource Summary\n\n")
+	content.WriteString(fmt.Sprintf("| Metric | Count |\n"))
+	content.WriteString(fmt.Sprintf("|--------|-------|\n"))
+	content.WriteString(fmt.Sprintf("| **Total Orphaned Resources** | **%d** |\n", result.Summary.TotalOrphanedResources))
+
+	if len(result.Summary.ByType) > 0 {
+		content.WriteString("\n**Breakdown by Resource Type:**\n\n")
+		content.WriteString(fmt.Sprintf("| Resource Type | Count |\n"))
+		content.WriteString(fmt.Sprintf("|---------------|-------|\n"))
+		for resourceType, count := range result.Summary.ByType {
+			content.WriteString(fmt.Sprintf("| %s | %d |\n", resourceType, count))
+		}
+	}
+	content.WriteString("\n")
+
+	// Orphaned Resources (most important)
+	if len(result.OrphanedResources) > 0 {
+		content.WriteString("### 🗑️  Orphaned Resources Found - Cleanup Recommended\n\n")
+		content.WriteString("**🔍 These resources are no longer managed and can be safely removed:**\n\n")
+
+		// Group by resource type
+		grouped := make(map[string][]orphaned.OrphanedResource)
+		for _, resource := range result.OrphanedResources {
+			grouped[resource.Type] = append(grouped[resource.Type], resource)
+		}
+
+		for resourceType, resources := range grouped {
+			content.WriteString(fmt.Sprintf("#### %s\n\n", resourceType))
+			content.WriteString(fmt.Sprintf("| Resource | Namespace | Reason | Details | File |\n"))
+			content.WriteString(fmt.Sprintf("|----------|-----------|--------|---------|------|\n"))
+			for _, resource := range resources {
+				content.WriteString(fmt.Sprintf("| **%s** `%s` | `%s` | %s | %s | `%s` |\n",
+					resource.Type, resource.Name, resource.Namespace, resource.Reason, resource.Details, resource.File))
+			}
+			content.WriteString("\n")
+		}
+	} else {
+		content.WriteString("### ✅ No Orphaned Resources Found\n\n")
+		content.WriteString("🎉 **Excellent!** All resources in your cluster are properly managed.\n\n")
+	}
+
+	// Cleanup Recommendations
+	content.WriteString("### 💡 Cleanup Recommendations\n\n")
+	if len(result.OrphanedResources) > 0 {
+		content.WriteString("**🧹 RECOMMENDED ACTIONS:**\n\n")
+		content.WriteString("1. **🔍 Review Each Resource**: Verify that each orphaned resource is truly unused\n")
+		content.WriteString("2. **🧪 Test in Staging**: Remove resources in a test environment first\n")
+		content.WriteString("3. **📋 Document Dependencies**: Note any resources that might be needed later\n")
+		content.WriteString("4. **🗑️  Gradual Cleanup**: Remove resources one by one to avoid issues\n")
+		content.WriteString("5. **📊 Monitor Impact**: Watch for any unexpected behavior after removal\n\n")
+	} else {
+		content.WriteString("**🎉 Your cluster is well-maintained!**\n\n")
+		content.WriteString("1. **✅ Continue Good Practices**: Keep managing resources properly\n")
+		content.WriteString("2. **🔄 Regular Checks**: Run this detection periodically\n")
+		content.WriteString("3. **📚 Documentation**: Maintain good resource documentation\n\n")
+	}
+
+	content.WriteString("**📝 Note**: This detection identifies resources that appear to be unused based on ownership and reference analysis. Always verify before deletion.\n\n")
 
 	return content.String(), nil
 }

@@ -342,6 +342,62 @@ EOF
 print_status "Resources with broken references created"
 print_warning "These resources have intentional broken references to demonstrate validation!"
 
+# Create some ORPHANED RESOURCES to demonstrate orphaned detection
+echo ""
+echo "🗑️ Creating ORPHANED RESOURCES to demonstrate Orphaned Resource Detection..."
+print_feature "This will show how kalco detects resources that are no longer managed!"
+
+# Create an orphaned ReplicaSet (no Deployment owner)
+kubectl apply -f - <<EOF
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: orphaned-replicaset
+  namespace: validation-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orphaned-app
+  template:
+    metadata:
+      labels:
+        app: orphaned-app
+    spec:
+      containers:
+      - name: orphaned-container
+        image: nginx:1.21
+        ports:
+        - containerPort: 80
+EOF
+
+# Create an orphaned ConfigMap (not referenced by any Pod/Deployment)
+kubectl apply -f - <<EOF
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: orphaned-config
+  namespace: validation-test
+data:
+  orphaned-key: "orphaned-value"
+  unused-config: "unused-data"
+EOF
+
+# Create an orphaned Secret (not referenced by any Pod/Deployment)
+kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Secret
+metadata:
+  name: orphaned-secret
+  namespace: validation-test
+type: Opaque
+data:
+  orphaned-password: b3JwaGFuZWQtcGFzc3dvcmQ=
+EOF
+
+print_status "Orphaned resources created"
+print_warning "These resources have no owners or references and will be detected as orphaned!"
+
 # Second export - updates Git repo and generates change report with validation
 echo ""
 echo "📦 Second export - generating change report with Cross-Reference Validation..."
@@ -389,6 +445,21 @@ echo "=================="
 grep -A 15 "Recommendations" "$latest_report" | head -20
 
 echo ""
+echo "🗑️  Orphaned Resource Detection Section:"
+echo "========================================="
+grep -A 5 -B 5 "Orphaned Resource Detection" "$latest_report" || echo "Orphaned detection section not found"
+
+echo ""
+echo "🗑️  Orphaned Resources Found:"
+echo "=============================="
+grep -A 10 "Orphaned Resources Found" "$latest_report" | head -30
+
+echo ""
+echo "💡 Cleanup Recommendations:"
+echo "=========================="
+grep -A 15 "Cleanup Recommendations" "$latest_report" | head -20
+
+echo ""
 echo "💻 Git History:"
 echo "==============="
 git log --oneline -3
@@ -417,6 +488,7 @@ echo "- ✅ Resource modification (ConfigMap, Deployment, ServiceAccount, Role, 
 echo "- ✅ Enhanced change report with detailed diffs"
 echo "- ✅ Git history tracking"
 echo "- 🔍 CROSS-REFERENCE VALIDATION (NEW FEATURE!)"
+echo "- 🗑️  ORPHANED RESOURCE DETECTION (NEW FEATURE!)"
 echo "  - ❌ Broken Service selectors"
 echo "  - ❌ Broken NetworkPolicy selectors"
 echo "  - ❌ Broken Ingress backends"
@@ -424,6 +496,9 @@ echo "  - ❌ Broken HPA targets"
 echo "  - ❌ Broken PDB selectors"
 echo "  - ❌ Broken RoleBinding ServiceAccount references"
 echo "  - ⚠️  External User references (warnings)"
+echo "  - 🗑️  Orphaned ReplicaSets (no Deployment owner)"
+echo "  - 🗑️  Orphaned ConfigMaps (unreferenced)"
+echo "  - 🗑️  Orphaned Secrets (unreferenced)"
 echo ""
 echo "📁 Your enhanced backup is preserved in: ./quickstart-demo/"
 echo "📋 Enhanced reports with validation are in: ./quickstart-demo/kalco-reports/"
@@ -440,6 +515,11 @@ echo "  - ❌ Broken references detection"
 echo "  - ⚠️  Warning references for external resources"
 echo "  - 📋 Actionable recommendations"
 echo "  - 🛡️ Reliability assurance for reapplying resources"
+echo "- 🗑️  ORPHANED RESOURCE DETECTION:"
+echo "  - 🔍 Orphaned resource identification"
+echo "  - 📊 Resource breakdown by type"
+echo "  - 💡 Cleanup recommendations"
+echo "  - 🧹 Cluster cleanup guidance"
 echo ""
 echo "💡 Try viewing the reports to see kalco's enhanced functionality!"
 echo "🔍 The Cross-Reference Validation section will show you exactly what's broken!"
