@@ -19,7 +19,7 @@ Kalco now has comprehensive GitHub Actions workflows that automatically:
 - **Triggers**: Push to master, Pull requests
 - **Purpose**: Continuous integration testing
 - **Actions**:
-  - Run tests with race detection
+  - Run tests with coverage
   - Build for multiple platforms
   - Lint code with golangci-lint
   - Upload build artifacts
