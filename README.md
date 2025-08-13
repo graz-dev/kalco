@@ -20,6 +20,8 @@
 - 🚀 **Git Integration** - Automatic version control with commit history and change tracking
 - 📊 **Smart Reporting** - Generates detailed change reports with before/after comparisons and specific field modifications
 
+---
+
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -60,6 +62,8 @@ This will:
 - 📊 Generate enhanced change reports
 - 🧹 Clean up the test environment
 
+---
+
 ### Basic Usage
 
 ```bash
@@ -72,6 +76,8 @@ This will:
 # Use specific kubeconfig file
 ./kalco --kubeconfig ~/.kube/config --output-dir ./cluster-backup
 ```
+
+---
 
 ## 🎯 Git Integration & Version Control
 
@@ -100,20 +106,7 @@ Kalco automatically sets up Git version control for your cluster snapshots, prov
 ./kalco --output-dir ./cluster-backup --commit-message "Monthly audit" --git-push
 ```
 
-### Git Repository Structure
-
-```
-cluster-backup/
-├── .git/                    # Git repository
-├── .gitignore              # Auto-generated ignore file
-├── kalco-reports/          # Change reports for each snapshot
-│   ├── Initial-snapshot.md # First export report
-│   └── Updated-resources.md # Change tracking report
-├── default/                 # Namespace resources
-├── kube-system/            # System resources
-├── _cluster/               # Cluster-scoped resources
-└── README.md               # Repository documentation
-```
+---
 
 ## 📊 Enhanced Change Reports
 
@@ -148,89 +141,7 @@ Reports are automatically named based on your commit messages:
 - **Timestamp Default**: `Cluster-snapshot-2025-08-13-15-04-05.md`
 - **Special Characters**: Automatically cleaned for valid filenames
 
-### 📋 Report Content Example
-
-```markdown
-# Cluster Change Report
-
-**Generated**: 2025-08-13 15:04:05 UTC
-**Commit Message**: Production backup
-
-## Changes Since Previous Snapshot
-
-**Previous Commit**: `abc1234`
-
-### Change Summary
-- **Total Files Changed**: 15
-- **Namespaces Affected**: 3
-- **Resource Types Changed**: 4
-- **New Resources**: 2
-- **Modified Resources**: 13
-- **Deleted Resources**: 0
-
-### Detailed Changes
-
-#### 📁 Namespace: `production`
-**ConfigMap**:
-- ✏️ `app-config.yaml`
-- 🆕 `feature-flags.yaml`
-
-**Deployment**:
-- ✏️ `web-app.yaml`
-
-#### 🌐 Cluster-Scoped Resources
-**StorageClass**:
-- ✏️ `fast-storage.yaml`
-
-## 🔍 Detailed Resource Changes
-
-### 📁 Namespace: `production`
-
-#### ConfigMap
-
-**✏️ `app-config` (app-config.yaml)**
-
-**Resource Modified**
-
-**Changes Detected:**
-```diff
---- a/production/ConfigMap/app-config.yaml
-+++ b/production/ConfigMap/app-config.yaml
-@@ -4,6 +4,7 @@
-   name: app-config
-   namespace: production
- data:
-+  feature-flags: "new-feature=true"
-   environment: "staging"
-   log-level: "debug"
-   version: "1.1.0"
-```
-
-**Resource Details:**
-- Type: Modified resource
-- Status: Updated in this snapshot
-- File: `production/ConfigMap/app-config.yaml`
-
-**Change Summary:**
-- **Lines Added**: 1
-- **Lines Removed**: 0
-- **Sections Modified**:
-  - `data`
-
-### Git Commands for Reference
-```bash
-# View this commit
-git show def5678
-
-# Compare with previous snapshot
-git diff abc1234..def5678
-
-# View file changes
-git diff --name-status abc1234..def5678
-
-# View specific file diff
-git diff abc1234..def5678 -- <filename>
-```
+---
 
 ## 📊 Output Structure
 
@@ -263,68 +174,7 @@ Kalco creates an intuitive directory layout that makes navigation simple:
 | `--git-push` | | Auto-push to remote origin | `false` |
 | `--help` | `-h` | Show help information | |
 
-## 🧪 Examples & Testing
-
-### Complete Quickstart Demo
-
-We provide a comprehensive quickstart script that demonstrates all of kalco's capabilities:
-
-```bash
-# Run the complete quickstart demo
-./examples/quickstart.sh
-```
-
-This script demonstrates:
-- 🏗️ KIND cluster creation and setup
-- 📦 Automatic Git repository initialization
-- 🔄 Resource modification and change tracking
-- 📊 Git history analysis and verification
-- 📋 Automatic change report generation
-- 🌐 Remote integration guidance
-- 🧹 Proper cleanup and summary
-- 🔍 **Enhanced reporting with detailed resource changes**
-
-Perfect for learning kalco's capabilities, testing your setup, and understanding the enhanced reporting features!
-
-### Manual Testing Example
-
-```bash
-# Create test cluster (requires KIND)
-kind create cluster --name kalco-test
-
-# Export resources (auto-creates Git repo)
-./kalco --output-dir ./test-backup --commit-message "Initial snapshot"
-
-# Modify cluster resources
-kubectl create namespace test-apps
-kubectl create configmap app-config --from-literal=env=dev -n test-apps
-
-# Export again (updates existing Git repo)
-./kalco --output-dir ./test-backup --commit-message "Added test resources"
-
-# Cleanup
-kind delete cluster --name kalco-test
-```
-
-## 🔧 How It Works
-
-1. **🚀 Client Creation** - Creates Kubernetes clients (clientset, discovery client, dynamic client)
-2. **🔍 Resource Discovery** - Uses discovery client to get all server resources
-3. **🏷️ Namespace Enumeration** - Lists all namespaces for namespaced resources
-4. **📊 Resource Dumping** - For each resource type:
-   - If namespaced: Lists all instances across all namespaces
-   - If cluster-scoped: Lists all instances at cluster level
-5. **📄 YAML Export** - Converts each resource to clean YAML and writes to appropriate directory
-6. **🧹 Metadata Cleanup** - Removes fields like `uid`, `resourceVersion`, `managedFields`, `status`, etc.
-7. **🚀 Git Integration** - Initializes repository, commits changes, and optionally pushes to remote
-
-## 🛡️ Error Handling & Resilience
-
-Kalco is designed to be production-ready:
-- ⚡ **Continues Processing** - Handles individual resource failures gracefully
-- ⚠️ **Clear Warnings** - Provides informative messages for failed operations
-- 🚀 **Graceful Degradation** - Manages API errors and permission issues
-- 📊 **Progress Reporting** - Shows real-time status of operations
+---
 
 ## 🛠️ Development
 
@@ -366,12 +216,12 @@ go build -o kalco
 # Run tests
 go test ./...
 
-
-
 # Build for different platforms
 GOOS=linux GOARCH=amd64 go build -o kalco-linux
 GOOS=darwin GOARCH=amd64 go build -o kalco-darwin
 ```
+
+---
 
 ## 📚 Use Cases
 
@@ -388,31 +238,5 @@ GOOS=darwin GOARCH=amd64 go build -o kalco-darwin
 - **Documentation** - Generate cluster resource documentation
 
 
-
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
-
-### Development Setup
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Make your changes and add tests
-4. Commit your changes: `git commit -m 'Add amazing feature'`
-5. Push to the branch: `git push origin feature/amazing-feature`
-6. Open a Pull Request
-
-
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- Kubernetes community for the excellent client libraries
-- Cobra team for the powerful CLI framework
-- All contributors who help improve this tool
----
 
 **Made with ❤️ for the Kubernetes community**
