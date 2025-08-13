@@ -1,10 +1,10 @@
-# 🚀 Kalco
+# ☸️ Kalco
 
 > **Kubernetes Cluster Resource Dumper** - Extract, organize, and version control your entire cluster with Git integration
 
 [![Go Version](https://img.shields.io/badge/Go-1.21+-blue.svg)](https://golang.org)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Go Report Card](https://goreportcard.com/badge/github.com/yourusername/kalco)](https://goreportcard.com/report/github.com/yourusername/kalco)
+[![Go Report Card](https://goreportcard.com/badge/github.com/graz-dev/kalco)](https://goreportcard.com/report/github.com/graz-dev/kalco)
 
 ## 📖 Overview
 
@@ -33,7 +33,7 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/kalco.git
+git clone https://github.com/graz-dev/kalco.git
 cd kalco
 
 # Install dependencies and build
@@ -413,14 +413,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Kubernetes community for the excellent client libraries
 - Cobra team for the powerful CLI framework
 - All contributors who help improve this tool
-
-## 📞 Support
-
-- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/yourusername/kalco/issues)
-- 💡 **Feature Requests**: [GitHub Discussions](https://github.com/yourusername/kalco/discussions)
-- 📖 **Documentation**: [GitHub Wiki](https://github.com/yourusername/kalco/wiki)
-- 💬 **Community**: [GitHub Discussions](https://github.com/yourusername/kalco/discussions)
-
 ---
 
 **Made with ❤️ for the Kubernetes community**
