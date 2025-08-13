@@ -111,18 +111,18 @@ This will:
 
 ##  ⭐️ Features Set
 
-## 🎯 Git Integration & Version Control
+### 🎯 Git Integration & Version Control
 
 Kalco automatically sets up Git version control for your cluster snapshots, providing a complete history of changes over time.
 
-### Automatic Git Workflow
+#### Automatic Git Workflow
 
 1. **🆕 Repository Initialization** - Automatically creates new Git repos for new directories
 2. **🔄 Change Detection** - Only commits when there are actual changes to track
 3. **📅 Smart Committing** - Uses timestamp-based commit messages or custom messages
 4. **🌐 Remote Integration** - Automatically pushes to remote origin if available
 
-### Git Usage Examples
+#### Git Usage Examples
 
 ```bash
 # Basic export with Git version control
@@ -139,33 +139,33 @@ Kalco automatically sets up Git version control for your cluster snapshots, prov
 ```
 
 
-## 📊 Enhanced Change Reports
+### 📊 Enhanced Change Reports
 
 Kalco automatically generates comprehensive change reports for every cluster snapshot, providing detailed insights into what actually changed in each resource.
 
-### 🔍 What Reports Include
+#### 🔍 What Reports Include
 
-#### **Initial Snapshot Reports**
+##### **Initial Snapshot Reports**
 - **📋 Resource Summary** - Complete overview of all exported resources
 - **🏷️ Namespace Coverage** - List of all namespaces and resource types
 - **📅 Timestamp Information** - When the snapshot was taken
 - **🔧 Git Setup** - Confirmation of repository initialization
 
-#### **Change Tracking Reports**
+##### **Change Tracking Reports**
 - **📊 Change Summary** - Total files changed, namespaces affected, resource types modified
 - **🔄 Detailed Changes** - File-by-file breakdown of modifications
 - **🌐 Namespace Grouping** - Changes organized by namespace and resource type
 - **📈 Resource Statistics** - Counts of new, modified, and deleted resources
 - **💻 Git Commands** - Reference commands for further investigation
 
-#### **Enhanced Resource Details**
+##### **Enhanced Resource Details**
 - **🆕 New Resources** - Complete YAML content of newly created resources
 - **🗑️ Deleted Resources** - Full YAML content of removed resources
 - **✏️ Modified Resources** - Git diff output showing exact changes with before/after comparisons
 - **📋 Change Analysis** - Human-readable summary of what sections and fields were modified
 - **🔍 Field-Level Tracking** - Identification of specific YAML sections that changed
 
-### 📁 Report File Naming
+#### 📁 Report File Naming
 
 Reports are automatically named based on your commit messages:
 - **Custom Message**: `Production-backup-2025-08-13.md`
@@ -173,11 +173,11 @@ Reports are automatically named based on your commit messages:
 - **Special Characters**: Automatically cleaned for valid filenames
 
 
-## 🔍 Cross-Reference Validation
+### 🔍 Cross-Reference Validation
 
 Kalco automatically validates cross-references between exported resources to identify potential issues:
 
-### **What Gets Validated:**
+#### **What Gets Validated:**
 
 - **🔗 Service Selectors**: Services targeting non-existent Pods/Deployments
 - **👥 RoleBinding Subjects**: ServiceAccount references in RBAC
@@ -186,13 +186,13 @@ Kalco automatically validates cross-references between exported resources to ide
 - **📈 HPA Targets**: Scale target references
 - **🛡️ PDB Selectors**: Pod selector references
 
-### **Validation Results:**
+#### **Validation Results:**
 
 - **✅ Valid References**: Properly configured cross-references
 - **❌ Broken References**: Missing target resources (will cause errors)
 - **⚠️  Warning References**: External references requiring manual verification
 
-### **Benefits:**
+#### **Benefits:**
 
 - **🚫 Prevents Errors**: Catch issues before reapplying resources
 - **🔍 Silent Failures**: Find configuration problems kubectl apply won't detect
@@ -200,11 +200,11 @@ Kalco automatically validates cross-references between exported resources to ide
 - **🛡️ Reliability**: Ensure cluster resources can be safely reapplied
 
 
-## 🗑️ Orphaned Resource Detection
+### 🗑️ Orphaned Resource Detection
 
 Kalco automatically detects resources that are no longer managed by higher-level controllers and may be consuming unnecessary resources:
 
-### **What Gets Detected:**
+#### **What Gets Detected:**
 
 - **🔗 Orphaned ReplicaSets**: ReplicaSets not owned by Deployments
 - **📦 Orphaned Pods**: Pods without controller owners (excluding static/mirror pods)
@@ -213,14 +213,14 @@ Kalco automatically detects resources that are no longer managed by higher-level
 - **🌐 Orphaned Services**: Services not referenced by any Pod/Deployment
 - **💾 Orphaned PVCs**: PersistentVolumeClaims not referenced by any Pod
 
-### **Detection Results:**
+#### **Detection Results:**
 
 - **🗑️ Orphaned Resources**: Resources that can be safely cleaned up
 - **📊 Resource Breakdown**: Counts by resource type
 - **🔍 Detailed Analysis**: File locations and reasons for orphaned status
 - **💡 Cleanup Guidance**: Step-by-step recommendations for safe removal
 
-### **Benefits:**
+#### **Benefits:**
 
 - **🧹 Cluster Cleanup**: Identify and remove unnecessary resources
 - **💰 Resource Savings**: Free up cluster resources and reduce costs
@@ -228,7 +228,7 @@ Kalco automatically detects resources that are no longer managed by higher-level
 - **🛡️ Safe Cleanup**: Clear guidance on what can be safely removed
 
 
-## 📊 Output Structure
+### 📊 Output Structure
 
 Kalco creates an intuitive directory layout that makes navigation simple:
 
@@ -249,7 +249,7 @@ Kalco creates an intuitive directory layout that makes navigation simple:
 - 🏷️ **Namespaced resources**: `<output_dir>/<namespace>/<resource_kind>/<resource_name>.yaml`
 - 🌐 **Cluster-scoped resources**: `<output_dir>/_cluster/<resource_kind>/<resource_name>.yaml`
 
-## 📋 Command Line Options
+### 📋 Command Line Options
 
 | Flag | Short | Description | Default |
 |------|-------|-------------|---------|
