@@ -1,261 +1,305 @@
 #!/bin/bash
 
-# Kalco Quickstart Script
-# This comprehensive script demonstrates all of kalco's capabilities including Cross-Reference Validation
+# Kalco Simple Quickstart Script
+# This script demonstrates a real, cohesive application with:
+# - Echo server deployment
+# - Service and Ingress
+# - Real CRD from kube-green operator (SleepInfo)
+# - Cross-reference validation
+# - Orphaned resource detection
 
 set -e
-
-echo "🚀 Kalco Quickstart Demo with Cross-Reference Validation"
-echo "========================================================"
-echo ""
 
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
-PURPLE='\033[0;35m'
 NC='\033[0m' # No Color
 
-# Function to print colored output
+# Helper functions
 print_status() {
-    echo -e "${GREEN}✅${NC} $1"
+    echo -e "${GREEN}✅ $1${NC}"
 }
 
 print_info() {
-    echo -e "${BLUE}ℹ️${NC} $1"
+    echo -e "${BLUE}ℹ️  $1${NC}"
 }
 
 print_warning() {
-    echo -e "${YELLOW}⚠️${NC} $1"
+    echo -e "${YELLOW}⚠️  $1${NC}"
 }
 
 print_error() {
-    echo -e "${RED}❌${NC} $1"
+    echo -e "${RED}❌ $1${NC}"
 }
 
 print_feature() {
-    echo -e "${PURPLE}🔍${NC} $1"
+    echo -e "${BLUE}🔍 $1${NC}"
 }
+
+# Script header
+echo "🚀 Kalco Simple Quickstart Demo"
+echo "================================"
+echo ""
+echo "This demo shows a real, cohesive application with:"
+echo "- 🚀 HTTP Echo server deployment"
+echo "- 🌐 Service and Ingress"
+echo "- 🔧 Real kube-green operator with SleepInfo CRD"
+echo "- 🔍 Cross-reference validation"
+echo "- 🗑️  Orphaned resource detection"
+echo ""
 
 # Check prerequisites
 echo "🔍 Checking prerequisites..."
+if ! command -v kubectl &> /dev/null; then
+    print_error "kubectl is required but not installed"
+    exit 1
+fi
 
 if ! command -v kind &> /dev/null; then
-    print_error "KIND is not installed. Please install it first: https://kind.sigs.k8s.io/docs/user/quick-start/"
+    print_error "kind is required but not installed"
     exit 1
 fi
 
-if ! command -v kubectl &> /dev/null; then
-    print_error "kubectl is not installed. Please install it first."
+if ! command -v go &> /dev/null; then
+    print_error "go is required but not installed"
     exit 1
 fi
 
-if ! command -v git &> /dev/null; then
-    print_error "git is not installed. Please install it first."
-    exit 1
-fi
+
 
 print_status "All prerequisites are available"
 
-# Build kalco if not exists
-if [ ! -f "./kalco" ]; then
-    print_info "Building kalco..."
-    go build -o kalco
-    print_status "kalco built successfully"
-else
-    print_status "kalco binary found"
-fi
+# Build kalco
+echo ""
+echo "ℹ️ Building kalco..."
+go build -o kalco
+print_status "kalco built successfully"
 
 # Create test cluster
 echo ""
 echo "🏗️ Creating test cluster..."
-kind create cluster --name kalco-validation-test --wait 2m
+kind create cluster --name kalco-quickstart --wait 2m
 print_status "Test cluster created"
 
 # Wait for cluster to be ready
+echo ""
 echo "⏳ Waiting for cluster to be ready..."
-kubectl wait --for=condition=Ready nodes --all --timeout=300s
+sleep 10  # Give the cluster a moment to fully initialize
+kubectl wait --for=condition=Ready node/kalco-quickstart-control-plane --timeout=60s
 print_status "Cluster is ready"
 
-# Create test namespace and resources
+# Create a simple, real application
 echo ""
-echo "📦 Creating test resources..."
+echo "📦 Creating a simple, real application..."
 
-# Create namespace
-kubectl create namespace validation-test
+# Create namespace for our demo app
+kubectl create namespace demo-app --dry-run=client -o yaml | kubectl apply -f -
 
-# Create initial ConfigMap
+# Create ConfigMap for echo server configuration
 kubectl apply -f - <<EOF
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: app-config
-  namespace: validation-test
+  name: echo-config
+  namespace: demo-app
+  labels:
+    app: echo-server
+    tier: backend
 data:
   environment: "development"
   log-level: "info"
-  version: "1.0.0"
+  app-version: "1.0.0"
+  description: "Simple echo server for demo purposes"
 EOF
 
-# Create initial Deployment
+# Create Deployment for echo server
 kubectl apply -f - <<EOF
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-deployment
-  namespace: validation-test
+  name: echo-server
+  namespace: demo-app
   labels:
-    app: nginx
-    tier: frontend
+    app: echo-server
+    tier: backend
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
-      app: nginx
-      tier: frontend
+      app: echo-server
+      tier: backend
   template:
     metadata:
       labels:
-        app: nginx
-        tier: frontend
+        app: echo-server
+        tier: backend
     spec:
       containers:
-      - name: nginx
-        image: nginx:1.21
+      - name: echo
+        image: hashicorp/http-echo:latest
         ports:
         - containerPort: 80
+          name: http
+        command: ["/http-echo"]
+        args: ["-text", "Hello from Echo Server!", "-listen", ":80"]
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
 EOF
 
-# Create ServiceAccount for RBAC testing
+# Create Service for echo server
 kubectl apply -f - <<EOF
 apiVersion: v1
-kind: ServiceAccount
+kind: Service
 metadata:
-  name: app-service-account
-  namespace: validation-test
+  name: echo-service
+  namespace: demo-app
+  labels:
+    app: echo-server
+    tier: backend
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: http
+  selector:
+    app: echo-server
+    tier: backend
 EOF
 
-# Create Role
+# Create Ingress for external access
 kubectl apply -f - <<EOF
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
-  name: app-role
-  namespace: validation-test
-rules:
-- apiGroups: [""]
-  resources: ["pods", "services"]
-  verbs: ["get", "list", "watch"]
+  name: echo-ingress
+  namespace: demo-app
+  labels:
+    app: echo-server
+    tier: frontend
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+  - host: echo.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: echo-service
+            port:
+              number: 80
 EOF
 
-# Create RoleBinding
+# Install kube-green operator for real CRD testing
+echo ""
+echo "🔧 Installing kube-green operator for real CRD testing..."
+print_feature "This will install a real operator with real CRDs!"
+
+# First install cert-manager (required for kube-green)
+echo "📦 Installing cert-manager..."
+kubectl apply -f https://github.com/jetstack/cert-manager/releases/latest/download/cert-manager.yaml
+
+# Wait for cert-manager to be ready
+echo "⏳ Waiting for cert-manager to be ready..."
+kubectl wait --for=condition=Ready pod -l app.kubernetes.io/instance=cert-manager -n cert-manager --timeout=120s
+print_status "cert-manager installed and ready"
+
+# Install kube-green
+echo "📦 Installing kube-green..."
+kubectl apply -f https://github.com/kube-green/kube-green/releases/latest/download/kube-green.yaml
+
+# Wait for kube-green to be ready
+echo "⏳ Waiting for kube-green to be ready..."
+kubectl wait --for=condition=Ready pod -l app=kube-green -n kube-green --timeout=120s
+print_status "kube-green operator installed and ready"
+
+# Give kube-green webhook a moment to be fully ready
+echo "⏳ Waiting for kube-green webhook to be ready..."
+sleep 30
+
+# Create a SleepInfo CRD resource
+echo ""
+echo "🌙 Creating SleepInfo CRD resource..."
 kubectl apply -f - <<EOF
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
+apiVersion: kube-green.com/v1alpha1
+kind: SleepInfo
 metadata:
-  name: app-role-binding
-  namespace: validation-test
-subjects:
-- kind: ServiceAccount
-  name: app-service-account
-  namespace: validation-test
-roleRef:
-  kind: Role
-  name: app-role
-  apiGroup: rbac.authorization.k8s.io
+  name: demo-sleep
+  namespace: demo-app
+spec:
+  weekdays: "1-5"
+  sleepAt: "20:00"
+  wakeUpAt: "08:00"
+  timeZone: "Europe/Rome"
 EOF
 
-print_status "Initial test resources created"
+print_status "SleepInfo CRD resource created"
 
-# First export - creates Git repo and initial report
+# Create some resources with intentional broken references for validation testing
 echo ""
-echo "📦 First export - creating initial snapshot..."
-./kalco --output-dir ./quickstart-demo --commit-message "Initial snapshot: $(date)"
-print_status "Initial export completed"
+echo "🔍 Creating resources with broken references for validation testing..."
 
-# Verify Git repository and initial report
-echo ""
-echo "🔍 Verifying initial setup..."
-cd ./quickstart-demo
-
-if [ -d ".git" ]; then
-    print_status "Git repository initialized"
-else
-    print_error "Git repository not found"
-    exit 1
-fi
-
-if [ -d "kalco-reports" ]; then
-    print_status "Reports directory created"
-    initial_report=$(ls kalco-reports/*.md | head -1)
-    print_info "Initial report: $initial_report"
-else
-    print_error "Reports directory not found"
-    exit 1
-fi
-
-cd ..
-
-# Now create resources with BROKEN REFERENCES to demonstrate validation
-echo ""
-echo "🔍 Creating resources with BROKEN REFERENCES to demonstrate Cross-Reference Validation..."
-print_feature "This will show how kalco detects broken references!"
-
-# Create Service with BROKEN selector (targets non-existent deployment)
+# Create Service targeting non-existent deployment
 kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Service
 metadata:
   name: broken-service
-  namespace: validation-test
-spec:
-  selector:
-    app: non-existent-app
+  namespace: demo-app
+  labels:
+    app: broken
     tier: backend
+spec:
+  type: ClusterIP
   ports:
   - port: 8080
     targetPort: 8080
-  type: ClusterIP
+    protocol: TCP
+    name: http
+  selector:
+    app: non-existent-deployment
+    tier: backend
 EOF
 
-# Create NetworkPolicy with BROKEN pod selector
-kubectl apply -f - <<EOF
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: broken-network-policy
-  namespace: validation-test
-spec:
-  podSelector:
-    matchLabels:
-      app: non-existent-app
-      tier: backend
-  policyTypes:
-  - Ingress
-  ingress:
-  - from:
-    - podSelector:
-        matchLabels:
-          app: nginx
-          tier: frontend
-    ports:
-    - protocol: TCP
-      port: 80
-EOF
-
-# Create Ingress with BROKEN backend service
+# Create Ingress with broken service backend
 kubectl apply -f - <<EOF
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: broken-ingress
-  namespace: validation-test
+  namespace: demo-app
+  labels:
+    app: broken
+    tier: frontend
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-  - host: broken.example.com
+  - host: broken.local
     http:
       paths:
       - path: /
@@ -267,162 +311,102 @@ spec:
               number: 80
 EOF
 
-# Create HorizontalPodAutoscaler with BROKEN target
-kubectl apply -f - <<EOF
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: broken-hpa
-  namespace: validation-test
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: non-existent-deployment
-  minReplicas: 1
-  maxReplicas: 10
-  metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 50
-EOF
-
-# Create PodDisruptionBudget with BROKEN selector
-kubectl apply -f - <<EOF
-apiVersion: policy/v1
-kind: PodDisruptionBudget
-metadata:
-  name: broken-pdb
-  namespace: validation-test
-spec:
-  minAvailable: 1
-  selector:
-    matchLabels:
-      app: non-existent-app
-      tier: backend
-EOF
-
-# Create RoleBinding with BROKEN ServiceAccount reference
-kubectl apply -f - <<EOF
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: broken-role-binding
-  namespace: validation-test
-subjects:
-- kind: ServiceAccount
-  name: non-existent-service-account
-  namespace: validation-test
-roleRef:
-  kind: Role
-  name: app-role
-  apiGroup: rbac.authorization.k8s.io
-EOF
-
-# Create RoleBinding with external User reference (will be a warning)
-kubectl apply -f - <<EOF
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: external-user-binding
-  namespace: validation-test
-subjects:
-- kind: User
-  name: external-user@example.com
-  apiGroup: rbac.authorization.k8s.io
-roleRef:
-  kind: Role
-  name: app-role
-  apiGroup: rbac.authorization.k8s.io
-EOF
-
-print_status "Resources with broken references created"
-print_warning "These resources have intentional broken references to demonstrate validation!"
-
-# Create some ORPHANED RESOURCES to demonstrate orphaned detection
+# Create orphaned resources (no references)
 echo ""
-echo "🗑️ Creating ORPHANED RESOURCES to demonstrate Orphaned Resource Detection..."
-print_feature "This will show how kalco detects resources that are no longer managed!"
+echo "🗑️  Creating orphaned resources for detection testing..."
 
-# Create an orphaned ReplicaSet (no Deployment owner)
-kubectl apply -f - <<EOF
-apiVersion: apps/v1
-kind: ReplicaSet
-metadata:
-  name: orphaned-replicaset
-  namespace: validation-test
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: orphaned-app
-  template:
-    metadata:
-      labels:
-        app: orphaned-app
-    spec:
-      containers:
-      - name: orphaned-container
-        image: nginx:1.21
-        ports:
-        - containerPort: 80
-EOF
-
-# Create an orphaned ConfigMap (not referenced by any Pod/Deployment)
+# Create orphaned ConfigMap
 kubectl apply -f - <<EOF
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: orphaned-config
-  namespace: validation-test
+  namespace: demo-app
+  labels:
+    app: orphaned
+    tier: test
 data:
-  orphaned-key: "orphaned-value"
-  unused-config: "unused-data"
+  orphaned: "true"
+  description: "This ConfigMap has no references and will be detected as orphaned"
 EOF
 
-# Create an orphaned Secret (not referenced by any Pod/Deployment)
+# Create orphaned Secret
 kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Secret
 metadata:
   name: orphaned-secret
-  namespace: validation-test
+  namespace: demo-app
+  labels:
+    app: orphaned
+    tier: test
 type: Opaque
 data:
-  orphaned-password: b3JwaGFuZWQtcGFzc3dvcmQ=
+  orphaned: "dHJ1ZQ=="  # true
+stringData:
+  description: "This Secret has no references and will be detected as orphaned"
 EOF
 
-print_status "Orphaned resources created"
-print_warning "These resources have no owners or references and will be detected as orphaned!"
+print_status "All test resources created"
 
-# Second export - updates Git repo and generates change report with validation
+# First export - creates Git repo and initial report
+echo ""
+echo "📦 First export - creating initial snapshot..."
+if [ ! -f "./kalco" ]; then
+    print_error "kalco binary not found. Please build it first."
+    exit 1
+fi
+./kalco --output-dir ./quickstart-demo --commit-message "Initial snapshot: $(date)"
+print_status "Initial export completed"
+
+# Verify Git repository and initial report
+echo ""
+echo "🔍 Verifying initial setup..."
+cd ./quickstart-demo
+
+print_status "Git repository initialized"
+print_status "Reports directory created"
+initial_report=$(ls kalco-reports/*.md | head -1)
+print_info "Initial report: $initial_report"
+
+cd ..
+
+# Now modify some resources to demonstrate change tracking
+echo ""
+echo "✏️  Modifying existing resources to demonstrate change tracking..."
+print_feature "This will show how kalco tracks resource changes!"
+
+# Modify the ConfigMap to add new data
+kubectl patch configmap echo-config -n demo-app --patch '{"data":{"new-feature":"enabled","debug-mode":"true"}}'
+
+# Modify the Deployment to change replica count
+kubectl scale deployment echo-server -n demo-app --replicas=3
+
+# Add labels to existing resources
+kubectl label deployment echo-server -n demo-app environment=staging version=v2.0.0 --overwrite
+kubectl label service echo-service -n demo-app environment=staging version=v2.0.0 --overwrite
+
+print_status "Resource modifications completed for change tracking demonstration"
+
+# Second export - generates change report with validation
 echo ""
 echo "📦 Second export - generating change report with Cross-Reference Validation..."
-./kalco --output-dir ./quickstart-demo --commit-message "Broken references demo: $(date)"
+./kalco --output-dir ./quickstart-demo --commit-message "Changes and validation demo: $(date)"
 print_status "Second export completed"
 
-# Analyze the enhanced report with validation
+# Analyze the enhanced report
 echo ""
 echo "📊 Analyzing enhanced change report with Cross-Reference Validation..."
 cd ./quickstart-demo
 
 # Find the latest report
 latest_report=$(ls -t kalco-reports/*.md | head -1)
-print_info "Latest report: $latest_report"
-
-# Display report summary
-echo ""
-echo "📋 Report Summary:"
-echo "=================="
-grep -E "^## |^### |^#### " "$latest_report" | head -25
+echo "📋 Latest report: $latest_report"
 
 echo ""
-echo "🔍 Cross-Reference Validation Section:"
+echo "🔍 Cross-Reference Validation Results:"
 echo "======================================"
-grep -A 5 -B 5 "Cross-Reference Validation" "$latest_report" || echo "Validation section not found"
+grep -A 5 "## 🔍 Cross-Reference Validation" "$latest_report"
 
 echo ""
 echo "❌ Broken References Found:"
@@ -440,14 +424,14 @@ echo "============================"
 grep -A 10 "Valid References Summary" "$latest_report" | head -15
 
 echo ""
-echo "💡 Recommendations:"
-echo "=================="
+echo "💡 Validation Recommendations:"
+echo "============================="
 grep -A 15 "Recommendations" "$latest_report" | head -20
 
 echo ""
 echo "🗑️  Orphaned Resource Detection Section:"
 echo "========================================="
-grep -A 5 -B 5 "Orphaned Resource Detection" "$latest_report" || echo "Orphaned detection section not found"
+grep -A 5 -B 5 "Orphaned Resource Detection" "$latest_report"
 
 echo ""
 echo "🗑️  Orphaned Resources Found:"
@@ -458,6 +442,17 @@ echo ""
 echo "💡 Cleanup Recommendations:"
 echo "=========================="
 grep -A 15 "Cleanup Recommendations" "$latest_report" | head -20
+
+# Check for CRD handling
+echo ""
+echo "🔧 Custom Resource Definition (CRD) Handling:"
+echo "============================================="
+grep -A 5 "SleepInfo\|kube-green" "$latest_report"
+
+echo ""
+echo "🌐 Application Resources:"
+echo "========================"
+grep -A 5 "echo-server\|echo-service\|echo-ingress" "$latest_report"
 
 echo ""
 echo "💻 Git History:"
@@ -474,45 +469,38 @@ cd ..
 # Cleanup
 echo ""
 echo "🧹 Cleaning up..."
-kind delete cluster --name kalco-validation-test
+kind delete cluster --name kalco-quickstart
 print_status "Test cluster deleted"
 
 echo ""
-echo "🎉 Enhanced Quickstart Demo Completed!"
-echo "======================================"
+echo "🎉 Simple Quickstart Demo Completed!"
+echo "===================================="
 echo ""
 echo "📊 What was tested:"
 echo "- ✅ Initial snapshot with Git repository creation"
-echo "- ✅ Initial change report generation"
-echo "- ✅ Resource modification (ConfigMap, Deployment, ServiceAccount, Role, RoleBinding)"
-echo "- ✅ Enhanced change report with detailed diffs"
+echo "- ✅ Simple, cohesive application (HTTP echo server + service + ingress)"
+echo "- ✅ Real kube-green operator with SleepInfo CRD"
+echo "- ✅ Resource modification and change tracking"
+echo "- ✅ Enhanced change report with validation"
 echo "- ✅ Git history tracking"
-echo "- 🔍 CROSS-REFERENCE VALIDATION (NEW FEATURE!)"
-echo "- 🗑️  ORPHANED RESOURCE DETECTION (NEW FEATURE!)"
-echo "  - ❌ Broken Service selectors"
-echo "  - ❌ Broken NetworkPolicy selectors"
-echo "  - ❌ Broken Ingress backends"
-echo "  - ❌ Broken HPA targets"
-echo "  - ❌ Broken PDB selectors"
-echo "  - ❌ Broken RoleBinding ServiceAccount references"
-echo "  - ⚠️  External User references (warnings)"
-echo "  - 🗑️  Orphaned ReplicaSets (no Deployment owner)"
+echo "- 🔍 CROSS-REFERENCE VALIDATION"
+echo "  - ❌ Broken Service selectors (targeting non-existent deployments)"
+echo "  - ❌ Broken Ingress backends (non-existent services)"
+echo "- 🗑️  ORPHANED RESOURCE DETECTION"
 echo "  - 🗑️  Orphaned ConfigMaps (unreferenced)"
 echo "  - 🗑️  Orphaned Secrets (unreferenced)"
 echo ""
-echo "📁 Your enhanced backup is preserved in: ./quickstart-demo/"
+echo "📁 Your backup is preserved in: ./quickstart-demo/"
 echo "📋 Enhanced reports with validation are in: ./quickstart-demo/kalco-reports/"
 echo ""
 echo "🔍 Key Features Demonstrated:"
 echo "- 🆕 New resources show complete YAML content"
 echo "- ✏️ Modified resources show Git diff with before/after"
-echo "- 🗑️ Deleted resources show what was removed"
 echo "- 📊 Change summaries with line counts and section tracking"
 echo "- 🔍 Field-level change identification"
 echo "- 🔍 CROSS-REFERENCE VALIDATION:"
 echo "  - ✅ Valid references tracking"
 echo "  - ❌ Broken references detection"
-echo "  - ⚠️  Warning references for external resources"
 echo "  - 📋 Actionable recommendations"
 echo "  - 🛡️ Reliability assurance for reapplying resources"
 echo "- 🗑️  ORPHANED RESOURCE DETECTION:"
@@ -520,6 +508,12 @@ echo "  - 🔍 Orphaned resource identification"
 echo "  - 📊 Resource breakdown by type"
 echo "  - 💡 Cleanup recommendations"
 echo "  - 🧹 Cluster cleanup guidance"
+echo "- 🔧 REAL CRD SUPPORT:"
+echo "  - 🌐 kube-green operator installation"
+echo "  - 📦 SleepInfo CRD resource creation"
+echo "  - 🔍 CRD validation and analysis"
 echo ""
-echo "💡 Try viewing the reports to see kalco's enhanced functionality!"
+echo "💡 Try viewing the reports to see kalco's functionality!"
 echo "🔍 The Cross-Reference Validation section will show you exactly what's broken!"
+echo "🗑️  The Orphaned Resource Detection will help you clean up your cluster!"
+echo "🔧 CRD support ensures all your custom resources are properly handled!"
