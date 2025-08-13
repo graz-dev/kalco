@@ -2,7 +2,7 @@
 
 > Extract, validate, analyze, and version control your entire cluster with comprehensive validation and Git integration
 
-https://github.com/user-attachments/assets/3edc5e6c-e6fe-4852-8ec4-1f7493fcdf9e
+https://github.com/user-attachments/assets/26f41f6a-6fa6-42fc-a0c9-f2dd9f5016e5
 
 ## Overview
 
