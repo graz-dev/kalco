@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -54,7 +55,7 @@ func (r *ReportGenerator) GenerateReport(commitMessage string) error {
 func (r *ReportGenerator) generateFilename(commitMessage string) string {
 	// Use timestamp if no custom message
 	if commitMessage == "" {
-		commitMessage = fmt.Sprintf("Cluster snapshot %s", time.Now().Format("2006-01-02-15-04-05"))
+		commitMessage = "Cluster snapshot " + time.Now().Format("2006-01-02-15-04-05")
 	}
 
 	// Clean the message for filename
@@ -83,8 +84,8 @@ func (r *ReportGenerator) generateReportContent(commitMessage string) (string, e
 
 	// Header
 	content.WriteString("# Cluster Change Report\n\n")
-	content.WriteString(fmt.Sprintf("**Generated**: %s\n", time.Now().Format("2006-01-02 15:04:05 UTC")))
-	content.WriteString(fmt.Sprintf("**Commit Message**: %s\n\n", commitMessage))
+	content.WriteString("**Generated**: " + time.Now().Format("2006-01-02 15:04:05 UTC") + "\n")
+	content.WriteString("**Commit Message**: " + commitMessage + "\n\n")
 
 	// Check if this is a Git repository
 	if !r.IsGitRepo() {
@@ -102,11 +103,11 @@ func (r *ReportGenerator) generateReportContent(commitMessage string) (string, e
 	commitHash, err := r.getCurrentCommitHash()
 	if err != nil {
 		content.WriteString("## Error Getting Git Information\n\n")
-		content.WriteString(fmt.Sprintf("Failed to retrieve Git information: %v\n\n", err))
+		content.WriteString("Failed to retrieve Git information: " + err.Error() + "\n\n")
 		return content.String(), nil
 	}
 
-	content.WriteString(fmt.Sprintf("**Commit Hash**: `%s`\n\n", commitHash))
+	content.WriteString("**Commit Hash**: `" + commitHash + "`\n\n")
 
 	// Check if there are previous commits
 	prevCommit, err := r.getPreviousCommitHash()
@@ -123,13 +124,13 @@ func (r *ReportGenerator) generateReportContent(commitMessage string) (string, e
 
 	// Generate change report
 	content.WriteString("## Changes Since Previous Snapshot\n\n")
-	content.WriteString(fmt.Sprintf("**Previous Commit**: `%s`\n\n", prevCommit))
+	content.WriteString("**Previous Commit**: `" + prevCommit + "`\n\n")
 
 	// Get changed files
 	changedFiles, err := r.getChangedFiles(prevCommit, commitHash)
 	if err != nil {
 		content.WriteString("### Error Getting Changes\n\n")
-		content.WriteString(fmt.Sprintf("Failed to retrieve changes: %v\n\n", err))
+		content.WriteString("Failed to retrieve changes: " + err.Error() + "\n\n")
 		return content.String(), nil
 	}
 
@@ -144,12 +145,12 @@ func (r *ReportGenerator) generateReportContent(commitMessage string) (string, e
 
 	// Write change summary
 	content.WriteString("### Change Summary\n\n")
-	content.WriteString(fmt.Sprintf("- **Total Files Changed**: %d\n", len(changedFiles)))
-	content.WriteString(fmt.Sprintf("- **Namespaces Affected**: %d\n", len(changes.Namespaces)))
-	content.WriteString(fmt.Sprintf("- **Resource Types Changed**: %d\n", len(changes.ResourceTypes)))
-	content.WriteString(fmt.Sprintf("- **New Resources**: %d\n", changes.NewResources))
-	content.WriteString(fmt.Sprintf("- **Modified Resources**: %d\n", changes.ModifiedResources))
-	content.WriteString(fmt.Sprintf("- **Deleted Resources**: %d\n", changes.DeletedResources))
+	content.WriteString("- **Total Files Changed**: " + strconv.Itoa(len(changedFiles)) + "\n")
+	content.WriteString("- **Namespaces Affected**: " + strconv.Itoa(len(changes.Namespaces)) + "\n")
+	content.WriteString("- **Resource Types Changed**: " + strconv.Itoa(len(changes.ResourceTypes)) + "\n")
+	content.WriteString("- **New Resources**: " + strconv.Itoa(changes.NewResources) + "\n")
+	content.WriteString("- **Modified Resources**: " + strconv.Itoa(changes.ModifiedResources) + "\n")
+	content.WriteString("- **Deleted Resources**: " + strconv.Itoa(changes.DeletedResources) + "\n")
 	content.WriteString("\n")
 
 	// Write detailed changes with diff information
@@ -160,14 +161,14 @@ func (r *ReportGenerator) generateReportContent(commitMessage string) (string, e
 		if namespace == "_cluster" {
 			content.WriteString("#### 🌐 Cluster-Scoped Resources\n\n")
 		} else {
-			content.WriteString(fmt.Sprintf("#### 📁 Namespace: `%s`\n\n", namespace))
+			content.WriteString("#### 📁 Namespace: `" + namespace + "`\n\n")
 		}
 
 		for resourceType, files := range resources {
-			content.WriteString(fmt.Sprintf("**%s**:\n", resourceType))
+			content.WriteString("**" + resourceType + "**:\n")
 			for _, file := range files {
 				status := r.getFileStatus(file, prevCommit, commitHash)
-				content.WriteString(fmt.Sprintf("- %s `%s`\n", status, filepath.Base(file)))
+				content.WriteString("- " + status + " `" + filepath.Base(file) + "`\n")
 			}
 			content.WriteString("\n")
 		}
@@ -181,23 +182,23 @@ func (r *ReportGenerator) generateReportContent(commitMessage string) (string, e
 		if namespace == "_cluster" {
 			content.WriteString("### 🌐 Cluster-Scoped Resources\n\n")
 		} else {
-			content.WriteString(fmt.Sprintf("### 📁 Namespace: `%s`\n\n", namespace))
+			content.WriteString("### 📁 Namespace: `" + namespace + "`\n\n")
 		}
 
 		for resourceType, files := range resources {
-			content.WriteString(fmt.Sprintf("#### %s\n\n", resourceType))
+			content.WriteString("#### " + resourceType + "\n\n")
 
 			for _, file := range files {
 				status := r.getFileStatus(file, prevCommit, commitHash)
 				filename := filepath.Base(file)
 				resourceName := strings.TrimSuffix(filename, ".yaml")
 
-				content.WriteString(fmt.Sprintf("**%s** `%s` (%s)\n\n", status, resourceName, filename))
+				content.WriteString("**" + status + "** `" + resourceName + "` (" + filename + ")\n\n")
 
 				// Get detailed diff information
 				diffInfo, err := r.getDetailedDiff(file, prevCommit, commitHash, status)
 				if err != nil {
-					content.WriteString(fmt.Sprintf("⚠️ Error getting diff: %v\n\n", err))
+					content.WriteString("⚠️ Error getting diff: " + err.Error() + "\n\n")
 					continue
 				}
 
@@ -210,21 +211,21 @@ func (r *ReportGenerator) generateReportContent(commitMessage string) (string, e
 	// Write resource type summary
 	content.WriteString("## 📊 Resource Type Summary\n\n")
 	for resourceType, count := range changes.ResourceTypes {
-		content.WriteString(fmt.Sprintf("- **%s**: %d changes\n", resourceType, count))
+		content.WriteString("- **" + resourceType + "**: " + strconv.Itoa(count) + " changes\n")
 	}
 	content.WriteString("\n")
 
 	// Write Git commands for reference
 	content.WriteString("## 💻 Git Commands for Reference\n\n")
 	content.WriteString("```bash\n")
-	content.WriteString(fmt.Sprintf("# View this commit\n"))
-	content.WriteString(fmt.Sprintf("git show %s\n\n", commitHash))
-	content.WriteString(fmt.Sprintf("# Compare with previous snapshot\n"))
-	content.WriteString(fmt.Sprintf("git diff %s..%s\n\n", prevCommit, commitHash))
-	content.WriteString(fmt.Sprintf("# View file changes\n"))
-	content.WriteString(fmt.Sprintf("git diff --name-status %s..%s\n\n", prevCommit, commitHash))
-	content.WriteString(fmt.Sprintf("# View specific file diff\n"))
-	content.WriteString(fmt.Sprintf("git diff %s..%s -- <filename>\n", prevCommit, commitHash))
+	content.WriteString("# View this commit\n")
+	content.WriteString("git show " + commitHash + "\n\n")
+	content.WriteString("# Compare with previous snapshot\n")
+	content.WriteString("git diff " + prevCommit + ".." + commitHash + "\n\n")
+	content.WriteString("# View file changes\n")
+	content.WriteString("git diff --name-status " + prevCommit + ".." + commitHash + "\n\n")
+	content.WriteString("# View specific file diff\n")
+	content.WriteString("git diff " + prevCommit + ".." + commitHash + " -- <filename>\n")
 	content.WriteString("```\n\n")
 
 	// Footer
@@ -245,7 +246,7 @@ func (r *ReportGenerator) getDetailedDiff(file, prevCommit, currentCommit, statu
 		content.WriteString("```yaml\n")
 		currentContent, err := r.getFileContent(file, currentCommit)
 		if err != nil {
-			return fmt.Sprintf("⚠️ Error reading file content: %v", err), nil
+			return "⚠️ Error reading file content: " + err.Error(), nil
 		}
 		content.WriteString(currentContent)
 		content.WriteString("\n```\n\n")
@@ -262,7 +263,7 @@ func (r *ReportGenerator) getDetailedDiff(file, prevCommit, currentCommit, statu
 		content.WriteString("```yaml\n")
 		previousContent, err := r.getFileContent(file, prevCommit)
 		if err != nil {
-			return fmt.Sprintf("⚠️ Error reading previous file content: %v", err), nil
+			return "⚠️ Error reading previous file content: " + err.Error(), nil
 		}
 		content.WriteString(previousContent)
 		content.WriteString("\n```\n\n")
@@ -280,13 +281,13 @@ func (r *ReportGenerator) getDetailedDiff(file, prevCommit, currentCommit, statu
 		// Get the actual diff output
 		diffOutput, err := r.getGitDiff(file, prevCommit, currentCommit)
 		if err != nil {
-			content.WriteString(fmt.Sprintf("⚠️ Error getting diff: %v\n\n", err))
+			content.WriteString("⚠️ Error getting diff: " + err.Error() + "\n\n")
 			// Fallback to showing before/after
 			content.WriteString("**Before (Previous Snapshot):**\n")
 			content.WriteString("```yaml\n")
 			previousContent, err := r.getFileContent(file, prevCommit)
 			if err != nil {
-				content.WriteString(fmt.Sprintf("Error reading previous content: %v", err))
+				content.WriteString("Error reading previous content: " + err.Error())
 			} else {
 				content.WriteString(previousContent)
 			}
@@ -296,7 +297,7 @@ func (r *ReportGenerator) getDetailedDiff(file, prevCommit, currentCommit, statu
 			content.WriteString("```yaml\n")
 			currentContent, err := r.getFileContent(file, currentCommit)
 			if err != nil {
-				content.WriteString(fmt.Sprintf("Error reading current content: %v", err))
+				content.WriteString("Error reading current content: " + err.Error())
 			} else {
 				content.WriteString(currentContent)
 			}
@@ -328,7 +329,7 @@ func (r *ReportGenerator) getDetailedDiff(file, prevCommit, currentCommit, statu
 
 // getFileContent gets the content of a file at a specific commit
 func (r *ReportGenerator) getFileContent(file, commit string) (string, error) {
-	cmd := exec.Command("git", "show", fmt.Sprintf("%s:%s", commit, file))
+	cmd := exec.Command("git", "show", commit+":"+file)
 	cmd.Dir = r.repoPath
 	output, err := cmd.Output()
 	if err != nil {
@@ -382,14 +383,14 @@ func (r *ReportGenerator) getChangeSummary(file, prevCommit, currentCommit strin
 	}
 
 	if addedLines > 0 || removedLines > 0 {
-		summary.WriteString(fmt.Sprintf("- **Lines Added**: %d\n", addedLines))
-		summary.WriteString(fmt.Sprintf("- **Lines Removed**: %d\n", removedLines))
+		summary.WriteString("- **Lines Added**: " + strconv.Itoa(addedLines) + "\n")
+		summary.WriteString("- **Lines Removed**: " + strconv.Itoa(removedLines) + "\n")
 	}
 
 	if len(changedSections) > 0 {
 		summary.WriteString("- **Sections Modified**:\n")
 		for section := range changedSections {
-			summary.WriteString(fmt.Sprintf("  - `%s`\n", section))
+			summary.WriteString("  - `" + section + "`\n")
 		}
 	}
 
@@ -453,14 +454,14 @@ func (r *ReportGenerator) categorizeChanges(changedFiles []string) *ChangeSummar
 // getFileStatus determines if a file was added, modified, or deleted
 func (r *ReportGenerator) getFileStatus(file, prevCommit, currentCommit string) string {
 	// Check if file exists in previous commit
-	cmd := exec.Command("git", "show", fmt.Sprintf("%s:%s", prevCommit, file))
+	cmd := exec.Command("git", "show", prevCommit+":"+file)
 	cmd.Dir = r.repoPath
 	if err := cmd.Run(); err != nil {
 		return "🆕" // New file
 	}
 
 	// Check if file exists in current commit
-	cmd = exec.Command("git", "show", fmt.Sprintf("%s:%s", currentCommit, file))
+	cmd = exec.Command("git", "show", currentCommit+":"+file)
 	cmd.Dir = r.repoPath
 	if err := cmd.Run(); err != nil {
 		return "🗑️" // Deleted file

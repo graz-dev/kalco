@@ -7,7 +7,6 @@ This guide explains how to use the automated GitHub Actions workflows to create 
 Kalco now has comprehensive GitHub Actions workflows that automatically:
 
 - 🏗️ **Build** binaries for all platforms (Linux, macOS, Windows, AMD64, ARM64)
-- 🐳 **Create** Docker images and push to GitHub Container Registry
 - 📦 **Package** releases with proper archives (.tar.gz for Unix, .zip for Windows)
 - 🚀 **Release** on GitHub with detailed release notes
 - 🔒 **Scan** for security vulnerabilities
@@ -35,17 +34,11 @@ Kalco now has comprehensive GitHub Actions workflows that automatically:
   - Push Docker images to GHCR
   - Generate comprehensive release notes
 
-### 3. **Docker Workflow** (`.github/workflows/docker.yml`)
-- **Triggers**: Push to main, tags
-- **Purpose**: Build and publish Docker images
-- **Actions**:
-  - Multi-platform Docker builds
-  - Push to GitHub Container Registry
-  - Tag management (latest, version, branch)
 
 
 
-### 4. **Dependencies Workflow** (`.github/workflows/dependencies.yml`)
+
+### 3. **Dependencies Workflow** (`.github/workflows/dependencies.yml`)
 - **Triggers**: Weekly (Monday 9 AM UTC), Manual
 - **Purpose**: Keep dependencies updated
 - **Actions**:
@@ -53,8 +46,8 @@ Kalco now has comprehensive GitHub Actions workflows that automatically:
   - Security vulnerability scanning
   - Create automated PRs
 
-### 5. **Release Drafter Workflow** (`.github/workflows/release-drafter.yml`)
-- **Triggers**: Push to main, Pull requests
+### 4. **Release Drafter Workflow** (`.github/workflows/release-drafter.yml`)
+- **Triggers**: Push to master, Pull requests
 - **Purpose**: Generate release notes
 - **Actions**:
   - Auto-generate release notes
@@ -85,8 +78,7 @@ The release workflow will automatically:
 1. Build binaries for all platforms
 2. Create a GitHub release
 3. Upload all platform-specific packages
-4. Push Docker images to GHCR
-5. Generate comprehensive release notes
+4. Generate comprehensive release notes
 
 ## 📦 What Gets Created
 
@@ -98,10 +90,7 @@ The release workflow will automatically:
 - `kalco-windows-amd64.zip` - Windows x86_64
 - `kalco-windows-arm64.zip` - Windows ARM64
 
-### **Docker Images**
-- `ghcr.io/yourusername/kalco:latest` - Latest version
-- `ghcr.io/yourusername/kalco:v1.0.0` - Specific version
-- `ghcr.io/yourusername/kalco:main-abc123` - Branch builds
+
 
 ### **Release Assets**
 - All binary packages
@@ -128,8 +117,7 @@ make quickstart
 # Create local release packages
 make release-local
 
-# Build Docker image
-make docker-build
+
 ```
 
 ### **Testing Workflows Locally**
@@ -156,28 +144,7 @@ For a successful release:
 - ✅ All CI checks passing
 - 🔒 Security scan clean
 
-## 🐳 Docker Usage
 
-### **Pull Images**
-```bash
-# Latest version
-docker pull ghcr.io/yourusername/kalco:latest
-
-# Specific version
-docker pull ghcr.io/yourusername/kalco:v1.0.0
-
-# Branch build
-docker pull ghcr.io/yourusername/kalco:main-abc123
-```
-
-### **Run Container**
-```bash
-# Basic usage
-docker run --rm -v $(pwd):/workspace ghcr.io/yourusername/kalco:latest
-
-# With kubeconfig
-docker run --rm -v $(pwd):/workspace -v ~/.kube:/root/.kube ghcr.io/yourusername/kalco:latest
-```
 
 ## 🔒 Security Features
 
@@ -231,7 +198,7 @@ gh run rerun <run-id>
 
 ### **Version Management**
 - Use semantic versioning (`v1.0.0`, `v1.1.0`, `v2.0.0`)
-- Create tags from main branch only
+- Create tags from master branch only
 - Use conventional commit messages for auto-release notes
 
 ### **Release Process**

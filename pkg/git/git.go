@@ -64,7 +64,7 @@ func (g *GitRepo) AddAll() error {
 func (g *GitRepo) Commit(customMessage string) error {
 	message := customMessage
 	if message == "" {
-		message = fmt.Sprintf("Cluster snapshot: %s", time.Now().Format("2006-01-02 15:04:05"))
+		message = "Cluster snapshot: " + time.Now().Format("2006-01-02 15:04:05")
 	}
 
 	cmd := exec.Command("git", "commit", "-m", message)

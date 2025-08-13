@@ -119,7 +119,7 @@ func Execute() {
 func init() {
 	// Generate default output directory with timestamp
 	timestamp := time.Now().Format("20060102-150405")
-	defaultOutputDir := fmt.Sprintf("./kalco-dump-%s", timestamp)
+	defaultOutputDir := "./kalco-dump-" + timestamp
 
 	// Add persistent flags
 	rootCmd.PersistentFlags().StringVar(&kubeconfig, "kubeconfig", "", "path to the kubeconfig file (optional)")

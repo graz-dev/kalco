@@ -47,11 +47,7 @@ template: |
   - [kalco-windows-amd64.zip](https://github.com/$REPOSITORY/releases/download/$TAG/kalco-windows-amd64.zip)
   - [kalco-windows-arm64.zip](https://github.com/$REPOSITORY/releases/download/$TAG/kalco-windows-arm64.zip)
 
-  **Docker:**
-  ```bash
-  docker pull ghcr.io/$REPOSITORY:$TAG
-  docker pull ghcr.io/$REPOSITORY:latest
-  ```
+  
 
   ## 🔧 Installation
 
@@ -89,9 +85,9 @@ template: |
   kalco --output-dir ./cluster-backup --git-push
   ```
 
-  ## 📋 Changelog
+  ## 📋 Release Notes
 
-  $CHANGES
+$CHANGES
 
   ---
 

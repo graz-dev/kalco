@@ -31,9 +31,7 @@ help:
 	@echo "  install        - Install kalco to system"
 	@echo "  uninstall      - Remove kalco from system"
 	@echo ""
-	@echo "🐳 Docker:"
-	@echo "  docker-build   - Build Docker image"
-	@echo "  docker-push    - Push Docker image"
+
 	@echo ""
 	@echo "🚀 Release:"
 	@echo "  release        - Create a new release"
@@ -121,21 +119,7 @@ uninstall:
 	@sudo rm -f /usr/local/bin/$(BINARY_NAME)
 	@echo "✅ kalco removed from system"
 
-# Docker targets
-docker-build:
-	@echo "🐳 Building Docker image..."
-	docker build \
-		--build-arg VERSION=$(VERSION) \
-		--build-arg COMMIT=$(COMMIT) \
-		--build-arg DATE=$(DATE) \
-		-t kalco:$(VERSION) \
-		-t kalco:latest .
 
-docker-push:
-	@echo "🐳 Pushing Docker image..."
-	@echo "⚠️  Make sure you're logged in to your registry first"
-	docker push kalco:$(VERSION)
-	docker push kalco:latest
 
 # Release targets
 release:
