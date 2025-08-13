@@ -4,7 +4,7 @@
 
 ## 📖 Overview
 
-**Kalco** (Kubernetes Analysis and Lifecycle Control) is a powerful, production-ready Go CLI tool that performs comprehensive analysis, validation, and export of all resources from your Kubernetes cluster into beautifully organized YAML files. It automatically discovers and exports every available API resource - including native Kubernetes resources and Custom Resources (CRDs) - with zero configuration required, while providing intelligent validation, orphaned resource detection, and lifecycle management capabilities.
+**Kalco** (Kubernetes Analysis and Lifecycle Control) is a powerful, Go CLI tool that performs comprehensive analysis, validation, and export of all resources from your Kubernetes cluster into beautifully organized YAML files. It automatically discovers and exports every available API resource - including native Kubernetes resources and Custom Resources (CRDs) - with zero configuration required, while providing intelligent validation, orphaned resource detection, and lifecycle management capabilities.
 
 ### 🎯 **What Kalco Does**
 
