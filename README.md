@@ -1,3 +1,4 @@
+```
  █████   ████           ████                   
 ░░███   ███░           ░░███                   
  ░███  ███     ██████   ░███   ██████   ██████ 
@@ -6,6 +7,7 @@
  ░███ ░░███   ███░░███  ░███ ░███  ███░███ ░███
  █████ ░░████░░████████ █████░░██████ ░░██████ 
 ░░░░░   ░░░░  ░░░░░░░░ ░░░░░  ░░░░░░   ░░░░░░  
+```
 
 > Extract, validate, analyze, and version control your entire cluster with comprehensive validation and Git integration
 
