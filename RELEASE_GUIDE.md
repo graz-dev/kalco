@@ -22,7 +22,6 @@ Kalco now has comprehensive GitHub Actions workflows that automatically:
   - Run tests with race detection
   - Build for multiple platforms
   - Lint code with golangci-lint
-  - Security scanning with Trivy
   - Upload build artifacts
 
 ### 2. **Release Workflow** (`.github/workflows/release.yml`)

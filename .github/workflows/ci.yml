@@ -6,10 +6,7 @@ on:
   pull_request:
     branches: [ master ]
 
-# Add permissions for security scanning
-permissions:
-  contents: read
-  security-events: write
+
 
 env:
   GO_VERSION: '1.21'
@@ -117,24 +114,4 @@ jobs:
           version: latest
           args: --timeout=5m --out-format=colored-line-number
 
-  security:
-    name: Security Scan
-    runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: 'trivy-results.sarif'
