@@ -1,7 +1,7 @@
 # Kalco Makefile
-# This file provides common development and release commands
+# This file provides common development commands
 
-.PHONY: help build test clean release docker-build docker-push install uninstall lint security-check
+.PHONY: help build test clean install uninstall lint
 
 # Variables
 BINARY_NAME=kalco
@@ -22,20 +22,15 @@ help:
 	@echo ""
 	@echo "🧪 Testing:"
 	@echo "  test           - Run tests"
-	@echo "  test-race      - Run tests with race detection"
+
 	@echo "  test-coverage  - Run tests with coverage"
 	@echo ""
 	@echo "🔧 Development:"
 	@echo "  lint           - Run linters"
-	@echo "  security-check - Run security scans"
 	@echo "  install        - Install kalco to system"
 	@echo "  uninstall      - Remove kalco from system"
 	@echo ""
 
-	@echo ""
-	@echo "🚀 Release:"
-	@echo "  release        - Create a new release"
-	@echo ""
 	@echo ""
 	@echo "📋 Information:"
 	@echo "  version        - Show current version"
@@ -78,9 +73,7 @@ test:
 	@echo "🧪 Running tests..."
 	go test -v ./...
 
-test-race:
-	@echo "🧪 Running tests with race detection..."
-	go test -race -v ./...
+
 
 test-coverage:
 	@echo "🧪 Running tests with coverage..."
@@ -100,13 +93,7 @@ lint:
 		golangci-lint run; \
 	fi
 
-security-check:
-	@echo "🔒 Running security checks..."
-	@if command -v trivy >/dev/null 2>&1; then \
-		trivy fs .; \
-	else \
-		echo "⚠️  Trivy not installed. Install from: https://aquasecurity.github.io/trivy/"; \
-	fi
+
 
 # Installation targets
 install: build
@@ -121,30 +108,7 @@ uninstall:
 
 
 
-# Release targets
-release:
-	@echo "🚀 Creating release..."
-	@echo "Current version: $(VERSION)"
-	@echo "Current commit: $(COMMIT)"
-	@echo ""
-	@echo "To create a release:"
-	@echo "1. git tag v1.0.0"
-	@echo "2. git push origin v1.0.0"
-	@echo "3. GitHub Actions will automatically build and release"
-	@echo ""
-	@echo "Or run: make release-local"
 
-release-local: build-all
-	@echo "🚀 Creating local release packages..."
-	@cd dist && \
-	for file in *; do \
-		if [[ $$file == *.exe ]]; then \
-			zip $${file%.exe}.zip $$file; \
-		else \
-			tar -czf $$file.tar.gz $$file; \
-		fi; \
-	done
-	@echo "✅ Local release packages created in dist/ directory"
 
 
 

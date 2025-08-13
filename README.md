@@ -332,13 +332,7 @@ Kalco is designed to be production-ready:
 
 ```
 kalco/
-├── 📂 .github/
-│   └── 📂 workflows/       # GitHub Actions workflows
-│       ├── 🔄 ci.yml       # Continuous integration
-│       ├── 🚀 release.yml  # Automated releases
-│       ├── 🐳 docker.yml   # Docker builds
-│       ├── 📦 dependencies.yml # Dependency updates
-│       └── 📋 release-drafter.yml # Release notes
+
 ├── 📂 cmd/
 │   └── 🎯 root.go          # Main CLI command definition
 ├── 📂 pkg/
@@ -354,7 +348,7 @@ kalco/
 ├── 📦 go.mod               # Go module definition
 ├── 🔧 Makefile             # Development and build commands
 ├── 📖 README.md            # This file
-└── 📚 RELEASE_GUIDE.md     # Release workflow guide
+
 ```
 
 ### Dependencies
@@ -373,8 +367,7 @@ go build -o kalco
 # Run tests
 go test ./...
 
-# Run with race detection
-go test -race ./...
+
 
 # Build for different platforms
 GOOS=linux GOARCH=amd64 go build -o kalco-linux
@@ -395,10 +388,7 @@ GOOS=darwin GOARCH=amd64 go build -o kalco-darwin
 - **Debugging** - Export cluster state for offline analysis
 - **Documentation** - Generate cluster resource documentation
 
-### 🔄 CI/CD Integration
-- **Pipeline Snapshots** - Capture cluster state at each pipeline stage
-- **Rollback Verification** - Confirm rollback to previous cluster state
-- **Change Tracking** - Monitor cluster modifications over time
+
 
 ## 🤝 Contributing
 
@@ -413,18 +403,7 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 5. Push to the branch: `git push origin feature/amazing-feature`
 6. Open a Pull Request
 
-### 🚀 Automated Workflows
 
-Kalco uses comprehensive GitHub Actions workflows for quality assurance:
-
-- **🔄 CI/CD**: Automated testing, building, and linting on every PR
-- **🚀 Releases**: Automatic package creation for all platforms on tags
-
-- **🔒 Security**: Vulnerability scanning and dependency updates
-
-- **📋 Documentation**: Automatic release note generation
-
-See [RELEASE_GUIDE.md](RELEASE_GUIDE.md) for detailed workflow information.
 
 ## 📄 License
 
