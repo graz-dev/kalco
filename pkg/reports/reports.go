@@ -8,6 +8,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"kalco/pkg/validation"
 )
 
 // ReportGenerator handles the creation of cluster change reports
@@ -40,6 +42,15 @@ func (r *ReportGenerator) GenerateReport(commitMessage string) error {
 	content, err := r.generateReportContent(commitMessage)
 	if err != nil {
 		return fmt.Errorf("failed to generate report content: %w", err)
+	}
+
+	// Generate validation report
+	validationContent, err := r.generateValidationReport()
+	if err != nil {
+		fmt.Printf("  ⚠️  Warning: Validation report generation failed: %v\n", err)
+	} else {
+		// Insert validation content before the footer
+		content = strings.Replace(content, "\n\n---\n*Report generated automatically by kalco*", "\n\n"+validationContent+"\n\n---\n*Report generated automatically by kalco*", 1)
 	}
 
 	// Write report to file
@@ -521,4 +532,120 @@ func (r *ReportGenerator) getChangedFiles(prevCommit, currentCommit string) ([]s
 	}
 
 	return result, nil
+}
+
+// generateValidationReport generates a cross-reference validation report
+func (r *ReportGenerator) generateValidationReport() (string, error) {
+	var content strings.Builder
+
+	// Run cross-reference validation
+	validator := validation.NewResourceValidator(r.outputDir)
+	result, err := validator.Validate()
+	if err != nil {
+		return "", fmt.Errorf("failed to run validation: %w", err)
+	}
+
+	content.WriteString("## 🔍 Cross-Reference Validation Report\n\n")
+	content.WriteString("This section analyzes exported resources for broken references that could cause issues when reapplying.\n\n")
+	content.WriteString("> **⚠️  Important**: Broken references will cause errors when you try to reapply resources to a cluster.\n\n")
+
+	// Validation Summary
+	content.WriteString("### 📊 Validation Summary\n\n")
+	content.WriteString(fmt.Sprintf("- **Total References**: %d\n", result.Summary.TotalReferences))
+	content.WriteString(fmt.Sprintf("- **✅ Valid References**: %d\n", result.Summary.ValidReferences))
+	content.WriteString(fmt.Sprintf("- **❌ Broken References**: %d\n", result.Summary.BrokenReferences))
+	content.WriteString(fmt.Sprintf("- **⚠️  Warning References**: %d\n", result.Summary.WarningReferences))
+	content.WriteString("\n")
+
+	// Broken References (most important)
+	if len(result.BrokenReferences) > 0 {
+		content.WriteString("### ❌ Broken References - ACTION REQUIRED\n\n")
+		content.WriteString("**🚨 CRITICAL**: These references will cause errors when reapplying resources to a cluster!\n\n")
+
+		// Group by source type
+		grouped := make(map[string][]validation.ResourceReference)
+		for _, ref := range result.BrokenReferences {
+			grouped[ref.SourceType] = append(grouped[ref.SourceType], ref)
+		}
+
+		for sourceType, refs := range grouped {
+			content.WriteString(fmt.Sprintf("#### %s\n\n", sourceType))
+			for _, ref := range refs {
+				content.WriteString(fmt.Sprintf("**❌ BROKEN**: %s `%s` references %s `%s`\n\n",
+					ref.SourceType, ref.SourceName, ref.TargetType, ref.TargetName))
+				content.WriteString(fmt.Sprintf("- **Problem**: The %s `%s` does not exist\n", ref.TargetType, ref.TargetName))
+				content.WriteString(fmt.Sprintf("- **Location**: `%s` in %s `%s`\n", ref.Field, ref.SourceType, ref.SourceName))
+				content.WriteString(fmt.Sprintf("- **Namespace**: `%s`\n", ref.SourceNamespace))
+				if ref.TargetNamespace != ref.SourceNamespace {
+					content.WriteString(fmt.Sprintf("- **Target Namespace**: `%s`\n", ref.TargetNamespace))
+				}
+				content.WriteString(fmt.Sprintf("- **Impact**: This resource will fail to apply\n\n"))
+			}
+		}
+	} else {
+		content.WriteString("### ✅ No Broken References Found\n\n")
+		content.WriteString("🎉 **Excellent!** All cross-references in your cluster are valid and safe to reapply.\n\n")
+	}
+
+	// Warning References
+	if len(result.WarningReferences) > 0 {
+		content.WriteString("### ⚠️  Warning References - Manual Verification Needed\n\n")
+		content.WriteString("**These references point to external resources that kalco cannot validate:**\n\n")
+
+		// Group by source type
+		grouped := make(map[string][]validation.ResourceReference)
+		for _, ref := range result.WarningReferences {
+			grouped[ref.SourceType] = append(grouped[ref.SourceType], ref)
+		}
+
+		for sourceType, refs := range grouped {
+			content.WriteString(fmt.Sprintf("#### %s\n\n", sourceType))
+			for _, ref := range refs {
+				content.WriteString(fmt.Sprintf("**⚠️  EXTERNAL**: %s `%s` references %s `%s`\n\n",
+					ref.SourceType, ref.SourceName, ref.TargetType, ref.TargetName))
+				content.WriteString(fmt.Sprintf("- **Type**: External %s reference\n", ref.TargetType))
+				content.WriteString(fmt.Sprintf("- **Location**: `%s` in %s `%s`\n", ref.Field, ref.SourceType, ref.SourceName))
+				content.WriteString(fmt.Sprintf("- **Namespace**: `%s`\n", ref.SourceNamespace))
+				content.WriteString(fmt.Sprintf("- **Action**: Verify this %s exists in your authentication system\n", ref.TargetType))
+				content.WriteString(fmt.Sprintf("- **Note**: This is normal for system resources and external users/groups\n\n"))
+			}
+		}
+	}
+
+	// Valid References (summary only)
+	if len(result.ValidReferences) > 0 {
+		content.WriteString("### ✅ Valid References - All Good!\n\n")
+		content.WriteString(fmt.Sprintf("**🎉 %d references are properly configured and safe to reapply:**\n\n", len(result.ValidReferences)))
+
+		// Group by source type
+		grouped := make(map[string]int)
+		for _, ref := range result.ValidReferences {
+			grouped[ref.SourceType]++
+		}
+
+		for sourceType, count := range grouped {
+			content.WriteString(fmt.Sprintf("- **%s**: %d valid references ✅\n", sourceType, count))
+		}
+		content.WriteString("\n")
+	}
+
+	// Recommendations
+	content.WriteString("### 💡 Action Plan\n\n")
+	if len(result.BrokenReferences) > 0 {
+		content.WriteString("**🚨 IMMEDIATE ACTIONS REQUIRED:**\n\n")
+		content.WriteString("1. **🔧 Fix Broken References**: Resolve all broken references before reapplying\n")
+		content.WriteString("2. **✅ Verify Target Resources**: Ensure all referenced resources exist in the target cluster\n")
+		content.WriteString("3. **🌐 Check Namespaces**: Verify cross-namespace references are correct\n")
+		content.WriteString("4. **🧪 Test in Staging**: Apply resources to a test environment first\n")
+		content.WriteString("5. **📋 Review Warnings**: Check warning references for external resources\n\n")
+	} else {
+		content.WriteString("**🎉 Your cluster configuration looks excellent!**\n\n")
+		content.WriteString("1. **✅ Safe to Reapply**: All references are valid and will work correctly\n")
+		content.WriteString("2. **⚠️  Monitor Warnings**: Check warning references if any exist (these are usually normal)\n")
+		content.WriteString("3. **🔄 Regular Validation**: Run this validation after cluster changes\n\n")
+	}
+
+	content.WriteString("**📝 Note**: This validation only checks for missing resources. It does not validate resource configurations, permissions, or runtime behavior.\n\n")
+
+	return content.String(), nil
 }

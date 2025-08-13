@@ -5,11 +5,12 @@ import (
 	"os"
 	"time"
 
+	"kalco/pkg/dumper"
+	"kalco/pkg/git"
+	"kalco/pkg/kube"
+	"kalco/pkg/reports"
+
 	"github.com/spf13/cobra"
-	"github.com/your-username/kalco/pkg/dumper"
-	"github.com/your-username/kalco/pkg/git"
-	"github.com/your-username/kalco/pkg/kube"
-	"github.com/your-username/kalco/pkg/reports"
 )
 
 var (

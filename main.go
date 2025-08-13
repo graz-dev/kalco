@@ -1,6 +1,6 @@
 package main
 
-import "github.com/your-username/kalco/cmd"
+import "kalco/cmd"
 
 func main() {
 	cmd.Execute()

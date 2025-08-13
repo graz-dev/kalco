@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # Kalco Quickstart Script
-# This comprehensive script demonstrates all of kalco's capabilities
+# This comprehensive script demonstrates all of kalco's capabilities including Cross-Reference Validation
 
 set -e
 
-echo "🚀 Kalco Quickstart Demo"
-echo "========================="
+echo "🚀 Kalco Quickstart Demo with Cross-Reference Validation"
+echo "========================================================"
 echo ""
 
 # Colors for output
@@ -14,6 +14,7 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
 NC='\033[0m' # No Color
 
 # Function to print colored output
@@ -31,6 +32,10 @@ print_warning() {
 
 print_error() {
     echo -e "${RED}❌${NC} $1"
+}
+
+print_feature() {
+    echo -e "${PURPLE}🔍${NC} $1"
 }
 
 # Check prerequisites
@@ -65,7 +70,7 @@ fi
 # Create test cluster
 echo ""
 echo "🏗️ Creating test cluster..."
-kind create cluster --name kalco-enhanced-reports-test --wait 2m
+kind create cluster --name kalco-validation-test --wait 2m
 print_status "Test cluster created"
 
 # Wait for cluster to be ready
@@ -78,7 +83,7 @@ echo ""
 echo "📦 Creating test resources..."
 
 # Create namespace
-kubectl create namespace enhanced-test
+kubectl create namespace validation-test
 
 # Create initial ConfigMap
 kubectl apply -f - <<EOF
@@ -86,7 +91,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: app-config
-  namespace: enhanced-test
+  namespace: validation-test
 data:
   environment: "development"
   log-level: "info"
@@ -99,18 +104,21 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx-deployment
-  namespace: enhanced-test
+  namespace: validation-test
   labels:
     app: nginx
+    tier: frontend
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: nginx
+      tier: frontend
   template:
     metadata:
       labels:
         app: nginx
+        tier: frontend
     spec:
       containers:
       - name: nginx
@@ -119,18 +127,57 @@ spec:
         - containerPort: 80
 EOF
 
+# Create ServiceAccount for RBAC testing
+kubectl apply -f - <<EOF
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: app-service-account
+  namespace: validation-test
+EOF
+
+# Create Role
+kubectl apply -f - <<EOF
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: app-role
+  namespace: validation-test
+rules:
+- apiGroups: [""]
+  resources: ["pods", "services"]
+  verbs: ["get", "list", "watch"]
+EOF
+
+# Create RoleBinding
+kubectl apply -f - <<EOF
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: app-role-binding
+  namespace: validation-test
+subjects:
+- kind: ServiceAccount
+  name: app-service-account
+  namespace: validation-test
+roleRef:
+  kind: Role
+  name: app-role
+  apiGroup: rbac.authorization.k8s.io
+EOF
+
 print_status "Initial test resources created"
 
 # First export - creates Git repo and initial report
 echo ""
 echo "📦 First export - creating initial snapshot..."
-./kalco --output-dir ./enhanced-test-backup --commit-message "Initial snapshot: $(date)"
+./kalco --output-dir ./quickstart-demo --commit-message "Initial snapshot: $(date)"
 print_status "Initial export completed"
 
 # Verify Git repository and initial report
 echo ""
 echo "🔍 Verifying initial setup..."
-cd ./enhanced-test-backup
+cd ./quickstart-demo
 
 if [ -d ".git" ]; then
     print_status "Git repository initialized"
@@ -150,69 +197,161 @@ fi
 
 cd ..
 
-# Modify cluster resources to test change tracking
+# Now create resources with BROKEN REFERENCES to demonstrate validation
 echo ""
-echo "🔄 Modifying cluster resources..."
+echo "🔍 Creating resources with BROKEN REFERENCES to demonstrate Cross-Reference Validation..."
+print_feature "This will show how kalco detects broken references!"
 
-# Update ConfigMap
-kubectl apply -f - <<EOF
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: app-config
-  namespace: enhanced-test
-data:
-  environment: "staging"
-  log-level: "debug"
-  version: "1.1.0"
-  feature-flags: "new-feature=true"
-  database-url: "postgres://staging:5432"
-EOF
-
-# Scale deployment
-kubectl scale deployment nginx-deployment --namespace enhanced-test --replicas=3
-
-# Create new Secret
-kubectl apply -f - <<EOF
-apiVersion: v1
-kind: Secret
-metadata:
-  name: app-secret
-  namespace: enhanced-test
-type: Opaque
-data:
-  api-key: YXBpLWtleS1zdGFnaW5n
-  password: cGFzc3dvcmQtc3RhZ2luZw==
-EOF
-
-# Create new Service
+# Create Service with BROKEN selector (targets non-existent deployment)
 kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Service
 metadata:
-  name: nginx-service
-  namespace: enhanced-test
+  name: broken-service
+  namespace: validation-test
 spec:
   selector:
-    app: nginx
+    app: non-existent-app
+    tier: backend
   ports:
-  - port: 80
-    targetPort: 80
+  - port: 8080
+    targetPort: 8080
   type: ClusterIP
 EOF
 
-print_status "Resources modified"
+# Create NetworkPolicy with BROKEN pod selector
+kubectl apply -f - <<EOF
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: broken-network-policy
+  namespace: validation-test
+spec:
+  podSelector:
+    matchLabels:
+      app: non-existent-app
+      tier: backend
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: nginx
+          tier: frontend
+    ports:
+    - protocol: TCP
+      port: 80
+EOF
 
-# Second export - updates Git repo and generates change report
+# Create Ingress with BROKEN backend service
+kubectl apply -f - <<EOF
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: broken-ingress
+  namespace: validation-test
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: broken.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: non-existent-service
+            port:
+              number: 80
+EOF
+
+# Create HorizontalPodAutoscaler with BROKEN target
+kubectl apply -f - <<EOF
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: broken-hpa
+  namespace: validation-test
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: non-existent-deployment
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
+EOF
+
+# Create PodDisruptionBudget with BROKEN selector
+kubectl apply -f - <<EOF
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: broken-pdb
+  namespace: validation-test
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: non-existent-app
+      tier: backend
+EOF
+
+# Create RoleBinding with BROKEN ServiceAccount reference
+kubectl apply -f - <<EOF
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: broken-role-binding
+  namespace: validation-test
+subjects:
+- kind: ServiceAccount
+  name: non-existent-service-account
+  namespace: validation-test
+roleRef:
+  kind: Role
+  name: app-role
+  apiGroup: rbac.authorization.k8s.io
+EOF
+
+# Create RoleBinding with external User reference (will be a warning)
+kubectl apply -f - <<EOF
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: external-user-binding
+  namespace: validation-test
+subjects:
+- kind: User
+  name: external-user@example.com
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: app-role
+  apiGroup: rbac.authorization.k8s.io
+EOF
+
+print_status "Resources with broken references created"
+print_warning "These resources have intentional broken references to demonstrate validation!"
+
+# Second export - updates Git repo and generates change report with validation
 echo ""
-echo "📦 Second export - generating change report..."
-./kalco --output-dir ./enhanced-test-backup --commit-message "Enhanced resources: $(date)"
+echo "📦 Second export - generating change report with Cross-Reference Validation..."
+./kalco --output-dir ./quickstart-demo --commit-message "Broken references demo: $(date)"
 print_status "Second export completed"
 
-# Analyze the enhanced report
+# Analyze the enhanced report with validation
 echo ""
-echo "📊 Analyzing enhanced change report..."
-cd ./enhanced-test-backup
+echo "📊 Analyzing enhanced change report with Cross-Reference Validation..."
+cd ./quickstart-demo
 
 # Find the latest report
 latest_report=$(ls -t kalco-reports/*.md | head -1)
@@ -222,17 +361,32 @@ print_info "Latest report: $latest_report"
 echo ""
 echo "📋 Report Summary:"
 echo "=================="
-grep -E "^## |^### |^#### " "$latest_report" | head -20
+grep -E "^## |^### |^#### " "$latest_report" | head -25
 
 echo ""
-echo "🔍 Detailed Changes Section:"
+echo "🔍 Cross-Reference Validation Section:"
+echo "======================================"
+grep -A 5 -B 5 "Cross-Reference Validation" "$latest_report" || echo "Validation section not found"
+
+echo ""
+echo "❌ Broken References Found:"
 echo "============================"
-grep -A 5 -B 5 "Detailed Resource Changes" "$latest_report" || echo "Detailed changes section not found"
+grep -A 10 "Broken References" "$latest_report" | head -30
 
 echo ""
-echo "📊 Change Details for Modified Resources:"
-echo "========================================="
-grep -A 10 "Resource Modified" "$latest_report" | head -20
+echo "⚠️  Warning References:"
+echo "======================="
+grep -A 10 "Warning References" "$latest_report" | head -20
+
+echo ""
+echo "✅ Valid References Summary:"
+echo "============================"
+grep -A 10 "Valid References Summary" "$latest_report" | head -15
+
+echo ""
+echo "💡 Recommendations:"
+echo "=================="
+grep -A 15 "Recommendations" "$latest_report" | head -20
 
 echo ""
 echo "💻 Git History:"
@@ -249,22 +403,30 @@ cd ..
 # Cleanup
 echo ""
 echo "🧹 Cleaning up..."
-kind delete cluster --name kalco-enhanced-reports-test
+kind delete cluster --name kalco-validation-test
 print_status "Test cluster deleted"
 
 echo ""
-echo "🎉 Quickstart Demo Completed!"
-echo "============================="
+echo "🎉 Enhanced Quickstart Demo Completed!"
+echo "======================================"
 echo ""
 echo "📊 What was tested:"
 echo "- ✅ Initial snapshot with Git repository creation"
 echo "- ✅ Initial change report generation"
-echo "- ✅ Resource modification (ConfigMap, Deployment, Secret, Service)"
+echo "- ✅ Resource modification (ConfigMap, Deployment, ServiceAccount, Role, RoleBinding)"
 echo "- ✅ Enhanced change report with detailed diffs"
 echo "- ✅ Git history tracking"
+echo "- 🔍 CROSS-REFERENCE VALIDATION (NEW FEATURE!)"
+echo "  - ❌ Broken Service selectors"
+echo "  - ❌ Broken NetworkPolicy selectors"
+echo "  - ❌ Broken Ingress backends"
+echo "  - ❌ Broken HPA targets"
+echo "  - ❌ Broken PDB selectors"
+echo "  - ❌ Broken RoleBinding ServiceAccount references"
+echo "  - ⚠️  External User references (warnings)"
 echo ""
-echo "📁 Your enhanced backup is preserved in: ./enhanced-test-backup/"
-echo "📋 Enhanced reports are in: ./enhanced-test-backup/kalco-reports/"
+echo "📁 Your enhanced backup is preserved in: ./quickstart-demo/"
+echo "📋 Enhanced reports with validation are in: ./quickstart-demo/kalco-reports/"
 echo ""
 echo "🔍 Key Features Demonstrated:"
 echo "- 🆕 New resources show complete YAML content"
@@ -272,5 +434,12 @@ echo "- ✏️ Modified resources show Git diff with before/after"
 echo "- 🗑️ Deleted resources show what was removed"
 echo "- 📊 Change summaries with line counts and section tracking"
 echo "- 🔍 Field-level change identification"
+echo "- 🔍 CROSS-REFERENCE VALIDATION:"
+echo "  - ✅ Valid references tracking"
+echo "  - ❌ Broken references detection"
+echo "  - ⚠️  Warning references for external resources"
+echo "  - 📋 Actionable recommendations"
+echo "  - 🛡️ Reliability assurance for reapplying resources"
 echo ""
 echo "💡 Try viewing the reports to see kalco's enhanced functionality!"
+echo "🔍 The Cross-Reference Validation section will show you exactly what's broken!"

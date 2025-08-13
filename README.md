@@ -15,6 +15,7 @@
 - ⚡ **Lightning Fast** - Optimized for speed and efficiency in production environments
 - 🚀 **Git Integration** - Automatic version control with commit history and change tracking
 - 📊 **Smart Reporting** - Generates detailed change reports with before/after comparisons and specific field modifications
+- 🔍 **Cross-Reference Validation** - Analyzes exported resources for broken references that could cause issues when reapplying
 
 ---
 
@@ -136,6 +137,34 @@ Reports are automatically named based on your commit messages:
 - **Custom Message**: `Production-backup-2025-08-13.md`
 - **Timestamp Default**: `Cluster-snapshot-2025-08-13-15-04-05.md`
 - **Special Characters**: Automatically cleaned for valid filenames
+
+---
+
+## 🔍 Cross-Reference Validation
+
+Kalco automatically validates cross-references between exported resources to identify potential issues:
+
+### **What Gets Validated:**
+
+- **🔗 Service Selectors**: Services targeting non-existent Pods/Deployments
+- **👥 RoleBinding Subjects**: ServiceAccount references in RBAC
+- **🌐 Network Policies**: Pod selector references
+- **🚪 Ingress Backends**: Service references in Ingress rules
+- **📈 HPA Targets**: Scale target references
+- **🛡️ PDB Selectors**: Pod selector references
+
+### **Validation Results:**
+
+- **✅ Valid References**: Properly configured cross-references
+- **❌ Broken References**: Missing target resources (will cause errors)
+- **⚠️  Warning References**: External references requiring manual verification
+
+### **Benefits:**
+
+- **🚫 Prevents Errors**: Catch issues before reapplying resources
+- **🔍 Silent Failures**: Find configuration problems kubectl apply won't detect
+- **📋 Actionable Insights**: Clear recommendations for fixing issues
+- **🛡️ Reliability**: Ensure cluster resources can be safely reapplied
 
 ---
 

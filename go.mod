@@ -1,4 +1,4 @@
-module github.com/your-username/kalco
+module kalco
 
 go 1.21
 
