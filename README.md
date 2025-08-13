@@ -332,7 +332,6 @@ Kalco is designed to be production-ready:
 
 ```
 kalco/
-
 ├── 📂 cmd/
 │   └── 🎯 root.go          # Main CLI command definition
 ├── 📂 pkg/
