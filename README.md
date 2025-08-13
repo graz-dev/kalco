@@ -29,29 +29,6 @@ Kalco transforms your Kubernetes cluster into a **comprehensive, validated, and 
 - **Cross-Reference Validation** - Analyzes exported resources for broken references that could cause issues when reapplying
 - **Orphaned Resource Detection** - Identifies resources no longer managed by higher-level controllers for cleanup
 
-## Use Cases & Scenarios
-
-### Enterprise & Production
-- **Disaster Recovery** - Complete cluster backups with validation
-- **Compliance Auditing** - Track infrastructure changes over time
-- **Environment Migration** - Move workloads between clusters safely
-- **Security Analysis** - Audit resource configurations and permissions
-- **Capacity Planning** - Analyze resource usage patterns
-
-### Development & Testing
-- **Environment Replication** - Clone production setups for testing
-- **Infrastructure Documentation** - Generate living documentation
-- **Development Cleanup** - Identify and remove test resources
-- **Configuration Debugging** - Validate resource dependencies
-- **Resource Cataloging** - Maintain inventory of all resources
-
-### DevOps & SRE
-- **Change Tracking** - Monitor infrastructure evolution
-- **Troubleshooting** - Validate cluster configurations
-- **Maintenance** - Clean up orphaned and unused resources
-- **Onboarding** - Document cluster setups for new team members
-- **Rollback Support** - Quick recovery from configuration issues
-
 ## Quick Start
 
 ### Prerequisites
