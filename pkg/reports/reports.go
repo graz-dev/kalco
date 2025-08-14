@@ -134,11 +134,7 @@ func (r *ReportGenerator) generateReportContent(commitMessage string) (string, e
 		return content.String(), nil
 	}
 
-	// Generate change report
-	content.WriteString("## Changes Since Previous Snapshot\n\n")
-	content.WriteString("**Previous Commit**: `" + prevCommit + "`\n\n")
-
-	// Get changed files
+	// Get changed files first to categorize changes
 	changedFiles, err := r.getChangedFiles(prevCommit, commitHash)
 	if err != nil {
 		content.WriteString("### Error Getting Changes\n\n")
@@ -155,6 +151,17 @@ func (r *ReportGenerator) generateReportContent(commitMessage string) (string, e
 	// Categorize changes
 	changes := r.categorizeChanges(changedFiles)
 
+	// Write resource type summary
+	content.WriteString("## 📊 Resource Type Summary\n\n")
+	for resourceType, count := range changes.ResourceTypes {
+		content.WriteString("- **" + resourceType + "**: " + strconv.Itoa(count) + " changes\n")
+	}
+	content.WriteString("\n")
+
+	// Generate change report
+	content.WriteString("## Changes Since Previous Snapshot\n\n")
+	content.WriteString("**Previous Commit**: `" + prevCommit + "`\n\n")
+
 	// Write change summary
 	content.WriteString("### Change Summary\n\n")
 	content.WriteString("- **Total Files Changed**: " + strconv.Itoa(len(changedFiles)) + "\n")
@@ -168,33 +175,12 @@ func (r *ReportGenerator) generateReportContent(commitMessage string) (string, e
 	// Write detailed changes with diff information
 	content.WriteString("### Detailed Changes\n\n")
 
-	// Group by namespace
+	// Group by namespace and show detailed changes directly
 	for namespace, resources := range changes.ByNamespace {
 		if namespace == "_cluster" {
 			content.WriteString("#### 🌐 Cluster-Scoped Resources\n\n")
 		} else {
 			content.WriteString("#### 📁 Namespace: `" + namespace + "`\n\n")
-		}
-
-		for resourceType, files := range resources {
-			content.WriteString("**" + resourceType + "**:\n")
-			for _, file := range files {
-				status := r.getFileStatus(file, prevCommit, commitHash)
-				content.WriteString("- " + status + " `" + filepath.Base(file) + "`\n")
-			}
-			content.WriteString("\n")
-		}
-	}
-
-	// Write detailed diff information for each changed file
-	content.WriteString("## 🔍 Detailed Resource Changes\n\n")
-	content.WriteString("This section shows the specific changes made to each resource:\n\n")
-
-	for namespace, resources := range changes.ByNamespace {
-		if namespace == "_cluster" {
-			content.WriteString("### 🌐 Cluster-Scoped Resources\n\n")
-		} else {
-			content.WriteString("### 📁 Namespace: `" + namespace + "`\n\n")
 		}
 
 		for resourceType, files := range resources {
@@ -207,7 +193,7 @@ func (r *ReportGenerator) generateReportContent(commitMessage string) (string, e
 
 				content.WriteString("**" + status + "** `" + resourceName + "` (" + filename + ")\n\n")
 
-				// Get detailed diff information
+				// Get detailed diff information directly here
 				diffInfo, err := r.getDetailedDiff(file, prevCommit, commitHash, status)
 				if err != nil {
 					content.WriteString("⚠️ Error getting diff: " + err.Error() + "\n\n")
@@ -219,13 +205,6 @@ func (r *ReportGenerator) generateReportContent(commitMessage string) (string, e
 			}
 		}
 	}
-
-	// Write resource type summary
-	content.WriteString("## 📊 Resource Type Summary\n\n")
-	for resourceType, count := range changes.ResourceTypes {
-		content.WriteString("- **" + resourceType + "**: " + strconv.Itoa(count) + " changes\n")
-	}
-	content.WriteString("\n")
 
 	// Write Git commands for reference
 	content.WriteString("## 💻 Git Commands for Reference\n\n")
@@ -548,7 +527,6 @@ func (r *ReportGenerator) generateValidationReport() (string, error) {
 
 	content.WriteString("## 🔍 Cross-Reference Validation Report\n\n")
 	content.WriteString("This section analyzes exported resources for broken references that could cause issues when reapplying.\n\n")
-	content.WriteString("> **⚠️  Important**: Broken references will cause errors when you try to reapply resources to a cluster.\n\n")
 
 	// Validation Summary
 	content.WriteString("### 📊 Validation Summary\n\n")
@@ -563,7 +541,6 @@ func (r *ReportGenerator) generateValidationReport() (string, error) {
 	// Broken References (most important)
 	if len(result.BrokenReferences) > 0 {
 		content.WriteString("### ❌ Broken References - ACTION REQUIRED\n\n")
-		content.WriteString("**🚨 CRITICAL**: These references will cause errors when reapplying resources to a cluster!\n\n")
 
 		// Group by source type
 		grouped := make(map[string][]validation.ResourceReference)
@@ -632,22 +609,6 @@ func (r *ReportGenerator) generateValidationReport() (string, error) {
 		content.WriteString("\n")
 	}
 
-	// Recommendations
-	content.WriteString("### 💡 Action Plan\n\n")
-	if len(result.BrokenReferences) > 0 {
-		content.WriteString("**🚨 IMMEDIATE ACTIONS REQUIRED:**\n\n")
-		content.WriteString("1. **🔧 Fix Broken References**: Resolve all broken references before reapplying\n")
-		content.WriteString("2. **✅ Verify Target Resources**: Ensure all referenced resources exist in the target cluster\n")
-		content.WriteString("3. **🌐 Check Namespaces**: Verify cross-namespace references are correct\n")
-		content.WriteString("4. **🧪 Test in Staging**: Apply resources to a test environment first\n")
-		content.WriteString("5. **📋 Review Warnings**: Check warning references for external resources\n\n")
-	} else {
-		content.WriteString("**🎉 Your cluster configuration looks excellent!**\n\n")
-		content.WriteString("1. **✅ Safe to Reapply**: All references are valid and will work correctly\n")
-		content.WriteString("2. **⚠️  Monitor Warnings**: Check warning references if any exist (these are usually normal)\n")
-		content.WriteString("3. **🔄 Regular Validation**: Run this validation after cluster changes\n\n")
-	}
-
 	content.WriteString("**📝 Note**: This validation only checks for missing resources. It does not validate resource configurations, permissions, or runtime behavior.\n\n")
 
 	// Add orphaned resource detection
@@ -674,7 +635,6 @@ func (r *ReportGenerator) generateOrphanedResourceReport() (string, error) {
 
 	content.WriteString("## 🗑️  Orphaned Resource Detection Report\n\n")
 	content.WriteString("This section identifies resources that are no longer managed by higher-level controllers and may be consuming unnecessary resources.\n\n")
-	content.WriteString("> **💡 Tip**: Orphaned resources can be safely cleaned up to free up cluster resources and reduce clutter.\n\n")
 
 	// Orphaned Resource Summary
 	content.WriteString("### 📊 Orphaned Resource Summary\n\n")
@@ -695,7 +655,6 @@ func (r *ReportGenerator) generateOrphanedResourceReport() (string, error) {
 	// Orphaned Resources (most important)
 	if len(result.OrphanedResources) > 0 {
 		content.WriteString("### 🗑️  Orphaned Resources Found - Cleanup Recommended\n\n")
-		content.WriteString("**🔍 These resources are no longer managed and can be safely removed:**\n\n")
 
 		// Group by resource type
 		grouped := make(map[string][]orphaned.OrphanedResource)
@@ -716,22 +675,6 @@ func (r *ReportGenerator) generateOrphanedResourceReport() (string, error) {
 	} else {
 		content.WriteString("### ✅ No Orphaned Resources Found\n\n")
 		content.WriteString("🎉 **Excellent!** All resources in your cluster are properly managed.\n\n")
-	}
-
-	// Cleanup Recommendations
-	content.WriteString("### 💡 Cleanup Recommendations\n\n")
-	if len(result.OrphanedResources) > 0 {
-		content.WriteString("**🧹 RECOMMENDED ACTIONS:**\n\n")
-		content.WriteString("1. **🔍 Review Each Resource**: Verify that each orphaned resource is truly unused\n")
-		content.WriteString("2. **🧪 Test in Staging**: Remove resources in a test environment first\n")
-		content.WriteString("3. **📋 Document Dependencies**: Note any resources that might be needed later\n")
-		content.WriteString("4. **🗑️  Gradual Cleanup**: Remove resources one by one to avoid issues\n")
-		content.WriteString("5. **📊 Monitor Impact**: Watch for any unexpected behavior after removal\n\n")
-	} else {
-		content.WriteString("**🎉 Your cluster is well-maintained!**\n\n")
-		content.WriteString("1. **✅ Continue Good Practices**: Keep managing resources properly\n")
-		content.WriteString("2. **🔄 Regular Checks**: Run this detection periodically\n")
-		content.WriteString("3. **📚 Documentation**: Maintain good resource documentation\n\n")
 	}
 
 	content.WriteString("**📝 Note**: This detection identifies resources that appear to be unused based on ownership and reference analysis. Always verify before deletion.\n\n")
