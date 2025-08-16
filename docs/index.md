@@ -1,42 +1,59 @@
 ---
-layout: default
-title: Kalco Documentation
-description: "Kubernetes Analysis & Lifecycle Control - Extract, validate, analyze, and version control your entire cluster."
+layout: home
+title: Home
+nav_order: 1
 ---
 
-# Kalco Documentation
+# ☸️ Kalco - Kubernetes Analysis & Lifecycle Control
 
-**Kubernetes Analysis & Lifecycle Control** - Extract, validate, analyze, and version control your entire cluster with comprehensive validation and Git integration.
+**Extract, validate, analyze, and version control your entire Kubernetes cluster with comprehensive validation and Git integration**
 
-<div style="margin: 20px 0;">
-  <a href="#quick-start" class="btn" style="background-color: #159957; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-right: 10px;">Get Started</a>
-  <a href="https://github.com/graz-dev/kalco" class="btn" style="background-color: #606c76; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">View on GitHub</a>
+{: .fs-6 .fw-300 }
+
+---
+
+## 🚀 What is Kalco?
+
+Kalco transforms your Kubernetes cluster management experience by providing a **comprehensive, automated, and intelligent** approach to cluster analysis and lifecycle control. Whether you're managing production workloads, ensuring compliance, or planning migrations, Kalco has you covered.
+
+## ✨ Key Features
+
+<div class="row">
+<div class="col-12 col-md-6">
+
+### 🔍 **Intelligent Discovery**
+- **Zero Configuration** - Works out of the box
+- **Complete Coverage** - Native K8s + CRDs
+- **Smart Filtering** - Namespace, resource, and label-based
+- **Real-time Analysis** - Live cluster insights
+
+### 🛡️ **Enterprise Ready**
+- **Git Integration** - Automatic version control
+- **Validation Engine** - Cross-reference checking
+- **Security Analysis** - Compliance and best practices
+- **Scalable Architecture** - Handles clusters of any size
+
+</div>
+<div class="col-12 col-md-6">
+
+### 📊 **Actionable Insights**
+- **Orphaned Resources** - Identify cleanup opportunities
+- **Broken References** - Find configuration issues
+- **Usage Analytics** - Resource utilization analysis
+- **Change Tracking** - Historical cluster evolution
+
+### 🎨 **Developer Experience**
+- **Modern CLI** - Intuitive commands with rich output
+- **Multiple Formats** - JSON, YAML, HTML reports
+- **Shell Completion** - Bash, Zsh, Fish, PowerShell
+- **Extensive Documentation** - Comprehensive guides and examples
+
+</div>
 </div>
 
----
+## 🚀 Quick Start
 
-## What is Kalco?
-
-Kalco is a powerful CLI tool that performs comprehensive analysis, validation, and export of all resources from your Kubernetes cluster into organized YAML files. It automatically discovers and exports every available API resource - including native Kubernetes resources and Custom Resources (CRDs) - with zero configuration required.
-
-## Key Features
-
-- ✅ **Complete Resource Discovery** - Automatically finds ALL available API resources
-- ✅ **Comprehensive Coverage** - Includes both native K8s resources and Custom Resources (CRDs)  
-- ✅ **Structured Output** - Creates intuitive directory structures for easy navigation
-- ✅ **Clean YAML** - Intelligently removes metadata fields that aren't useful for re-application
-- ✅ **Lightning Fast** - Optimized for speed and efficiency
-- ✅ **Git Integration** - Automatic version control with commit history and change tracking
-- ✅ **Smart Reporting** - Generates detailed change reports with before/after comparisons
-- ✅ **Cross-Reference Validation** - Analyzes exported resources for broken references
-- ✅ **Orphaned Resource Detection** - Identifies resources no longer managed by controllers
-- ✅ **Modern CLI Experience** - Intuitive commands with rich styling and helpful output
-
----
-
-## Quick Start
-
-### Installation
+### ⚡ **One-Line Install**
 
 **Linux/macOS:**
 ```bash
@@ -48,43 +65,100 @@ curl -fsSL https://raw.githubusercontent.com/graz-dev/kalco/master/scripts/insta
 iwr -useb https://raw.githubusercontent.com/graz-dev/kalco/master/scripts/install.ps1 | iex
 ```
 
-### Basic Usage
+### 📦 **Package Managers**
 
+**Homebrew (macOS/Linux):**
 ```bash
-# Export your entire cluster
-kalco export
-
-# Validate cluster resources
-kalco validate
-
-# Find orphaned resources
-kalco analyze orphaned
-
-# Generate comprehensive report
-kalco report
+brew install graz-dev/tap/kalco
 ```
 
+**Debian/Ubuntu:**
+```bash
+wget https://github.com/graz-dev/kalco/releases/latest/download/kalco_Linux_x86_64.deb
+sudo dpkg -i kalco_Linux_x86_64.deb
+```
+
+### 🔧 **Build from Source**
+
+```bash
+git clone https://github.com/graz-dev/kalco.git
+cd kalco
+go mod tidy
+go build -o kalco ./cmd
+```
+
+## 💡 Common Use Cases
+
+### 🎯 **Cluster Analysis & Backup**
+```bash
+# Complete cluster export with Git versioning
+kalco export --git-push --commit-message "Weekly backup"
+
+# Validate cluster health
+kalco validate --output json
+
+# Find cleanup opportunities  
+kalco analyze orphaned --detailed
+```
+
+### 🛡️ **Security & Compliance**
+```bash
+# Security posture analysis
+kalco analyze security --output html
+
+# Export security-related resources
+kalco export --resources "roles,rolebindings,networkpolicies,podsecuritypolicies"
+
+# Generate compliance report
+kalco report --types security,validation --output-file compliance-report.html
+```
+
+### 🚀 **DevOps & Automation**
+```bash
+# CI/CD integration
+kalco export --namespaces production --exclude events,pods --output ./gitops-repo
+
+# Environment replication
+kalco export --namespaces staging --resources deployments,services,configmaps
+
+# Resource inventory
+kalco resources list --detailed --output json > inventory.json
+```
+
+## 🌟 Why Choose Kalco?
+
+<div class="row">
+<div class="col-12 col-md-6">
+
+### 🎯 **Perfect for DevOps Teams**
+- **Site Reliability Engineers** - Automated cluster backups and disaster recovery
+- **Platform Engineers** - Infrastructure as Code and GitOps workflows  
+- **Security Teams** - Compliance auditing and security posture analysis
+- **Developers** - Environment replication and configuration management
+
+</div>
+<div class="col-12 col-md-6">
+
+### 📊 **Project Stats**
+- **0 Configuration Required** - Works out of the box
+- **100% Resource Coverage** - Native K8s + CRDs
+- **⚡ Lightning Fast** - Optimized for speed
+- **🔒 Enterprise Ready** - Production-grade reliability
+
+</div>
+</div>
+
+## 🚀 Next Steps
+
+1. **[Install Kalco]({{ site.baseurl }}/docs/getting-started/installation)** - Get up and running quickly
+2. **[Explore Commands]({{ site.baseurl }}/docs/commands/)** - Learn all available options
+3. **[Configuration Guide]({{ site.baseurl }}/docs/configuration/)** - Customize for your environment
+4. **[Use Cases]({{ site.baseurl }}/docs/use-cases/)** - Real-world examples and workflows
+
 ---
 
-## Documentation Navigation
+<div class="text-center">
+**Made with ❤️ for the Kubernetes community**
 
-| Section | Description |
-|---------|-------------|
-| [**Getting Started**](getting-started.md) | Installation and first steps |
-| [**Commands Reference**](commands/index.md) | Complete command documentation |
-| [**Configuration**](configuration.md) | Configuration options and examples |
-| [**Use Cases**](use-cases.md) | Real-world scenarios and examples |
-| [**FAQ**](faq.md) | Frequently asked questions |
-| [**Contributing**](contributing.md) | How to contribute to Kalco |
-
----
-
-## Community & Support
-
-- 🐙 **GitHub**: [graz-dev/kalco](https://github.com/graz-dev/kalco)
-- 🐛 **Issues**: [Report bugs or request features](https://github.com/graz-dev/kalco/issues)  
-- 💬 **Discussions**: [Community discussions](https://github.com/graz-dev/kalco/discussions)
-
----
-
-*Made with ❤️ for the Kubernetes community*
+[🌟 Star us on GitHub](https://github.com/graz-dev/kalco){: .btn .btn-primary .btn-lg } [📖 Read the Docs]({{ site.baseurl }}/docs/getting-started/){: .btn .btn-outline .btn-lg }
+</div>
