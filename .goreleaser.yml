@@ -1,0 +1,137 @@
+version: 1
+
+before:
+  hooks:
+    - go mod tidy
+    - go generate ./...
+
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    ignore:
+      - goos: windows
+        goarch: arm64
+    ldflags:
+      - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}}
+    binary: kalco
+
+archives:
+  - format: tar.gz
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- if .Arm }}v{{ .Arm }}{{ end }}
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - README.md
+      - LICENSE
+
+checksum:
+  name_template: 'checksums.txt'
+
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+
+brews:
+  - name: kalco
+    homepage: https://github.com/graz-dev/kalco
+    description: "Kubernetes Analysis & Lifecycle Control - Extract, validate, analyze, and version control your entire cluster"
+    license: "MIT"
+    repository:
+      owner: graz-dev
+      name: homebrew-tap
+    commit_author:
+      name: goreleaserbot
+      email: bot@goreleaser.com
+    install: |
+      bin.install "kalco"
+    test: |
+      system "#{bin}/kalco --help"
+
+nfpms:
+  - file_name_template: '{{ .ConventionalFileName }}'
+    id: packages
+    homepage: https://github.com/graz-dev/kalco
+    description: |-
+      Kubernetes Analysis & Lifecycle Control - Extract, validate, analyze, and version control your entire cluster.
+      Kalco is a powerful Go CLI tool that performs comprehensive analysis, validation, and export of all resources from your Kubernetes cluster.
+    maintainer: Graz Dev <dev@graz.dev>
+    license: MIT
+    vendor: Graz Dev
+    bindir: /usr/bin
+    section: utils
+    contents:
+      - src: ./LICENSE
+        dst: /usr/share/doc/kalco/copyright
+        file_info:
+          mode: 0644
+      - src: ./README.md
+        dst: /usr/share/doc/kalco/README.md
+        file_info:
+          mode: 0644
+    formats:
+      - apk
+      - deb
+      - rpm
+      - termux.deb
+      - archlinux
+
+publishers:
+  - name: fury.io
+    ids:
+      - packages
+    dir: "{{ dir .ArtifactPath }}"
+    cmd: curl -F package=@{{ .ArtifactName }} https://{{ .Env.FURY_TOKEN }}@push.fury.io/{{ .Env.FURY_USER }}/
+
+release:
+  draft: false
+  replace_existing_draft: true
+  target_commitish: "{{ .Commit }}"
+  discussion_category_name: General
+  prerelease: auto
+  mode: replace
+  header: |
+    ## Kalco {{ .Tag }} Release
+    
+    Welcome to this new release of Kalco! 🎉
+    
+    ### Installation
+    
+    #### Homebrew (macOS/Linux)
+    ```bash
+    brew install graz-dev/tap/kalco
+    ```
+    
+    #### Direct Download
+    Download the appropriate binary for your platform from the assets below.
+    
+    #### Package Managers
+    - **Debian/Ubuntu**: Download the `.deb` file and install with `dpkg -i`
+    - **RHEL/CentOS/Fedora**: Download the `.rpm` file and install with `rpm -i`
+    - **Arch Linux**: Download the `.pkg.tar.xz` file and install with `pacman -U`
+    
+  footer: |
+    **Full Changelog**: https://github.com/graz-dev/kalco/compare/{{ .PreviousTag }}...{{ .Tag }}
+    
+    ---
+    
+    Made with ❤️ for the Kubernetes community

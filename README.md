@@ -42,6 +42,46 @@ Kalco transforms your Kubernetes cluster into a **comprehensive, validated, and 
 
 ### Installation
 
+#### Quick Install (Recommended)
+
+**Linux/macOS:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/graz-dev/kalco/main/scripts/install.sh | bash
+```
+
+**Windows (PowerShell):**
+```powershell
+iwr -useb https://raw.githubusercontent.com/graz-dev/kalco/main/scripts/install.ps1 | iex
+```
+
+#### Package Managers
+
+**Homebrew (macOS/Linux):**
+```bash
+brew install graz-dev/tap/kalco
+```
+
+**Debian/Ubuntu:**
+```bash
+# Download the .deb file from releases and install
+wget https://github.com/graz-dev/kalco/releases/latest/download/kalco_Linux_x86_64.deb
+sudo dpkg -i kalco_Linux_x86_64.deb
+```
+
+**RHEL/CentOS/Fedora:**
+```bash
+# Download the .rpm file from releases and install
+wget https://github.com/graz-dev/kalco/releases/latest/download/kalco_Linux_x86_64.rpm
+sudo rpm -i kalco_Linux_x86_64.rpm
+```
+
+#### Manual Installation
+
+1. Download the appropriate binary for your platform from the [releases page](https://github.com/graz-dev/kalco/releases)
+2. Extract the archive and move the binary to your PATH
+
+#### Build from Source
+
 ```bash
 # Clone the repository
 git clone https://github.com/graz-dev/kalco.git
