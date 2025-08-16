@@ -1,0 +1,250 @@
+<h1 id="kalco-export">kalco export</h1>
+
+<p>Export cluster resources to organized YAML files.</p>
+
+<h2 id="synopsis">Synopsis</h2>
+
+<p>The <code class="language-plaintext highlighter-rouge">export</code> command is Kalco’s primary functionality. It discovers all available API resources (including CRDs) and exports them with clean metadata suitable for re-application.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kalco <span class="nb">export</span> <span class="o">[</span>flags]
+</code></pre></div></div>
+
+<h2 id="description">Description</h2>
+
+<p>The export command creates an intuitive directory structure:</p>
+<ul>
+  <li><strong>Namespaced resources</strong>: <code class="language-plaintext highlighter-rouge">&lt;output&gt;/&lt;namespace&gt;/&lt;kind&gt;/&lt;name&gt;.yaml</code></li>
+  <li><strong>Cluster resources</strong>: <code class="language-plaintext highlighter-rouge">&lt;output&gt;/_cluster/&lt;kind&gt;/&lt;name&gt;.yaml</code></li>
+</ul>
+
+<p>Features:</p>
+<ul>
+  <li>Automatic resource discovery (native K8s + CRDs)</li>
+  <li>Clean metadata removal for re-application</li>
+  <li>Git integration for version control</li>
+  <li>Flexible filtering options</li>
+  <li>Progress tracking and detailed output</li>
+</ul>
+
+<h2 id="flags">Flags</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Flag</th>
+      <th>Short</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">--output</code></td>
+      <td><code class="language-plaintext highlighter-rouge">-o</code></td>
+      <td>string</td>
+      <td>Output directory path (default: <code class="language-plaintext highlighter-rouge">./kalco-export-&lt;timestamp&gt;</code>)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">--namespaces</code></td>
+      <td><code class="language-plaintext highlighter-rouge">-n</code></td>
+      <td>[]string</td>
+      <td>Specific namespaces to export (comma-separated)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">--resources</code></td>
+      <td><code class="language-plaintext highlighter-rouge">-r</code></td>
+      <td>[]string</td>
+      <td>Specific resource types to export (comma-separated)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">--exclude</code></td>
+      <td> </td>
+      <td>[]string</td>
+      <td>Resource types to exclude (comma-separated)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">--git-push</code></td>
+      <td> </td>
+      <td>bool</td>
+      <td>Automatically push changes to remote origin</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">--commit-message</code></td>
+      <td><code class="language-plaintext highlighter-rouge">-m</code></td>
+      <td>string</td>
+      <td>Custom Git commit message</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">--dry-run</code></td>
+      <td> </td>
+      <td>bool</td>
+      <td>Show what would be exported without writing files</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="examples">Examples</h2>
+
+<h3 id="basic-export">Basic Export</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Export entire cluster to timestamped directory</span>
+kalco <span class="nb">export</span>
+
+<span class="c"># Export to specific directory</span>
+kalco <span class="nb">export</span> <span class="nt">--output</span> ./cluster-backup
+</code></pre></div></div>
+
+<h3 id="filtered-export">Filtered Export</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Export specific namespaces only</span>
+kalco <span class="nb">export</span> <span class="nt">--namespaces</span> default,kube-system,production
+
+<span class="c"># Export specific resource types</span>
+kalco <span class="nb">export</span> <span class="nt">--resources</span> pods,services,deployments,configmaps
+
+<span class="c"># Exclude noisy resources</span>
+kalco <span class="nb">export</span> <span class="nt">--exclude</span> events,replicasets,endpoints
+</code></pre></div></div>
+
+<h3 id="git-integration">Git Integration</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Export with Git commit</span>
+kalco <span class="nb">export</span> <span class="nt">--commit-message</span> <span class="s2">"Weekly cluster backup"</span>
+
+<span class="c"># Export and push to remote</span>
+kalco <span class="nb">export</span> <span class="nt">--git-push</span> <span class="nt">--commit-message</span> <span class="s2">"Production snapshot </span><span class="si">$(</span><span class="nb">date</span><span class="si">)</span><span class="s2">"</span>
+
+<span class="c"># Export to existing Git repository</span>
+kalco <span class="nb">export</span> <span class="nt">--output</span> ./existing-repo/cluster-state <span class="nt">--git-push</span>
+</code></pre></div></div>
+
+<h3 id="advanced-usage">Advanced Usage</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Dry run to see what would be exported</span>
+kalco <span class="nb">export</span> <span class="nt">--dry-run</span> <span class="nt">--verbose</span>
+
+<span class="c"># Export production namespace with Git integration</span>
+kalco <span class="nb">export</span> <span class="se">\</span>
+  <span class="nt">--namespaces</span> production <span class="se">\</span>
+  <span class="nt">--exclude</span> events,replicasets <span class="se">\</span>
+  <span class="nt">--git-push</span> <span class="se">\</span>
+  <span class="nt">--commit-message</span> <span class="s2">"Production backup - </span><span class="si">$(</span><span class="nb">date</span> +%Y-%m-%d<span class="si">)</span><span class="s2">"</span>
+
+<span class="c"># Export for disaster recovery</span>
+kalco <span class="nb">export</span> <span class="se">\</span>
+  <span class="nt">--output</span> ./disaster-recovery/cluster-<span class="si">$(</span><span class="nb">date</span> +%Y%m%d<span class="si">)</span> <span class="se">\</span>
+  <span class="nt">--exclude</span> events,endpoints,replicasets <span class="se">\</span>
+  <span class="nt">--commit-message</span> <span class="s2">"DR backup"</span>
+</code></pre></div></div>
+
+<h2 id="output-structure">Output Structure</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>output-directory/
+├── _cluster/                    # Cluster-scoped resources
+│   ├── ClusterRole/
+│   │   ├── admin.yaml
+│   │   └── view.yaml
+│   ├── ClusterRoleBinding/
+│   └── StorageClass/
+├── default/                     # Default namespace
+│   ├── ConfigMap/
+│   ├── Service/
+│   └── ServiceAccount/
+├── kube-system/                 # System namespace
+│   ├── Deployment/
+│   ├── Service/
+│   └── ConfigMap/
+└── kalco-reports/               # Analysis reports
+    ├── Cluster-snapshot-2025-08-16-14-55-34.md
+    └── Changes-and-validation-demo--2025-08-16-14-55-34.md
+</code></pre></div></div>
+
+<h2 id="resource-filtering">Resource Filtering</h2>
+
+<h3 id="include-specific-resources">Include Specific Resources</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Export only core resources</span>
+kalco <span class="nb">export</span> <span class="nt">--resources</span> pods,services,deployments,configmaps
+
+<span class="c"># Export with CRDs</span>
+kalco <span class="nb">export</span> <span class="nt">--resources</span> pods,services,mycustomresource
+</code></pre></div></div>
+
+<h3 id="exclude-resources">Exclude Resources</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Exclude noisy resources</span>
+kalco <span class="nb">export</span> <span class="nt">--exclude</span> events,replicasets,endpoints
+
+<span class="c"># Exclude specific CRDs</span>
+kalco <span class="nb">export</span> <span class="nt">--exclude</span> events,mycustomresource
+</code></pre></div></div>
+
+<h2 id="git-integration-1">Git Integration</h2>
+
+<h3 id="automatic-git-operations">Automatic Git Operations</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Initialize Git and commit</span>
+kalco <span class="nb">export</span> <span class="nt">--git-push</span>
+
+<span class="c"># Custom commit message</span>
+kalco <span class="nb">export</span> <span class="nt">--git-push</span> <span class="nt">--commit-message</span> <span class="s2">"Weekly backup"</span>
+
+<span class="c"># Push to remote origin</span>
+kalco <span class="nb">export</span> <span class="nt">--git-push</span> <span class="nt">--commit-message</span> <span class="s2">"Production snapshot"</span>
+</code></pre></div></div>
+
+<h3 id="git-repository-setup">Git Repository Setup</h3>
+
+<p>The export command will:</p>
+<ol>
+  <li>Initialize Git repository if not present</li>
+  <li>Add all exported files</li>
+  <li>Commit with timestamp or custom message</li>
+  <li>Push to remote origin if <code class="language-plaintext highlighter-rouge">--git-push</code> is specified</li>
+</ol>
+
+<h2 id="progress-and-output">Progress and Output</h2>
+
+<h3 id="verbose-mode">Verbose Mode</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kalco <span class="nb">export</span> <span class="nt">--verbose</span>
+</code></pre></div></div>
+
+<p>Shows:</p>
+<ul>
+  <li>Resource discovery progress</li>
+  <li>File writing operations</li>
+  <li>Git operations</li>
+  <li>Validation results</li>
+</ul>
+
+<h3 id="dry-run">Dry Run</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kalco <span class="nb">export</span> <span class="nt">--dry-run</span>
+</code></pre></div></div>
+
+<p>Shows what would be exported without writing files:</p>
+<ul>
+  <li>Resource counts by namespace</li>
+  <li>File paths that would be created</li>
+  <li>Git operations that would be performed</li>
+</ul>
+
+<h2 id="exit-codes">Exit Codes</h2>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">0</code> - Success</li>
+  <li><code class="language-plaintext highlighter-rouge">1</code> - General error</li>
+  <li><code class="language-plaintext highlighter-rouge">2</code> - Configuration error</li>
+  <li><code class="language-plaintext highlighter-rouge">3</code> - Kubernetes connection error</li>
+  <li><code class="language-plaintext highlighter-rouge">4</code> - File system error</li>
+  <li><code class="language-plaintext highlighter-rouge">5</code> - Git operation error</li>
+</ul>
+
+<h2 id="related-commands">Related Commands</h2>
+
+<ul>
+  <li><strong><a href="/docs/commands/validate">validate</a></strong> - Validate exported resources</li>
+  <li><strong><a href="/docs/commands/analyze">analyze</a></strong> - Analyze cluster state</li>
+  <li><strong><a href="/docs/commands/config">config</a></strong> - Manage configuration</li>
+</ul>

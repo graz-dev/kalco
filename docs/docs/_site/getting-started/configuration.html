@@ -1,0 +1,190 @@
+<h1 id="configuration">Configuration</h1>
+
+<p>Customize Kalco to fit your workflow and requirements.</p>
+
+<h2 id="️-configuration-methods">⚙️ Configuration Methods</h2>
+
+<p>Kalco supports multiple configuration methods in order of precedence:</p>
+
+<ol>
+  <li><strong>Command-line flags</strong> (highest priority)</li>
+  <li><strong>Environment variables</strong></li>
+  <li><strong>Configuration files</strong></li>
+  <li><strong>Default values</strong> (lowest priority)</li>
+</ol>
+
+<h2 id="-command-line-options">🚩 Command-Line Options</h2>
+
+<h3 id="basic-options">Basic Options</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Output directory</span>
+kalco <span class="nb">export</span> <span class="nt">--output</span> ./cluster-backup
+
+<span class="c"># Specific namespaces</span>
+kalco <span class="nb">export</span> <span class="nt">--namespaces</span> default,kube-system,production
+
+<span class="c"># Resource filtering</span>
+kalco <span class="nb">export</span> <span class="nt">--resources</span> pods,services,deployments
+kalco <span class="nb">export</span> <span class="nt">--exclude</span> events,replicasets,endpoints
+
+<span class="c"># Verbose output</span>
+kalco <span class="nb">export</span> <span class="nt">--verbose</span>
+</code></pre></div></div>
+
+<h3 id="git-integration">Git Integration</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Enable Git operations</span>
+kalco <span class="nb">export</span> <span class="nt">--git-push</span>
+
+<span class="c"># Custom commit message</span>
+kalco <span class="nb">export</span> <span class="nt">--commit-message</span> <span class="s2">"Weekly backup - </span><span class="si">$(</span><span class="nb">date</span><span class="si">)</span><span class="s2">"</span>
+
+<span class="c"># Dry run (no actual export)</span>
+kalco <span class="nb">export</span> <span class="nt">--dry-run</span>
+</code></pre></div></div>
+
+<h2 id="-environment-variables">🌍 Environment Variables</h2>
+
+<p>Set these environment variables for persistent configuration:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Output directory</span>
+<span class="nb">export </span><span class="nv">KALCO_OUTPUT_DIR</span><span class="o">=</span><span class="s2">"./cluster-exports"</span>
+
+<span class="c"># Default namespaces</span>
+<span class="nb">export </span><span class="nv">KALCO_NAMESPACES</span><span class="o">=</span><span class="s2">"default,kube-system,production"</span>
+
+<span class="c"># Git integration</span>
+<span class="nb">export </span><span class="nv">KALCO_GIT_PUSH</span><span class="o">=</span><span class="s2">"true"</span>
+<span class="nb">export </span><span class="nv">KALCO_COMMIT_MESSAGE</span><span class="o">=</span><span class="s2">"Cluster snapshot"</span>
+
+<span class="c"># Resource filtering</span>
+<span class="nb">export </span><span class="nv">KALCO_RESOURCES</span><span class="o">=</span><span class="s2">"pods,services,deployments,configmaps"</span>
+<span class="nb">export </span><span class="nv">KALCO_EXCLUDE</span><span class="o">=</span><span class="s2">"events,replicasets,endpoints"</span>
+</code></pre></div></div>
+
+<h2 id="-configuration-files">📁 Configuration Files</h2>
+
+<p>Create a configuration file for complex setups:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># ~/.kalco/config.yaml</span>
+<span class="na">output</span><span class="pi">:</span>
+  <span class="na">directory</span><span class="pi">:</span> <span class="s2">"</span><span class="s">./cluster-backups"</span>
+  <span class="na">format</span><span class="pi">:</span> <span class="s2">"</span><span class="s">yaml"</span>
+  <span class="na">compress</span><span class="pi">:</span> <span class="kc">false</span>
+
+<span class="na">filtering</span><span class="pi">:</span>
+  <span class="na">namespaces</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s2">"</span><span class="s">default"</span>
+    <span class="pi">-</span> <span class="s2">"</span><span class="s">kube-system"</span>
+    <span class="pi">-</span> <span class="s2">"</span><span class="s">production"</span>
+  <span class="na">resources</span><span class="pi">:</span>
+    <span class="na">include</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s2">"</span><span class="s">pods"</span>
+      <span class="pi">-</span> <span class="s2">"</span><span class="s">services"</span>
+      <span class="pi">-</span> <span class="s2">"</span><span class="s">deployments"</span>
+      <span class="pi">-</span> <span class="s2">"</span><span class="s">configmaps"</span>
+    <span class="na">exclude</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s2">"</span><span class="s">events"</span>
+      <span class="pi">-</span> <span class="s2">"</span><span class="s">replicasets"</span>
+      <span class="pi">-</span> <span class="s2">"</span><span class="s">endpoints"</span>
+
+<span class="na">git</span><span class="pi">:</span>
+  <span class="na">enabled</span><span class="pi">:</span> <span class="kc">true</span>
+  <span class="na">auto_push</span><span class="pi">:</span> <span class="kc">false</span>
+  <span class="na">commit_message</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Cluster</span><span class="nv"> </span><span class="s">export</span><span class="nv"> </span><span class="s">-</span><span class="nv"> </span><span class="s">{timestamp}"</span>
+  <span class="na">remote_origin</span><span class="pi">:</span> <span class="s2">"</span><span class="s">origin"</span>
+
+<span class="na">validation</span><span class="pi">:</span>
+  <span class="na">cross_references</span><span class="pi">:</span> <span class="kc">true</span>
+  <span class="na">orphaned_resources</span><span class="pi">:</span> <span class="kc">true</span>
+  <span class="na">detailed_reporting</span><span class="pi">:</span> <span class="kc">true</span>
+
+<span class="na">output</span><span class="pi">:</span>
+  <span class="na">reports</span><span class="pi">:</span>
+    <span class="na">enabled</span><span class="pi">:</span> <span class="kc">true</span>
+    <span class="na">format</span><span class="pi">:</span> <span class="s2">"</span><span class="s">markdown"</span>
+    <span class="na">include_changes</span><span class="pi">:</span> <span class="kc">true</span>
+    <span class="na">include_validation</span><span class="pi">:</span> <span class="kc">true</span>
+</code></pre></div></div>
+
+<h2 id="-advanced-configuration">🔧 Advanced Configuration</h2>
+
+<h3 id="custom-resource-types">Custom Resource Types</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Include Custom Resource Definitions</span>
+kalco <span class="nb">export</span> <span class="nt">--resources</span> pods,services,mycustomresource
+
+<span class="c"># Exclude specific CRDs</span>
+kalco <span class="nb">export</span> <span class="nt">--exclude</span> events,replicasets,mycustomresource
+</code></pre></div></div>
+
+<h3 id="output-formatting">Output Formatting</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Compressed output</span>
+kalco <span class="nb">export</span> <span class="nt">--compress</span>
+
+<span class="c"># Custom file naming</span>
+kalco <span class="nb">export</span> <span class="nt">--output</span> <span class="s2">"./backups/cluster-{date}-{time}"</span>
+</code></pre></div></div>
+
+<h3 id="validation-options">Validation Options</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Skip validation for faster export</span>
+kalco <span class="nb">export</span> <span class="nt">--skip-validation</span>
+
+<span class="c"># Custom validation rules</span>
+kalco <span class="nb">export</span> <span class="nt">--validation-rules</span> ./rules.yaml
+</code></pre></div></div>
+
+<h2 id="-configuration-examples">📋 Configuration Examples</h2>
+
+<h3 id="development-environment">Development Environment</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Quick export for development</span>
+kalco <span class="nb">export</span> <span class="se">\</span>
+  <span class="nt">--output</span> <span class="s2">"./dev-cluster"</span> <span class="se">\</span>
+  <span class="nt">--namespaces</span> <span class="s2">"default,development"</span> <span class="se">\</span>
+  <span class="nt">--exclude</span> <span class="s2">"events,replicasets"</span> <span class="se">\</span>
+  <span class="nt">--verbose</span>
+</code></pre></div></div>
+
+<h3 id="production-backup">Production Backup</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Comprehensive production backup</span>
+kalco <span class="nb">export</span> <span class="se">\</span>
+  <span class="nt">--output</span> <span class="s2">"./production-backup-</span><span class="si">$(</span><span class="nb">date</span> +%Y%m%d<span class="si">)</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--namespaces</span> <span class="s2">"production,monitoring,security"</span> <span class="se">\</span>
+  <span class="nt">--git-push</span> <span class="se">\</span>
+  <span class="nt">--commit-message</span> <span class="s2">"Production backup - </span><span class="si">$(</span><span class="nb">date</span><span class="si">)</span><span class="s2">"</span>
+</code></pre></div></div>
+
+<h3 id="cicd-pipeline">CI/CD Pipeline</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Automated export in CI/CD</span>
+kalco <span class="nb">export</span> <span class="se">\</span>
+  <span class="nt">--output</span> <span class="s2">"./cluster-state"</span> <span class="se">\</span>
+  <span class="nt">--git-push</span> <span class="se">\</span>
+  <span class="nt">--commit-message</span> <span class="s2">"Automated backup - Build </span><span class="k">${</span><span class="nv">BUILD_NUMBER</span><span class="k">}</span><span class="s2">"</span>
+</code></pre></div></div>
+
+<h2 id="-configuration-validation">🔍 Configuration Validation</h2>
+
+<p>Validate your configuration:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Check configuration</span>
+kalco config validate
+
+<span class="c"># Show current configuration</span>
+kalco config show
+
+<span class="c"># Test configuration</span>
+kalco <span class="nb">export</span> <span class="nt">--dry-run</span> <span class="nt">--verbose</span>
+</code></pre></div></div>
+
+<h2 id="-next-steps">📚 Next Steps</h2>
+
+<ol>
+  <li><strong><a href="/docs/commands/">Commands Reference</a></strong> - Complete command documentation</li>
+  <li><strong><a href="/docs/use-cases/">Use Cases</a></strong> - Common scenarios and workflows</li>
+  <li><strong><a href="/docs/getting-started/troubleshooting">Troubleshooting</a></strong> - Solve common issues</li>
+</ol>

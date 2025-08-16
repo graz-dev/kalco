@@ -1,7 +1,7 @@
 title: Kalco Documentation
 description: Kubernetes Analysis & Lifecycle Control - Comprehensive cluster management tool
 url: https://graz-dev.github.io
-baseurl: /kalco
+# baseurl: /kalco  # Uncomment for GitHub Pages deployment, comment for local development
 
 # Theme
 remote_theme: just-the-docs/just-the-docs

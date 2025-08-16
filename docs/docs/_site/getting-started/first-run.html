@@ -1,0 +1,119 @@
+<h1 id="first-run">First Run</h1>
+
+<p>Learn how to export your first Kubernetes cluster with Kalco.</p>
+
+<h2 id="-prerequisites">🎯 Prerequisites</h2>
+
+<p>Before you begin, ensure you have:</p>
+
+<ul>
+  <li>✅ Kalco installed and working</li>
+  <li>✅ <code class="language-plaintext highlighter-rouge">kubectl</code> configured and connected to a cluster</li>
+  <li>✅ Access to a Kubernetes cluster (local or remote)</li>
+</ul>
+
+<h2 id="-verify-cluster-access">🔍 Verify Cluster Access</h2>
+
+<p>First, verify that you can access your cluster:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl cluster-info
+kubectl get nodes
+</code></pre></div></div>
+
+<h2 id="-basic-export">🚀 Basic Export</h2>
+
+<p>Start with a simple export to see Kalco in action:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Export to a timestamped directory</span>
+kalco <span class="nb">export</span>
+
+<span class="c"># Or specify a custom output directory</span>
+kalco <span class="nb">export</span> <span class="nt">--output</span> ./my-cluster-backup
+</code></pre></div></div>
+
+<h2 id="-understanding-the-output">📁 Understanding the Output</h2>
+
+<p>Kalco creates an organized directory structure:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>my-cluster-backup/
+├── _cluster/           # Cluster-scoped resources
+│   ├── ClusterRole/
+│   ├── ClusterRoleBinding/
+│   ├── StorageClass/
+│   └── ...
+├── default/            # Default namespace
+│   ├── ConfigMap/
+│   ├── Service/
+│   └── ...
+├── kube-system/        # System namespace
+│   ├── Deployment/
+│   ├── Service/
+│   └── ...
+└── kalco-reports/      # Analysis reports
+    ├── Cluster-snapshot-2025-08-16-14-55-34.md
+    └── ...
+</code></pre></div></div>
+
+<h2 id="-view-the-report">🔍 View the Report</h2>
+
+<p>Check the generated report to understand your cluster:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># View the latest report</span>
+<span class="nb">ls</span> <span class="nt">-la</span> ./my-cluster-backup/kalco-reports/
+<span class="nb">cat</span> ./my-cluster-backup/kalco-reports/<span class="k">*</span>.md | <span class="nb">head</span> <span class="nt">-50</span>
+</code></pre></div></div>
+
+<h2 id="-what-the-report-shows">📊 What the Report Shows</h2>
+
+<p>The report includes:</p>
+
+<ul>
+  <li><strong>Resource Summary</strong> - Count of each resource type</li>
+  <li><strong>Validation Results</strong> - Cross-reference checks</li>
+  <li><strong>Orphaned Resources</strong> - Unmanaged resources</li>
+  <li><strong>Detailed Changes</strong> - Since previous snapshot (if any)</li>
+</ul>
+
+<h2 id="-git-integration">🔄 Git Integration</h2>
+
+<p>Initialize Git tracking for version control:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> ./my-cluster-backup
+
+<span class="c"># Initialize Git repository</span>
+git init
+git add <span class="nb">.</span>
+git commit <span class="nt">-m</span> <span class="s2">"Initial cluster export - </span><span class="si">$(</span><span class="nb">date</span><span class="si">)</span><span class="s2">"</span>
+
+<span class="c"># Add remote origin (optional)</span>
+git remote add origin &lt;your-repo-url&gt;
+git push <span class="nt">-u</span> origin main
+</code></pre></div></div>
+
+<h2 id="-next-steps">🎯 Next Steps</h2>
+
+<p>Now that you’ve completed your first export:</p>
+
+<ol>
+  <li><strong><a href="/docs/commands/">Explore Commands</a></strong> - Learn about all available options</li>
+  <li><strong><a href="/docs/getting-started/configuration">Configure Kalco</a></strong> - Customize for your workflow</li>
+  <li><strong><a href="/docs/use-cases/">Use Cases</a></strong> - Common scenarios and workflows</li>
+</ol>
+
+<h2 id="-troubleshooting">🐛 Troubleshooting</h2>
+
+<h3 id="common-issues">Common Issues</h3>
+
+<p><strong>Permission denied</strong>: Ensure you have cluster access</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl auth can-i get pods <span class="nt">--all-namespaces</span>
+</code></pre></div></div>
+
+<p><strong>Empty export</strong>: Check if resources exist</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl get all <span class="nt">--all-namespaces</span>
+</code></pre></div></div>
+
+<p><strong>Report not generated</strong>: Verify output directory permissions</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">ls</span> <span class="nt">-la</span> ./my-cluster-backup/
+</code></pre></div></div>
+
+<p>Congratulations! You’ve successfully exported your first Kubernetes cluster with Kalco. 🎉</p>

@@ -1,0 +1,4 @@
+# GitHub Pages specific configuration
+# This file is used during GitHub Actions deployment
+
+baseurl: /kalco

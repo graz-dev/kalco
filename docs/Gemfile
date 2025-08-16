@@ -5,10 +5,10 @@ gem "jekyll-remote-theme"
 gem "jekyll-seo-tag"
 gem "jekyll-include-cache"
 
-# Ruby 3.4.0 compatibility - add missing default gems
-gem "csv"
-gem "logger"
-gem "base64"
+# Ruby compatibility gems (required by Jekyll 4.3.4)
+gem "csv", "~> 3.2"
+gem "logger", "~> 1.5"
+gem "base64", "~> 0.1"
 
 # Windows and JRuby does not include zoneinfo files, so bundle the tzinfo-data gem
 # and associated library.
