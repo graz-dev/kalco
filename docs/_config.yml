@@ -1,41 +1,34 @@
+# GitHub Pages Configuration for Kalco Documentation
 title: Kalco Documentation
-description: Kubernetes Analysis & Lifecycle Control - Comprehensive cluster management tool
-url: https://graz-dev.github.io/kalco
-baseurl: ""
-
-# Theme - Using Cayman theme (officially supported by GitHub Pages)
-remote_theme: pages-themes/cayman@v0.2.0
-
-# Plugins
-plugins:
-  - jekyll-remote-theme
-  - jekyll-seo-tag
-  - jekyll-sitemap
-  - jekyll-feed
-
-# SEO
-author: Graz Dev
-twitter:
-  username: grazdev
-  card: summary_large_image
-
-# Social links
-github_username: graz-dev
+description: Kubernetes Analysis & Lifecycle Control
+baseurl: "/kalco"
+url: "https://graz-dev.github.io"
 
 # Build settings
 markdown: kramdown
 highlighter: rouge
-kramdown:
-  input: GFM
-  syntax_highlighter: rouge
+plugins:
+  - jekyll-seo-tag
+
+# Collections
+collections:
+  docs:
+    output: true
+    permalink: /:collection/:name/
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+      type: "docs"
+    values:
+      layout: "default"
+      author: "Graz Dev"
 
 # Exclude from processing
 exclude:
   - Gemfile
   - Gemfile.lock
   - node_modules
-  - vendor/bundle/
-  - vendor/cache/
-  - vendor/gems/
-  - vendor/ruby/
-  - README.md
+  - vendor
+  - .git

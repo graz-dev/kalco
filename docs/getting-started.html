@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Getting Started - Kalco Documentation</title>
+    <meta name="description" content="Get started with Kalco - Installation, configuration, and first steps">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/prism.css">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="index.html">
+                    <i class="fas fa-cube"></i>
+                    <span>Kalco</span>
+                </a>
+            </div>
+            
+            <div class="nav-menu" id="nav-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="getting-started.html" class="nav-link active">Getting Started</a>
+                <a href="commands.html" class="nav-link">Commands</a>
+                <a href="configuration.html" class="nav-link">Configuration</a>
+                <a href="use-cases.html" class="nav-link">Use Cases</a>
+                <a href="faq.html" class="nav-link">FAQ</a>
+                <a href="https://github.com/graz-dev/kalco" class="nav-link external" target="_blank">
+                    <i class="fab fa-github"></i>
+                    GitHub
+                </a>
+            </div>
+            
+            <div class="nav-toggle" id="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>Getting Started with Kalco</h1>
+            <p>Install, configure, and run your first Kubernetes cluster export</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <div class="content-grid">
+                <!-- Sidebar -->
+                <aside class="sidebar">
+                    <nav class="sidebar-nav">
+                        <h3>Quick Navigation</h3>
+                        <ul>
+                            <li><a href="#prerequisites">Prerequisites</a></li>
+                            <li><a href="#installation">Installation</a></li>
+                            <li><a href="#first-run">First Run</a></li>
+                            <li><a href="#configuration">Configuration</a></li>
+                            <li><a href="#examples">Examples</a></li>
+                            <li><a href="#troubleshooting">Troubleshooting</a></li>
+                        </ul>
+                    </nav>
+                </aside>
+
+                <!-- Main Content -->
+                <div class="content">
+                    <section id="prerequisites">
+                        <h2>Prerequisites</h2>
+                        <p>Before you can use Kalco, ensure you have the following:</p>
+                        
+                        <div class="prerequisites-grid">
+                            <div class="prerequisite-item">
+                                <div class="prerequisite-icon">
+                                    <i class="fas fa-cube"></i>
+                                </div>
+                                <h3>Kubernetes Access</h3>
+                                <p>Valid kubeconfig file or in-cluster access to a Kubernetes cluster</p>
+                            </div>
+                            
+                            <div class="prerequisite-item">
+                                <div class="prerequisite-icon">
+                                    <i class="fab fa-git-alt"></i>
+                                </div>
+                                <h3>Git (Optional)</h3>
+                                <p>For version control and change tracking functionality</p>
+                            </div>
+                            
+                            <div class="prerequisite-item">
+                                <div class="prerequisite-icon">
+                                    <i class="fas fa-terminal"></i>
+                                </div>
+                                <h3>Terminal Access</h3>
+                                <p>Command line interface to run Kalco commands</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="installation">
+                        <h2>Installation</h2>
+                        <p>Choose the installation method that best fits your environment:</p>
+
+                        <div class="install-methods">
+                            <div class="install-method">
+                                <h3>Quick Install (Recommended)</h3>
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span>Linux/macOS</span>
+                                        <button class="copy-btn" data-clipboard-target="#quick-install">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                    <pre><code id="quick-install" class="language-bash">curl -fsSL https://raw.githubusercontent.com/graz-dev/kalco/master/scripts/install.sh | bash</code></pre>
+                                </div>
+                                <p>This script automatically downloads and installs the latest version of Kalco.</p>
+                            </div>
+
+                            <div class="install-method">
+                                <h3>Homebrew</h3>
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span>macOS/Linux</span>
+                                        <button class="copy-btn" data-clipboard-target="#homebrew-install">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                    <pre><code id="homebrew-install" class="language-bash">brew install graz-dev/tap/kalco</code></pre>
+                                </div>
+                                <p>Install via Homebrew for easy updates and management.</p>
+                            </div>
+
+                            <div class="install-method">
+                                <h3>Build from Source</h3>
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span>Source</span>
+                                        <button class="copy-btn" data-clipboard-target="#source-install">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                    <pre><code id="source-install" class="language-bash">git clone https://github.com/graz-dev/kalco.git
+cd kalco
+go mod tidy
+go build -o kalco ./cmd</code></pre>
+                                </div>
+                                <p>Build from source for the latest development version.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="first-run">
+                        <h2>First Run</h2>
+                        <p>Once Kalco is installed, you can start using it immediately:</p>
+
+                        <div class="first-run-steps">
+                            <div class="step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h3>Verify Installation</h3>
+                                    <div class="code-block">
+                                        <pre><code class="language-bash">kalco --version</code></pre>
+                                    </div>
+                                    <p>Check that Kalco is properly installed and accessible.</p>
+                                </div>
+                            </div>
+
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h3>Check Help</h3>
+                                    <div class="code-block">
+                                        <pre><code class="language-bash">kalco --help</code></pre>
+                                    </div>
+                                    <p>Explore available commands and options.</p>
+                                </div>
+                            </div>
+
+                            <div class="step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h3>Run First Export</h3>
+                                    <div class="code-block">
+                                        <pre><code class="language-bash">kalco export --output-dir ./my-cluster</code></pre>
+                                    </div>
+                                    <p>Export your first cluster snapshot to a local directory.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="configuration">
+                        <h2>Configuration</h2>
+                        <p>Kalco works out of the box, but you can customize its behavior:</p>
+
+                        <div class="config-options">
+                            <div class="config-option">
+                                <h3>Output Directory</h3>
+                                <div class="code-block">
+                                    <pre><code class="language-bash">kalco export --output-dir /path/to/output</code></pre>
+                                </div>
+                                <p>Specify where to save exported resources.</p>
+                            </div>
+
+                            <div class="config-option">
+                                <h3>Kubeconfig</h3>
+                                <div class="code-block">
+                                    <pre><code class="language-bash">kalco export --kubeconfig ~/.kube/config</code></pre>
+                                </div>
+                                <p>Use a specific kubeconfig file.</p>
+                            </div>
+
+                            <div class="config-option">
+                                <h3>Git Integration</h3>
+                                <div class="code-block">
+                                    <pre><code class="language-bash">kalco export --git-push --commit-message "Weekly backup"</code></pre>
+                                </div>
+                                <p>Automatically commit changes and push to remote.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="examples">
+                        <h2>Common Examples</h2>
+                        <p>Here are some practical examples of how to use Kalco:</p>
+
+                        <div class="examples-grid">
+                            <div class="example-card">
+                                <h3>Basic Export</h3>
+                                <div class="code-block">
+                                    <pre><code class="language-bash"># Export all resources
+kalco export
+
+# Export to specific directory
+kalco export -o ./cluster-backup</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="example-card">
+                                <h3>Git Integration</h3>
+                                <div class="code-block">
+                                    <pre><code class="language-bash"># Initialize git repo and commit
+kalco export --git-push
+
+# Custom commit message
+kalco export --commit-message "Production backup $(date)"</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="example-card">
+                                <h3>Validation</h3>
+                                <div class="code-block">
+                                    <pre><code class="language-bash"># Validate exported resources
+kalco validate
+
+# Generate validation report
+kalco validate --output html</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="troubleshooting">
+                        <h2>Troubleshooting</h2>
+                        <p>Common issues and their solutions:</p>
+
+                        <div class="troubleshooting-grid">
+                            <div class="trouble-item">
+                                <h3>Permission Denied</h3>
+                                <p><strong>Error:</strong> <code>permission denied</code></p>
+                                <p><strong>Solution:</strong> Ensure you have access to the Kubernetes cluster and the output directory is writable.</p>
+                            </div>
+
+                            <div class="trouble-item">
+                                <h3>Kubeconfig Not Found</h3>
+                                <p><strong>Error:</strong> <code>no configuration has been provided</code></p>
+                                <p><strong>Solution:</strong> Set <code>KUBECONFIG</code> environment variable or use <code>--kubeconfig</code> flag.</p>
+                            </div>
+
+                            <div class="trouble-item">
+                                <h3>Git Repository Issues</h3>
+                                <p><strong>Error:</strong> <code>not a git repository</code></p>
+                                <p><strong>Solution:</strong> Initialize git in the output directory or use <code>--no-git</code> flag.</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Kalco</h3>
+                    <p>Kubernetes Analysis & Lifecycle Control</p>
+                    <div class="social-links">
+                        <a href="https://github.com/graz-dev/kalco" target="_blank">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="https://twitter.com/graz_dev" target="_blank">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Documentation</h4>
+                    <ul>
+                        <li><a href="getting-started.html">Getting Started</a></li>
+                        <li><a href="commands.html">Commands</a></li>
+                        <li><a href="configuration.html">Configuration</a></li>
+                        <li><a href="use-cases.html">Use Cases</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Community</h4>
+                    <ul>
+                        <li><a href="https://github.com/graz-dev/kalco/issues">Issues</a></li>
+                        <li><a href="https://github.com/graz-dev/kalco/discussions">Discussions</a></li>
+                        <li><a href="https://github.com/graz-dev/kalco/pulls">Pull Requests</a></li>
+                        <li><a href="contributing.html">Contributing</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="https://graz-dev.github.io/kalco">Documentation</a></li>
+                        <li><a href="https://github.com/graz-dev/kalco/releases">Releases</a></li>
+                        <li><a href="https://github.com/graz-dev/kalco/blob/main/LICENSE">License</a></li>
+                        <li><a href="https://graz-dev.github.io">Graz Dev</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Graz Dev. Made with ❤️ for the Kubernetes community.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="assets/js/prism.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+</html>
