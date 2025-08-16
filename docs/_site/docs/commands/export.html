@@ -14,9 +14,10 @@
   <style id="jtd-nav-activation">
   
 
+    .site-nav > ul.nav-list:first-child > li > a,
     
-    .site-nav > ul.nav-list:first-child > li:not(:nth-child(11)) > a,
-    .site-nav > ul.nav-list:first-child > li > ul > li a {
+    .site-nav > ul.nav-list:first-child > li > ul > li:not(:nth-child(1)) > a,
+    .site-nav > ul.nav-list:first-child > li > ul > li > ul > li a {
       background-image: none;
     }
 
@@ -25,12 +26,14 @@
       background-image: none;
     }
 
-    .site-nav > ul.nav-list:first-child > li:nth-child(11) > a {
+    .site-nav > ul.nav-list:first-child > li:nth-child(3) > ul > li:nth-child(1) > a {
       font-weight: 600;
       text-decoration: none;
-    }.site-nav > ul.nav-list:first-child > li:nth-child(11) > button svg {
+    }.site-nav > ul.nav-list:first-child > li:nth-child(3) > button svg,
+    .site-nav > ul.nav-list:first-child > li:nth-child(3) > ul > li:nth-child(1) > button svg {
       transform: rotate(-90deg);
-    }.site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(11) > ul.nav-list {
+    }.site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(3) > ul.nav-list,
+    .site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(3) > ul.nav-list > li.nav-list-item:nth-child(1) > ul.nav-list {
       display: block;
     }
   </style>
@@ -54,16 +57,16 @@
 <meta name="generator" content="Jekyll v4.3.4" />
 <meta property="og:title" content="kalco export" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="Export cluster resources to organized YAML files" />
-<meta property="og:description" content="Export cluster resources to organized YAML files" />
-<link rel="canonical" href="http://0.0.0.0:4000/kalco/commands/export.html" />
-<meta property="og:url" content="http://0.0.0.0:4000/kalco/commands/export.html" />
+<meta name="description" content="Kubernetes Analysis &amp; Lifecycle Control - Comprehensive cluster management tool" />
+<meta property="og:description" content="Kubernetes Analysis &amp; Lifecycle Control - Comprehensive cluster management tool" />
+<link rel="canonical" href="http://0.0.0.0:4000/kalco/docs/commands/export.html" />
+<meta property="og:url" content="http://0.0.0.0:4000/kalco/docs/commands/export.html" />
 <meta property="og:site_name" content="Kalco Documentation" />
 <meta property="og:type" content="website" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="kalco export" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebPage","description":"Export cluster resources to organized YAML files","headline":"kalco export","url":"http://0.0.0.0:4000/kalco/commands/export.html"}</script>
+{"@context":"https://schema.org","@type":"WebPage","description":"Kubernetes Analysis &amp; Lifecycle Control - Comprehensive cluster management tool","headline":"kalco export","url":"http://0.0.0.0:4000/kalco/docs/commands/export.html"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -154,9 +157,9 @@
   
     <ul class="nav-list"><li class="nav-list-item"><a href="/kalco/" class="nav-list-link">Home</a></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="toggle items in Getting Started category" aria-pressed="false">
         <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
-      </button><a href="/kalco/docs/getting-started/" class="nav-list-link">Getting Started</a><ul class="nav-list"><li class="nav-list-item"><a href="/kalco/docs/getting-started/installation.html" class="nav-list-link">Installation</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/first-run.html" class="nav-list-link">First Run</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/configuration.html" class="nav-list-link">Configuration</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/troubleshooting.html" class="nav-list-link">Troubleshooting</a></li></ul></li><li class="nav-list-item"><a href="/kalco/docs/commands/" class="nav-list-link">Commands Reference</a></li><li class="nav-list-item"><a href="/kalco/commands/" class="nav-list-link">Commands Reference</a></li><li class="nav-list-item"><a href="/kalco/configuration.html" class="nav-list-link">Configuration</a></li><li class="nav-list-item"><a href="/kalco/contributing.html" class="nav-list-link">Contributing</a></li><li class="nav-list-item"><a href="/kalco/faq.html" class="nav-list-link">FAQ</a></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="toggle items in Getting Started category" aria-pressed="false">
+      </button><a href="/kalco/docs/getting-started/" class="nav-list-link">Getting Started</a><ul class="nav-list"><li class="nav-list-item"><a href="/kalco/docs/getting-started/installation.html" class="nav-list-link">Installation</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/first-run.html" class="nav-list-link">First Run</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/configuration.html" class="nav-list-link">Configuration</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="toggle items in Commands Reference category" aria-pressed="false">
         <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
-      </button><a href="/kalco/getting-started.html" class="nav-list-link">Getting Started</a><ul class="nav-list"><li class="nav-list-item"><a href="/kalco/docs/getting-started/installation.html" class="nav-list-link">Installation</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/first-run.html" class="nav-list-link">First Run</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/configuration.html" class="nav-list-link">Configuration</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/troubleshooting.html" class="nav-list-link">Troubleshooting</a></li></ul></li><li class="nav-list-item"><a href="/kalco/use-cases.html" class="nav-list-link">Use Cases</a></li><li class="nav-list-item"><a href="/kalco/commands/analyze.html" class="nav-list-link">kalco analyze</a></li><li class="nav-list-item"><a href="/kalco/commands/export.html" class="nav-list-link">kalco export</a></li><li class="nav-list-item"><a href="/kalco/commands/validate.html" class="nav-list-link">kalco validate</a></li></ul>
+      </button><a href="/kalco/docs/commands/" class="nav-list-link">Commands Reference</a><ul class="nav-list"><li class="nav-list-item"><a href="/kalco/docs/commands/export.html" class="nav-list-link">kalco export</a></li></ul></li></ul>
   
 </nav>
 
@@ -191,7 +194,14 @@
 </div>
 
     <div class="main-content-wrap">
-      
+      <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+  <ol class="breadcrumb-nav-list">
+    <li class="breadcrumb-nav-list-item"><a href="/kalco/docs/commands/">Commands Reference</a></li>
+    <li class="breadcrumb-nav-list-item"><span>kalco export</span></li>
+  </ol>
+</nav>
+
+
       <div id="main-content" class="main-content">
         <main>
           
@@ -397,31 +407,62 @@ kalco <span class="nb">export</span> <span class="se">\</span>
 </h2>
     
 
-<p>The export creates the following directory structure:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cluster-backup/
-├── default/                    # Namespace
-│   ├── Pod/
-│   │   ├── app-pod-1.yaml
-│   │   └── app-pod-2.yaml
-│   ├── Service/
-│   │   └── app-service.yaml
-│   └── Deployment/
-│       └── app-deployment.yaml
-├── kube-system/               # System namespace
-│   ├── Pod/
-│   ├── Service/
-│   └── DaemonSet/
-├── _cluster/                  # Cluster-scoped resources
-│   ├── Node/
-│   │   ├── node-1.yaml
-│   │   └── node-2.yaml
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>output-directory/
+├── _cluster/                    # Cluster-scoped resources
 │   ├── ClusterRole/
-│   └── CustomResourceDefinition/
-├── .git/                      # Git repository (if enabled)
-└── kalco-reports/            # Generated reports
-    ├── export-summary.yaml
-    └── change-report.html
+│   │   ├── admin.yaml
+│   │   └── view.yaml
+│   ├── ClusterRoleBinding/
+│   └── StorageClass/
+├── default/                     # Default namespace
+│   ├── ConfigMap/
+│   ├── Service/
+│   └── ServiceAccount/
+├── kube-system/                 # System namespace
+│   ├── Deployment/
+│   ├── Service/
+│   └── ConfigMap/
+└── kalco-reports/               # Analysis reports
+    ├── Cluster-snapshot-2025-08-16-14-55-34.md
+    └── Changes-and-validation-demo--2025-08-16-14-55-34.md
+</code></pre></div></div>
+<h2 id="resource-filtering">
+  
+  
+    <a href="#resource-filtering" class="anchor-heading" aria-labelledby="resource-filtering"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Resource Filtering
+  
+  
+</h2>
+    
+<h3 id="include-specific-resources">
+  
+  
+    <a href="#include-specific-resources" class="anchor-heading" aria-labelledby="include-specific-resources"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Include Specific Resources
+  
+  
+</h3>
+    
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Export only core resources</span>
+kalco <span class="nb">export</span> <span class="nt">--resources</span> pods,services,deployments,configmaps
+
+<span class="c"># Export with CRDs</span>
+kalco <span class="nb">export</span> <span class="nt">--resources</span> pods,services,mycustomresource
+</code></pre></div></div>
+<h3 id="exclude-resources">
+  
+  
+    <a href="#exclude-resources" class="anchor-heading" aria-labelledby="exclude-resources"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Exclude Resources
+  
+  
+</h3>
+    
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Exclude noisy resources</span>
+kalco <span class="nb">export</span> <span class="nt">--exclude</span> events,replicasets,endpoints
+
+<span class="c"># Exclude specific CRDs</span>
+kalco <span class="nb">export</span> <span class="nt">--exclude</span> events,mycustomresource
 </code></pre></div></div>
 <h2 id="git-integration-1">
   
@@ -431,137 +472,102 @@ kalco <span class="nb">export</span> <span class="se">\</span>
   
 </h2>
     
-
-<p>When Git integration is enabled:</p>
-
-<ol>
-  <li><strong>Repository Initialization</strong>: Creates a Git repository if none exists</li>
-  <li><strong>Change Tracking</strong>: Commits changes with timestamps and metadata</li>
-  <li><strong>Remote Push</strong>: Optionally pushes to remote origin</li>
-  <li><strong>Change Reports</strong>: Generates detailed change reports between exports</li>
-</ol>
-<h3 id="git-workflow">
+<h3 id="automatic-git-operations">
   
   
-    <a href="#git-workflow" class="anchor-heading" aria-labelledby="git-workflow"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Git Workflow
+    <a href="#automatic-git-operations" class="anchor-heading" aria-labelledby="automatic-git-operations"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Automatic Git Operations
   
   
 </h3>
     
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># First export - initializes repository</span>
-kalco <span class="nb">export</span> <span class="nt">--output</span> ./cluster-repo <span class="nt">--commit-message</span> <span class="s2">"Initial export"</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Initialize Git and commit</span>
+kalco <span class="nb">export</span> <span class="nt">--git-push</span>
 
-<span class="c"># Subsequent exports - tracks changes</span>
-kalco <span class="nb">export</span> <span class="nt">--output</span> ./cluster-repo <span class="nt">--commit-message</span> <span class="s2">"Weekly update"</span>
+<span class="c"># Custom commit message</span>
+kalco <span class="nb">export</span> <span class="nt">--git-push</span> <span class="nt">--commit-message</span> <span class="s2">"Weekly backup"</span>
 
-<span class="c"># View change history</span>
-<span class="nb">cd </span>cluster-repo
-git log <span class="nt">--oneline</span>
-git diff HEAD~1 HEAD
+<span class="c"># Push to remote origin</span>
+kalco <span class="nb">export</span> <span class="nt">--git-push</span> <span class="nt">--commit-message</span> <span class="s2">"Production snapshot"</span>
 </code></pre></div></div>
-<h2 id="filtering-options">
+<h3 id="git-repository-setup">
   
   
-    <a href="#filtering-options" class="anchor-heading" aria-labelledby="filtering-options"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Filtering Options
+    <a href="#git-repository-setup" class="anchor-heading" aria-labelledby="git-repository-setup"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Git Repository Setup
+  
+  
+</h3>
+    
+
+<p>The export command will:</p>
+<ol>
+  <li>Initialize Git repository if not present</li>
+  <li>Add all exported files</li>
+  <li>Commit with timestamp or custom message</li>
+  <li>Push to remote origin if <code class="language-plaintext highlighter-rouge">--git-push</code> is specified</li>
+</ol>
+<h2 id="progress-and-output">
+  
+  
+    <a href="#progress-and-output" class="anchor-heading" aria-labelledby="progress-and-output"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Progress and Output
   
   
 </h2>
     
-<h3 id="namespace-filtering">
+<h3 id="verbose-mode">
   
   
-    <a href="#namespace-filtering" class="anchor-heading" aria-labelledby="namespace-filtering"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Namespace Filtering
-  
-  
-</h3>
-    
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Single namespace</span>
-kalco <span class="nb">export</span> <span class="nt">--namespaces</span> production
-
-<span class="c"># Multiple namespaces</span>
-kalco <span class="nb">export</span> <span class="nt">--namespaces</span> <span class="s2">"default,kube-system,monitoring"</span>
-
-<span class="c"># All namespaces except system ones</span>
-kalco <span class="nb">export</span> <span class="nt">--exclude-namespaces</span> <span class="s2">"kube-system,kube-public,kube-node-lease"</span>
-</code></pre></div></div>
-<h3 id="resource-type-filtering">
-  
-  
-    <a href="#resource-type-filtering" class="anchor-heading" aria-labelledby="resource-type-filtering"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Resource Type Filtering
+    <a href="#verbose-mode" class="anchor-heading" aria-labelledby="verbose-mode"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Verbose Mode
   
   
 </h3>
     
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Core workload resources only</span>
-kalco <span class="nb">export</span> <span class="nt">--resources</span> <span class="s2">"pods,services,deployments,configmaps,secrets"</span>
-
-<span class="c"># Exclude noisy resources</span>
-kalco <span class="nb">export</span> <span class="nt">--exclude</span> <span class="s2">"events,replicasets,endpoints"</span>
-
-<span class="c"># Custom resources only</span>
-kalco <span class="nb">export</span> <span class="nt">--crds-only</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kalco <span class="nb">export</span> <span class="nt">--verbose</span>
 </code></pre></div></div>
-<h2 id="performance-considerations">
+
+<p>Shows:</p>
+<ul>
+  <li>Resource discovery progress</li>
+  <li>File writing operations</li>
+  <li>Git operations</li>
+  <li>Validation results</li>
+</ul>
+<h3 id="dry-run">
   
   
-    <a href="#performance-considerations" class="anchor-heading" aria-labelledby="performance-considerations"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Performance Considerations
+    <a href="#dry-run" class="anchor-heading" aria-labelledby="dry-run"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Dry Run
+  
+  
+</h3>
+    
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kalco <span class="nb">export</span> <span class="nt">--dry-run</span>
+</code></pre></div></div>
+
+<p>Shows what would be exported without writing files:</p>
+<ul>
+  <li>Resource counts by namespace</li>
+  <li>File paths that would be created</li>
+  <li>Git operations that would be performed</li>
+</ul>
+<h2 id="exit-codes">
+  
+  
+    <a href="#exit-codes" class="anchor-heading" aria-labelledby="exit-codes"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Exit Codes
   
   
 </h2>
     
 
 <ul>
-  <li><strong>Large Clusters</strong>: Use namespace filtering to reduce export size</li>
-  <li><strong>Network Resources</strong>: Exclude events and endpoints for faster exports</li>
-  <li><strong>Storage</strong>: Consider using compression for large exports</li>
-  <li><strong>Git History</strong>: Large repositories may need periodic cleanup</li>
+  <li><code class="language-plaintext highlighter-rouge">0</code> - Success</li>
+  <li><code class="language-plaintext highlighter-rouge">1</code> - General error</li>
+  <li><code class="language-plaintext highlighter-rouge">2</code> - Configuration error</li>
+  <li><code class="language-plaintext highlighter-rouge">3</code> - Kubernetes connection error</li>
+  <li><code class="language-plaintext highlighter-rouge">4</code> - File system error</li>
+  <li><code class="language-plaintext highlighter-rouge">5</code> - Git operation error</li>
 </ul>
-<h2 id="troubleshooting">
-  
-  
-    <a href="#troubleshooting" class="anchor-heading" aria-labelledby="troubleshooting"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Troubleshooting
-  
-  
-</h2>
-    
-<h3 id="common-issues">
-  
-  
-    <a href="#common-issues" class="anchor-heading" aria-labelledby="common-issues"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Common Issues
-  
-  
-</h3>
-    
-
-<p><strong>Permission Errors:</strong></p>
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Check cluster access</span>
-kubectl auth can-i get pods <span class="nt">--all-namespaces</span>
-
-<span class="c"># Use specific kubeconfig</span>
-kalco <span class="nb">export</span> <span class="nt">--kubeconfig</span> ~/.kube/production-config
-</code></pre></div></div>
-
-<p><strong>Large Exports:</strong></p>
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Use filtering to reduce size</span>
-kalco <span class="nb">export</span> <span class="nt">--exclude</span> events,endpoints,replicasets
-
-<span class="c"># Export specific namespaces</span>
-kalco <span class="nb">export</span> <span class="nt">--namespaces</span> production,staging
-</code></pre></div></div>
-
-<p><strong>Git Issues:</strong></p>
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Check Git configuration</span>
-git config <span class="nt">--global</span> user.name <span class="s2">"Your Name"</span>
-git config <span class="nt">--global</span> user.email <span class="s2">"your.email@example.com"</span>
-
-<span class="c"># Manual Git setup</span>
-<span class="nb">cd </span>output-directory
-git init
-git remote add origin &lt;repository-url&gt;
-</code></pre></div></div>
 <h2 id="related-commands">
   
   
@@ -572,19 +578,10 @@ git remote add origin &lt;repository-url&gt;
     
 
 <ul>
-  <li><a href="/kalco/commands/validate.html"><code class="language-plaintext highlighter-rouge">kalco validate</code></a> - Validate exported resources</li>
-  <li><a href="/kalco/commands/analyze.html#orphaned"><code class="language-plaintext highlighter-rouge">kalco analyze orphaned</code></a> - Find cleanup opportunities</li>
-  <li><a href="report.md"><code class="language-plaintext highlighter-rouge">kalco report</code></a> - Generate comprehensive reports</li>
-</ul><hr />
-
-<div class="table-wrapper"><table>
-  <tbody>
-    <tr>
-      <td><a href="/kalco/commands/">← Commands Overview</a></td>
-      <td><a href="/kalco/commands/validate.html">Validate Command →</a></td>
-    </tr>
-  </tbody>
-</table></div>
+  <li><strong><a href="/kalco/docs/commands/validate">validate</a></strong> - Validate exported resources</li>
+  <li><strong><a href="/kalco/docs/commands/analyze">analyze</a></strong> - Analyze cluster state</li>
+  <li><strong><a href="/kalco/docs/commands/config">config</a></strong> - Manage configuration</li>
+</ul>
 
           
 

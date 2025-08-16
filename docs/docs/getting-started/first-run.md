@@ -1,219 +1,128 @@
 ---
 layout: default
 title: First Run
-parent: Getting Started
 nav_order: 2
+parent: Getting Started
 ---
 
 # First Run
 
-Get Kalco running and export your first Kubernetes cluster in minutes.
+Learn how to export your first Kubernetes cluster with Kalco.
 
-## Prerequisites
+## 🎯 Prerequisites
 
-Before running Kalco for the first time, ensure you have:
+Before you begin, ensure you have:
 
-- ✅ **Kalco installed** - [Installation guide]({{ site.baseurl }}/docs/getting-started/installation)
-- ✅ **Kubernetes access** - Valid kubeconfig or in-cluster access
-- ✅ **Cluster running** - A Kubernetes cluster to export
+- ✅ Kalco installed and working
+- ✅ `kubectl` configured and connected to a cluster
+- ✅ Access to a Kubernetes cluster (local or remote)
 
-## Verify Installation
+## 🔍 Verify Cluster Access
 
-First, let's confirm Kalco is properly installed:
-
-```bash
-# Check version
-kalco --version
-
-# Check help
-kalco --help
-
-# Verify binary location
-which kalco
-```
-
-You should see output similar to:
-```
-Kalco v1.0.0
-Kubernetes Analysis & Lifecycle Control
-```
-
-## Connect to Your Cluster
-
-Kalco automatically detects your Kubernetes configuration:
+First, verify that you can access your cluster:
 
 ```bash
-# Check current context
-kubectl config current-context
-
-# List available contexts
-kubectl config get-contexts
-
-# Switch context if needed
-kubectl config use-context your-cluster-name
+kubectl cluster-info
+kubectl get nodes
 ```
 
-## Your First Export
-
-### Basic Export
+## 🚀 Basic Export
 
 Start with a simple export to see Kalco in action:
 
 ```bash
-# Export all resources to default directory
+# Export to a timestamped directory
 kalco export
+
+# Or specify a custom output directory
+kalco export --output ./my-cluster-backup
 ```
 
-This will:
-- Create a timestamped output directory
-- Export all cluster resources
-- Organize them by namespace and type
-- Initialize a Git repository (if Git is available)
+## 📁 Understanding the Output
 
-### Custom Output Directory
-
-Specify where to save your export:
-
-```bash
-# Export to specific directory
-kalco export --output-dir ./my-cluster-backup
-
-# Export to absolute path
-kalco export --output-dir /path/to/backups/production-cluster
-```
-
-### Git Integration
-
-Enable version control for your exports:
-
-```bash
-# Initialize Git and commit changes
-kalco export --git-push
-
-# Custom commit message
-kalco export --commit-message "Initial cluster export $(date)"
-
-# Push to remote (if configured)
-kalco export --git-push --remote origin
-```
-
-## Understanding the Output
-
-After running `kalco export`, you'll see a directory structure like this:
+Kalco creates an organized directory structure:
 
 ```
 my-cluster-backup/
-├── _cluster/                    # Cluster-scoped resources
+├── _cluster/           # Cluster-scoped resources
 │   ├── ClusterRole/
 │   ├── ClusterRoleBinding/
-│   ├── CustomResourceDefinition/
-│   └── StorageClass/
-├── default/                     # Default namespace
+│   ├── StorageClass/
+│   └── ...
+├── default/            # Default namespace
 │   ├── ConfigMap/
+│   ├── Service/
+│   └── ...
+├── kube-system/        # System namespace
 │   ├── Deployment/
 │   ├── Service/
-│   └── ServiceAccount/
-├── kube-system/                 # System namespace
-│   ├── ConfigMap/
-│   ├── DaemonSet/
-│   ├── Deployment/
-│   └── Service/
-└── kalco-reports/               # Generated reports
-    └── Initial-cluster-export.md
+│   └── ...
+└── kalco-reports/      # Analysis reports
+    ├── Cluster-snapshot-2025-08-16-14-55-34.md
+    └── ...
 ```
 
-## What Gets Exported
+## 🔍 View the Report
 
-Kalco automatically discovers and exports:
-
-- **Native Kubernetes Resources** - Pods, Deployments, Services, etc.
-- **Custom Resources (CRDs)** - Any CRDs installed in your cluster
-- **All Namespaces** - Including system namespaces
-- **Resource Metadata** - Labels, annotations, and relationships
-
-## Next Steps
-
-Now that you've exported your first cluster:
-
-1. **[Explore the Output]({{ site.baseurl }}/docs/getting-started/configuration)** - Understand the exported structure
-2. **[Validate Resources]({{ site.baseurl }}/docs/commands/validation)** - Check for configuration issues
-3. **[Analyze Cluster]({{ site.baseurl }}/docs/commands/analysis)** - Find optimization opportunities
-4. **[Generate Reports]({{ site.baseurl }}/docs/commands/reports)** - Create comprehensive documentation
-
-## Common First-Run Scenarios
-
-### Development Cluster
+Check the generated report to understand your cluster:
 
 ```bash
-# Export development cluster
-kalco export --output-dir ./dev-cluster --commit-message "Dev cluster snapshot"
-
-# Exclude temporary resources
-kalco export --exclude events,pods --output-dir ./dev-cluster-clean
+# View the latest report
+ls -la ./my-cluster-backup/kalco-reports/
+cat ./my-cluster-backup/kalco-reports/*.md | head -50
 ```
 
-### Production Cluster
+## 📊 What the Report Shows
+
+The report includes:
+
+- **Resource Summary** - Count of each resource type
+- **Validation Results** - Cross-reference checks
+- **Orphaned Resources** - Unmanaged resources
+- **Detailed Changes** - Since previous snapshot (if any)
+
+## 🔄 Git Integration
+
+Initialize Git tracking for version control:
 
 ```bash
-# Export production with detailed logging
-kalco export --verbose --output-dir ./prod-backup
+cd ./my-cluster-backup
 
-# Export with Git versioning
-kalco export --git-push --commit-message "Production backup $(date)" --output-dir ./prod-backup
-```
-
-### Multi-Cluster Setup
-
-```bash
-# Export staging cluster
-kalco export --context staging --output-dir ./staging-cluster
-
-# Export production cluster
-kalco export --context production --output-dir ./production-cluster
-```
-
-## Troubleshooting
-
-### Permission Issues
-
-```bash
-# Check cluster access
-kubectl get nodes
-
-# Verify kubeconfig
-kubectl config view
-```
-
-### Resource Export Issues
-
-```bash
-# Enable verbose output
-kalco export --verbose
-
-# Check specific resource types
-kubectl api-resources
-```
-
-### Git Issues
-
-```bash
-# Check Git status
-git status
-
-# Initialize Git manually
+# Initialize Git repository
 git init
 git add .
-git commit -m "Initial commit"
+git commit -m "Initial cluster export - $(date)"
+
+# Add remote origin (optional)
+git remote add origin <your-repo-url>
+git push -u origin main
 ```
 
-## Success Indicators
+## 🎯 Next Steps
 
-You'll know your first run was successful when you see:
+Now that you've completed your first export:
 
-- ✅ **Export completed** - No error messages
-- ✅ **Output directory created** - With organized resource files
-- ✅ **Git repository initialized** - If Git integration enabled
-- ✅ **Resources exported** - YAML files for each resource
-- ✅ **Report generated** - Summary of the export process
+1. **[Explore Commands]({{ site.baseurl }}/docs/commands/)** - Learn about all available options
+2. **[Configure Kalco]({{ site.baseurl }}/docs/getting-started/configuration)** - Customize for your workflow
+3. **[Use Cases]({{ site.baseurl }}/docs/use-cases/)** - Common scenarios and workflows
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+**Permission denied**: Ensure you have cluster access
+```bash
+kubectl auth can-i get pods --all-namespaces
+```
+
+**Empty export**: Check if resources exist
+```bash
+kubectl get all --all-namespaces
+```
+
+**Report not generated**: Verify output directory permissions
+```bash
+ls -la ./my-cluster-backup/
+```
 
 Congratulations! You've successfully exported your first Kubernetes cluster with Kalco. 🎉

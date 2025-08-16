@@ -1,292 +1,204 @@
 ---
 layout: default
 title: Configuration
-parent: Getting Started
 nav_order: 3
+parent: Getting Started
 ---
 
 # Configuration
 
-Customize Kalco to fit your environment and workflow requirements.
+Customize Kalco to fit your workflow and requirements.
 
-## Overview
+## ⚙️ Configuration Methods
 
-Kalco works out of the box with sensible defaults, but you can customize its behavior through:
+Kalco supports multiple configuration methods in order of precedence:
 
-- **Command-line options** - Per-command configuration
-- **Environment variables** - System-wide settings
-- **Configuration files** - Persistent settings
-- **Project-specific configs** - Per-project customization
+1. **Command-line flags** (highest priority)
+2. **Environment variables**
+3. **Configuration files**
+4. **Default values** (lowest priority)
 
-## Command-Line Options
+## 🚩 Command-Line Options
 
-### Global Options
-
-These options are available for all commands:
-
-| Option | Description | Default |
-|--------|-------------|---------|
-| `--verbose` | Enable detailed logging | `false` |
-| `--quiet` | Suppress output | `false` |
-| `--kubeconfig` | Path to kubeconfig file | Auto-detected |
-| `--context` | Kubernetes context to use | Current context |
-| `--output-dir` | Output directory path | Timestamped directory |
-
-### Export Options
-
-Customize the export process:
+### Basic Options
 
 ```bash
-# Basic export with options
-kalco export \
-  --output-dir ./my-cluster \
-  --verbose \
-  --exclude events,pods \
-  --include-namespaces default,production
+# Output directory
+kalco export --output ./cluster-backup
+
+# Specific namespaces
+kalco export --namespaces default,kube-system,production
+
+# Resource filtering
+kalco export --resources pods,services,deployments
+kalco export --exclude events,replicasets,endpoints
+
+# Verbose output
+kalco export --verbose
 ```
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| `--output-dir` | Output directory | `./kalco-export-<timestamp>` |
-| `--exclude` | Resource types to exclude | None |
-| `--include-namespaces` | Namespaces to include | All namespaces |
-| `--exclude-namespaces` | Namespaces to exclude | None |
-| `--git-push` | Enable Git integration | `false` |
-| `--commit-message` | Custom commit message | Timestamp-based |
+### Git Integration
 
-## Environment Variables
+```bash
+# Enable Git operations
+kalco export --git-push
+
+# Custom commit message
+kalco export --commit-message "Weekly backup - $(date)"
+
+# Dry run (no actual export)
+kalco export --dry-run
+```
+
+## 🌍 Environment Variables
 
 Set these environment variables for persistent configuration:
 
 ```bash
-# Set in your shell profile (.bashrc, .zshrc, etc.)
-export KALCO_OUTPUT_DIR="/path/to/exports"
-export KALCO_KUBECONFIG="$HOME/.kube/config"
-export KALCO_VERBOSE="true"
+# Output directory
+export KALCO_OUTPUT_DIR="./cluster-exports"
+
+# Default namespaces
+export KALCO_NAMESPACES="default,kube-system,production"
+
+# Git integration
 export KALCO_GIT_PUSH="true"
+export KALCO_COMMIT_MESSAGE="Cluster snapshot"
+
+# Resource filtering
+export KALCO_RESOURCES="pods,services,deployments,configmaps"
+export KALCO_EXCLUDE="events,replicasets,endpoints"
 ```
 
-### Available Variables
+## 📁 Configuration Files
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `KALCO_OUTPUT_DIR` | Default output directory | Current directory |
-| `KALCO_KUBECONFIG` | Path to kubeconfig | Auto-detected |
-| `KALCO_VERBOSE` | Enable verbose output | `false` |
-| `KALCO_GIT_PUSH` | Enable Git integration | `false` |
-| `KALCO_COMMIT_MESSAGE` | Default commit message | Timestamp |
-
-## Configuration Files
-
-### Project Configuration
-
-Create a `.kalco.yml` file in your project directory:
+Create a configuration file for complex setups:
 
 ```yaml
-# .kalco.yml
-output_dir: ./cluster-exports
-exclude:
-  - events
-  - pods
-  - endpoints
-include_namespaces:
-  - default
-  - production
-exclude_namespaces:
-  - kube-system
-  - kube-public
+# ~/.kalco/config.yaml
+output:
+  directory: "./cluster-backups"
+  format: "yaml"
+  compress: false
+
+filtering:
+  namespaces:
+    - "default"
+    - "kube-system"
+    - "production"
+  resources:
+    include:
+      - "pods"
+      - "services"
+      - "deployments"
+      - "configmaps"
+    exclude:
+      - "events"
+      - "replicasets"
+      - "endpoints"
+
 git:
   enabled: true
-  commit_message: "Cluster export {timestamp}"
-  push: false
+  auto_push: false
+  commit_message: "Cluster export - {timestamp}"
+  remote_origin: "origin"
+
 validation:
-  enabled: true
-  output_format: html
-analysis:
+  cross_references: true
   orphaned_resources: true
-  broken_references: true
-  security_scan: true
+  detailed_reporting: true
+
+output:
+  reports:
+    enabled: true
+    format: "markdown"
+    include_changes: true
+    include_validation: true
 ```
 
-### Global Configuration
+## 🔧 Advanced Configuration
 
-Create a global configuration file at `~/.kalco/config.yml`:
-
-```yaml
-# ~/.kalco/config.yml
-defaults:
-  output_dir: ~/kalco-exports
-  verbose: false
-  git_push: false
-  
-clusters:
-  production:
-    context: prod-cluster
-    output_dir: ~/kalco-exports/production
-    git_push: true
-    
-  staging:
-    context: staging-cluster
-    output_dir: ~/kalco-exports/staging
-    git_push: false
-    
-  development:
-    context: dev-cluster
-    output_dir: ~/kalco-exports/dev
-    git_push: false
-```
-
-## Advanced Configuration
-
-### Resource Filtering
-
-Fine-tune which resources get exported:
+### Custom Resource Types
 
 ```bash
-# Export only specific resource types
-kalco export --resources deployments,services,configmaps
+# Include Custom Resource Definitions
+kalco export --resources pods,services,mycustomresource
 
-# Exclude specific resource types
-kalco export --exclude events,pods,endpoints
-
-# Export resources with specific labels
-kalco export --label-selector "app=myapp,env=production"
-
-# Export resources in specific namespaces
-kalco export --namespaces default,production
+# Exclude specific CRDs
+kalco export --exclude events,replicasets,mycustomresource
 ```
 
-### Git Configuration
-
-Customize Git integration behavior:
+### Output Formatting
 
 ```bash
-# Initialize Git repository
-kalco export --git-init
+# Compressed output
+kalco export --compress
 
-# Commit changes with custom message
-kalco export --commit-message "Production backup $(date)"
-
-# Push to remote repository
-kalco export --git-push --remote origin
-
-# Configure Git user
-kalco export --git-user "Kalco Bot" --git-email "kalco@company.com"
+# Custom file naming
+kalco export --output "./backups/cluster-{date}-{time}"
 ```
 
-### Output Customization
-
-Control the output format and structure:
+### Validation Options
 
 ```bash
-# Custom output directory
-kalco export --output-dir /backups/cluster-$(date +%Y%m%d)
+# Skip validation for faster export
+kalco export --skip-validation
 
-# Flatten directory structure
-kalco export --flatten-directories
-
-# Include resource metadata
-kalco export --include-metadata
-
-# Exclude status fields
-kalco export --exclude-status
+# Custom validation rules
+kalco export --validation-rules ./rules.yaml
 ```
 
-## Configuration Precedence
-
-Kalco follows this order of precedence (highest to lowest):
-
-1. **Command-line options** - Override all other settings
-2. **Project configuration** - `.kalco.yml` in current directory
-3. **Environment variables** - System-wide settings
-4. **Global configuration** - `~/.kalco/config.yml`
-5. **Default values** - Built-in defaults
-
-## Examples
+## 📋 Configuration Examples
 
 ### Development Environment
 
-```yaml
-# .kalco.yml for development
-output_dir: ./dev-cluster
-exclude:
-  - events
-  - pods
-  - endpoints
-git:
-  enabled: true
-  commit_message: "Dev cluster export"
-  push: false
+```bash
+# Quick export for development
+kalco export \
+  --output "./dev-cluster" \
+  --namespaces "default,development" \
+  --exclude "events,replicasets" \
+  --verbose
 ```
 
-### Production Environment
+### Production Backup
 
-```yaml
-# .kalco.yml for production
-output_dir: /backups/production
-exclude:
-  - events
-  - pods
-  - endpoints
-  - secrets
-git:
-  enabled: true
-  commit_message: "Production backup {timestamp}"
-  push: true
-validation:
-  enabled: true
-  output_format: html
+```bash
+# Comprehensive production backup
+kalco export \
+  --output "./production-backup-$(date +%Y%m%d)" \
+  --namespaces "production,monitoring,security" \
+  --git-push \
+  --commit-message "Production backup - $(date)"
 ```
 
 ### CI/CD Pipeline
 
 ```bash
-# Export in CI/CD pipeline
+# Automated export in CI/CD
 kalco export \
-  --output-dir ./cluster-snapshot \
-  --exclude events,pods \
+  --output "./cluster-state" \
   --git-push \
-  --commit-message "CI/CD export $(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-  --verbose
+  --commit-message "Automated backup - Build ${BUILD_NUMBER}"
 ```
 
-## Troubleshooting Configuration
+## 🔍 Configuration Validation
 
-### Check Current Configuration
+Validate your configuration:
 
 ```bash
-# Show effective configuration
+# Check configuration
+kalco config validate
+
+# Show current configuration
 kalco config show
 
-# Validate configuration file
-kalco config validate .kalco.yml
-
-# List configuration sources
-kalco config sources
+# Test configuration
+kalco export --dry-run --verbose
 ```
 
-### Common Issues
+## 📚 Next Steps
 
-**Configuration not loaded:**
-- Check file permissions
-- Verify YAML syntax
-- Ensure file is in correct location
-
-**Options not working:**
-- Check option precedence
-- Verify option names
-- Check for typos in configuration
-
-**Environment variables ignored:**
-- Ensure variables are exported
-- Check variable names (case-sensitive)
-- Restart shell after setting variables
-
-## Next Steps
-
-With configuration set up, you can:
-
-1. **[Run Advanced Exports]({{ site.baseurl }}/docs/commands/export)** - Use advanced filtering and options
-2. **[Automate with Scripts]({{ site.baseurl }}/docs/use-cases/automation)** - Create automated backup scripts
-3. **[Integrate with CI/CD]({{ site.baseurl }}/docs/use-cases/ci-cd)** - Add to your deployment pipeline
-4. **[Customize Output]({{ site.baseurl }}/docs/commands/export)** - Tailor exports to your needs
+1. **[Commands Reference]({{ site.baseurl }}/docs/commands/)** - Complete command documentation
+2. **[Use Cases]({{ site.baseurl }}/docs/use-cases/)** - Common scenarios and workflows
+3. **[Troubleshooting]({{ site.baseurl }}/docs/getting-started/troubleshooting)** - Solve common issues

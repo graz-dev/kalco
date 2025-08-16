@@ -154,9 +154,9 @@
   
     <ul class="nav-list"><li class="nav-list-item"><a href="/kalco/" class="nav-list-link">Home</a></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="toggle items in Getting Started category" aria-pressed="false">
         <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
-      </button><a href="/kalco/docs/getting-started/" class="nav-list-link">Getting Started</a><ul class="nav-list"><li class="nav-list-item"><a href="/kalco/docs/getting-started/installation.html" class="nav-list-link">Installation</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/first-run.html" class="nav-list-link">First Run</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/configuration.html" class="nav-list-link">Configuration</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/troubleshooting.html" class="nav-list-link">Troubleshooting</a></li></ul></li><li class="nav-list-item"><a href="/kalco/docs/commands/" class="nav-list-link">Commands Reference</a></li><li class="nav-list-item"><a href="/kalco/commands/" class="nav-list-link">Commands Reference</a></li><li class="nav-list-item"><a href="/kalco/configuration.html" class="nav-list-link">Configuration</a></li><li class="nav-list-item"><a href="/kalco/contributing.html" class="nav-list-link">Contributing</a></li><li class="nav-list-item"><a href="/kalco/faq.html" class="nav-list-link">FAQ</a></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="toggle items in Getting Started category" aria-pressed="false">
+      </button><a href="/kalco/docs/getting-started/" class="nav-list-link">Getting Started</a><ul class="nav-list"><li class="nav-list-item"><a href="/kalco/docs/getting-started/installation.html" class="nav-list-link">Installation</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/first-run.html" class="nav-list-link">First Run</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/configuration.html" class="nav-list-link">Configuration</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="toggle items in Commands Reference category" aria-pressed="false">
         <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
-      </button><a href="/kalco/getting-started.html" class="nav-list-link">Getting Started</a><ul class="nav-list"><li class="nav-list-item"><a href="/kalco/docs/getting-started/installation.html" class="nav-list-link">Installation</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/first-run.html" class="nav-list-link">First Run</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/configuration.html" class="nav-list-link">Configuration</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/troubleshooting.html" class="nav-list-link">Troubleshooting</a></li></ul></li><li class="nav-list-item"><a href="/kalco/use-cases.html" class="nav-list-link">Use Cases</a></li><li class="nav-list-item"><a href="/kalco/commands/analyze.html" class="nav-list-link">kalco analyze</a></li><li class="nav-list-item"><a href="/kalco/commands/export.html" class="nav-list-link">kalco export</a></li><li class="nav-list-item"><a href="/kalco/commands/validate.html" class="nav-list-link">kalco validate</a></li></ul>
+      </button><a href="/kalco/docs/commands/" class="nav-list-link">Commands Reference</a><ul class="nav-list"><li class="nav-list-item"><a href="/kalco/docs/commands/export.html" class="nav-list-link">kalco export</a></li></ul></li></ul>
   
 </nav>
 
@@ -214,7 +214,7 @@
 </h2>
     
 
-<p>Kalco transforms your Kubernetes cluster management experience by providing a <strong>comprehensive, automated, and intelligent</strong> approach to cluster analysis and lifecycle control. Whether you’re managing production workloads, ensuring compliance, or planning migrations, Kalco has you covered.</p>
+<p>Kalco is a powerful Kubernetes cluster management tool that provides comprehensive resource extraction, validation, and version control capabilities. It’s designed to help DevOps engineers, SREs, and platform teams maintain clean, validated, and version-controlled cluster configurations.</p>
 <h2 id="-key-features">
   
   
@@ -224,38 +224,14 @@
 </h2>
     
 
-<div class="row">
-<div class="col-12 col-md-6">
-
-### 🔍 **Intelligent Discovery**
-- **Zero Configuration** - Works out of the box
-- **Complete Coverage** - Native K8s + CRDs
-- **Smart Filtering** - Namespace, resource, and label-based
-- **Real-time Analysis** - Live cluster insights
-
-### 🛡️ **Enterprise Ready**
-- **Git Integration** - Automatic version control
-- **Validation Engine** - Cross-reference checking
-- **Security Analysis** - Compliance and best practices
-- **Scalable Architecture** - Handles clusters of any size
-
-</div>
-<div class="col-12 col-md-6">
-
-### 📊 **Actionable Insights**
-- **Orphaned Resources** - Identify cleanup opportunities
-- **Broken References** - Find configuration issues
-- **Usage Analytics** - Resource utilization analysis
-- **Change Tracking** - Historical cluster evolution
-
-### 🎨 **Developer Experience**
-- **Modern CLI** - Intuitive commands with rich output
-- **Multiple Formats** - JSON, YAML, HTML reports
-- **Shell Completion** - Bash, Zsh, Fish, PowerShell
-- **Extensive Documentation** - Comprehensive guides and examples
-
-</div>
-</div>
+<ul>
+  <li><strong>🔍 Complete Resource Extraction</strong> - Export all cluster resources including CRDs</li>
+  <li><strong>✅ Smart Validation</strong> - Cross-reference validation and orphaned resource detection</li>
+  <li><strong>📝 Git Integration</strong> - Automatic version control with commit and push capabilities</li>
+  <li><strong>🎯 Flexible Filtering</strong> - Export specific namespaces, resources, or exclude noisy types</li>
+  <li><strong>📊 Detailed Reporting</strong> - Comprehensive change analysis and resource summaries</li>
+  <li><strong>🔄 Incremental Updates</strong> - Track changes between cluster snapshots</li>
+</ul>
 <h2 id="-quick-start">
   
   
@@ -264,162 +240,48 @@
   
 </h2>
     
-<h3 id="-one-line-install">
-  
-  
-    <a href="#-one-line-install" class="anchor-heading" aria-labelledby="-one-line-install"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> ⚡ <strong>One-Line Install</strong>
-  
-  
-</h3>
-    
 
-<p><strong>Linux/macOS:</strong></p>
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-fsSL</span> https://raw.githubusercontent.com/graz-dev/kalco/master/scripts/install.sh | bash
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Install Kalco</span>
+go <span class="nb">install </span>github.com/graz-dev/kalco/cmd/kalco@latest
+
+<span class="c"># Export your cluster</span>
+kalco <span class="nb">export</span> <span class="nt">--output</span> ./cluster-backup
+
+<span class="c"># Export with Git integration</span>
+kalco <span class="nb">export</span> <span class="nt">--git-push</span> <span class="nt">--commit-message</span> <span class="s2">"Cluster snapshot </span><span class="si">$(</span><span class="nb">date</span><span class="si">)</span><span class="s2">"</span>
 </code></pre></div></div>
-
-<p><strong>Windows (PowerShell):</strong></p>
-<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">iwr</span><span class="w"> </span><span class="nt">-useb</span><span class="w"> </span><span class="nx">https://raw.githubusercontent.com/graz-dev/kalco/master/scripts/install.ps1</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">iex</span><span class="w">
-</span></code></pre></div></div>
-<h3 id="-package-managers">
+<h2 id="-documentation">
   
   
-    <a href="#-package-managers" class="anchor-heading" aria-labelledby="-package-managers"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 📦 <strong>Package Managers</strong>
-  
-  
-</h3>
-    
-
-<p><strong>Homebrew (macOS/Linux):</strong></p>
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew <span class="nb">install </span>graz-dev/tap/kalco
-</code></pre></div></div>
-
-<p><strong>Debian/Ubuntu:</strong></p>
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget https://github.com/graz-dev/kalco/releases/latest/download/kalco_Linux_x86_64.deb
-<span class="nb">sudo </span>dpkg <span class="nt">-i</span> kalco_Linux_x86_64.deb
-</code></pre></div></div>
-<h3 id="-build-from-source">
-  
-  
-    <a href="#-build-from-source" class="anchor-heading" aria-labelledby="-build-from-source"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 🔧 <strong>Build from Source</strong>
-  
-  
-</h3>
-    
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/graz-dev/kalco.git
-<span class="nb">cd </span>kalco
-go mod tidy
-go build <span class="nt">-o</span> kalco ./cmd
-</code></pre></div></div>
-<h2 id="-common-use-cases">
-  
-  
-    <a href="#-common-use-cases" class="anchor-heading" aria-labelledby="-common-use-cases"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 💡 Common Use Cases
-  
-  
-</h2>
-    
-<h3 id="-cluster-analysis--backup">
-  
-  
-    <a href="#-cluster-analysis--backup" class="anchor-heading" aria-labelledby="-cluster-analysis--backup"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 🎯 <strong>Cluster Analysis &amp; Backup</strong>
-  
-  
-</h3>
-    
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Complete cluster export with Git versioning</span>
-kalco <span class="nb">export</span> <span class="nt">--git-push</span> <span class="nt">--commit-message</span> <span class="s2">"Weekly backup"</span>
-
-<span class="c"># Validate cluster health</span>
-kalco validate <span class="nt">--output</span> json
-
-<span class="c"># Find cleanup opportunities  </span>
-kalco analyze orphaned <span class="nt">--detailed</span>
-</code></pre></div></div>
-<h3 id="️-security--compliance">
-  
-  
-    <a href="#️-security--compliance" class="anchor-heading" aria-labelledby="️-security--compliance"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 🛡️ <strong>Security &amp; Compliance</strong>
-  
-  
-</h3>
-    
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Security posture analysis</span>
-kalco analyze security <span class="nt">--output</span> html
-
-<span class="c"># Export security-related resources</span>
-kalco <span class="nb">export</span> <span class="nt">--resources</span> <span class="s2">"roles,rolebindings,networkpolicies,podsecuritypolicies"</span>
-
-<span class="c"># Generate compliance report</span>
-kalco report <span class="nt">--types</span> security,validation <span class="nt">--output-file</span> compliance-report.html
-</code></pre></div></div>
-<h3 id="-devops--automation">
-  
-  
-    <a href="#-devops--automation" class="anchor-heading" aria-labelledby="-devops--automation"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 🚀 <strong>DevOps &amp; Automation</strong>
-  
-  
-</h3>
-    
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># CI/CD integration</span>
-kalco <span class="nb">export</span> <span class="nt">--namespaces</span> production <span class="nt">--exclude</span> events,pods <span class="nt">--output</span> ./gitops-repo
-
-<span class="c"># Environment replication</span>
-kalco <span class="nb">export</span> <span class="nt">--namespaces</span> staging <span class="nt">--resources</span> deployments,services,configmaps
-
-<span class="c"># Resource inventory</span>
-kalco resources list <span class="nt">--detailed</span> <span class="nt">--output</span> json <span class="o">&gt;</span> inventory.json
-</code></pre></div></div>
-<h2 id="-why-choose-kalco">
-  
-  
-    <a href="#-why-choose-kalco" class="anchor-heading" aria-labelledby="-why-choose-kalco"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 🌟 Why Choose Kalco?
+    <a href="#-documentation" class="anchor-heading" aria-labelledby="-documentation"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 📚 Documentation
   
   
 </h2>
     
 
-<div class="row">
-<div class="col-12 col-md-6">
-
-### 🎯 **Perfect for DevOps Teams**
-- **Site Reliability Engineers** - Automated cluster backups and disaster recovery
-- **Platform Engineers** - Infrastructure as Code and GitOps workflows  
-- **Security Teams** - Compliance auditing and security posture analysis
-- **Developers** - Environment replication and configuration management
-
-</div>
-<div class="col-12 col-md-6">
-
-### 📊 **Project Stats**
-- **0 Configuration Required** - Works out of the box
-- **100% Resource Coverage** - Native K8s + CRDs
-- **⚡ Lightning Fast** - Optimized for speed
-- **🔒 Enterprise Ready** - Production-grade reliability
-
-</div>
-</div>
-<h2 id="-next-steps">
+<ul>
+  <li><strong><a href="/kalco/docs/getting-started/">Getting Started</a></strong> - Installation and first steps</li>
+  <li><strong><a href="/kalco/docs/commands/">Commands Reference</a></strong> - Complete command documentation</li>
+  <li><strong><a href="/kalco/docs/use-cases/">Use Cases</a></strong> - Common scenarios and workflows</li>
+  <li><strong><a href="/kalco/docs/configuration/">Configuration</a></strong> - Customization options</li>
+</ul>
+<h2 id="-useful-links">
   
   
-    <a href="#-next-steps" class="anchor-heading" aria-labelledby="-next-steps"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 🚀 Next Steps
+    <a href="#-useful-links" class="anchor-heading" aria-labelledby="-useful-links"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 🔗 Useful Links
   
   
 </h2>
     
 
-<ol>
-  <li><strong><a href="/kalco/docs/getting-started/installation">Install Kalco</a></strong> - Get up and running quickly</li>
-  <li><strong><a href="/kalco/docs/commands/">Explore Commands</a></strong> - Learn all available options</li>
-  <li><strong><a href="/kalco/docs/configuration/">Configuration Guide</a></strong> - Customize for your environment</li>
-  <li><strong><a href="/kalco/docs/use-cases/">Use Cases</a></strong> - Real-world examples and workflows</li>
-</ol><hr />
+<ul>
+  <li><a href="https://github.com/graz-dev/kalco">GitHub Repository</a></li>
+  <li><a href="https://github.com/graz-dev/kalco/issues">Issues &amp; Bug Reports</a></li>
+  <li><a href="https://github.com/graz-dev/kalco/discussions">Discussions</a></li>
+  <li><a href="https://github.com/graz-dev/kalco/releases">Releases</a></li>
+</ul><hr />
 
-<div class="text-center">
-**Made with ❤️ for the Kubernetes community**
-
-[🌟 Star us on GitHub](https://github.com/graz-dev/kalco){: .btn .btn-primary .btn-lg } [📖 Read the Docs](/kalco/docs/getting-started/){: .btn .btn-outline .btn-lg }
-</div>
+<p><em>Built with ❤️ for the Kubernetes community</em></p>
 
           
 

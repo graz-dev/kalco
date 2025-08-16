@@ -1,203 +1,114 @@
 ---
 layout: default
 title: Installation
-parent: Getting Started
 nav_order: 1
+parent: Getting Started
 ---
 
 # Installation
 
-Choose the installation method that best fits your environment and get Kalco running in minutes.
+Get Kalco up and running on your system with these simple installation methods.
 
-## Quick Install (Recommended)
+## 🚀 Quick Install
 
-The fastest way to get started with Kalco:
-
-### Linux/macOS
+The fastest way to get started is using Go's built-in installer:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/graz-dev/kalco/master/scripts/install.sh | bash
+go install github.com/graz-dev/kalco/cmd/kalco@latest
 ```
 
-This script automatically:
-- Downloads the latest version
-- Installs to `/usr/local/bin/`
-- Sets up shell completion
-- Verifies the installation
-
-### Windows (PowerShell)
-
-```powershell
-iwr -useb https://raw.githubusercontent.com/graz-dev/kalco/master/scripts/install.ps1 | iex
-```
-
-## Package Managers
+## 📦 Package Managers
 
 ### Homebrew (macOS/Linux)
 
 ```bash
-# Add the tap
-brew tap graz-dev/tap
+# Add the tap (when available)
+brew tap graz-dev/kalco
 
 # Install Kalco
 brew install kalco
 ```
 
-### Debian/Ubuntu
+### Manual Download
 
-```bash
-# Download the .deb package
-wget https://github.com/graz-dev/kalco/releases/latest/download/kalco_Linux_x86_64.deb
+Download the latest release for your platform from the [releases page](https://github.com/graz-dev/kalco/releases).
 
-# Install
-sudo dpkg -i kalco_Linux_x86_64.deb
-```
+## 🔨 Build from Source
 
-### RHEL/CentOS/Fedora
-
-```bash
-# Download the .rpm package
-wget https://github.com/graz-dev/kalco/releases/latest/download/kalco_Linux_x86_64.rpm
-
-# Install
-sudo rpm -i kalco_Linux_x86_64.rpm
-```
-
-## Build from Source
-
-For the latest development version or custom builds:
-
-### Prerequisites
-
-- **Go 1.21+** - [Download here](https://golang.org/dl/)
-- **Git** - For cloning the repository
-
-### Build Steps
+If you prefer to build from source:
 
 ```bash
 # Clone the repository
 git clone https://github.com/graz-dev/kalco.git
 cd kalco
 
-# Install dependencies
-go mod tidy
-
 # Build the binary
 go build -o kalco ./cmd
 
-# Make it available system-wide (optional)
+# Make it executable
+chmod +x kalco
+
+# Move to your PATH
 sudo mv kalco /usr/local/bin/
 ```
 
-## Manual Installation
+## ✅ Verify Installation
 
-1. **Download Binary**
-   - Visit the [releases page](https://github.com/graz-dev/kalco/releases)
-   - Download the appropriate binary for your platform
-
-2. **Extract and Install**
-   ```bash
-   # Extract the archive
-   tar -xzf kalco-*.tar.gz
-   
-   # Move to a directory in your PATH
-   sudo mv kalco /usr/local/bin/
-   
-   # Verify installation
-   kalco --version
-   ```
-
-## Verify Installation
-
-After installation, verify that Kalco is working:
+Check that Kalco is properly installed:
 
 ```bash
-# Check version
 kalco --version
-
-# Check help
-kalco --help
-
-# Verify binary location
-which kalco
 ```
 
-## Shell Completion
+You should see output similar to:
+```
+kalco version v0.1.0 (commit: abc1234, date: 2025-08-16)
+```
 
-Kalco provides shell completion for faster workflows:
+## 🔧 Shell Completion
 
 ### Bash
 
 ```bash
-# Generate completion script
-kalco completion bash > /etc/bash_completion.d/kalco
-
-# Reload shell or source the file
-source /etc/bash_completion.d/kalco
+# Add to your ~/.bashrc
+echo 'source <(kalco completion bash)' >> ~/.bashrc
+source ~/.bashrc
 ```
 
 ### Zsh
 
 ```bash
-# Generate completion script
-kalco completion zsh > ~/.zsh/completion/_kalco
-
-# Add to .zshrc
-echo 'autoload -U compinit && compinit' >> ~/.zshrc
+# Add to your ~/.zshrc
+echo 'source <(kalco completion zsh)' >> ~/.zshrc
+source ~/.zshrc
 ```
 
 ### Fish
 
 ```bash
-# Generate completion script
 kalco completion fish > ~/.config/fish/completions/kalco.fish
 ```
 
-### PowerShell
+## 🐛 Troubleshooting
 
-```powershell
-# Generate completion script
-kalco completion powershell > kalco-completion.ps1
+### Common Issues
 
-# Source the file
-. .\kalco-completion.ps1
+**Command not found**: Ensure Kalco is in your PATH
+```bash
+echo $PATH
+which kalco
 ```
 
-## Next Steps
+**Permission denied**: Make the binary executable
+```bash
+chmod +x kalco
+```
+
+**Go version issues**: Ensure you have Go 1.19+ installed
+```bash
+go version
+```
+
+## 📚 Next Steps
 
 Once Kalco is installed, proceed to [First Run]({{ site.baseurl }}/docs/getting-started/first-run) to export your first cluster.
-
-## Troubleshooting
-
-### Permission Denied
-
-```bash
-# Make binary executable
-chmod +x kalco
-
-# Check file permissions
-ls -la kalco
-```
-
-### Command Not Found
-
-```bash
-# Check if binary is in PATH
-echo $PATH
-
-# Verify binary location
-which kalco
-
-# Add to PATH if needed
-export PATH=$PATH:/path/to/kalco
-```
-
-### Version Issues
-
-```bash
-# Check Go version
-go version
-
-# Ensure Go 1.21+ is installed
-# Download from https://golang.org/dl/
-```

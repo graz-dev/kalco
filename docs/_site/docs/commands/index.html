@@ -154,9 +154,9 @@
   
     <ul class="nav-list"><li class="nav-list-item"><a href="/kalco/" class="nav-list-link">Home</a></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="toggle items in Getting Started category" aria-pressed="false">
         <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
-      </button><a href="/kalco/docs/getting-started/" class="nav-list-link">Getting Started</a><ul class="nav-list"><li class="nav-list-item"><a href="/kalco/docs/getting-started/installation.html" class="nav-list-link">Installation</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/first-run.html" class="nav-list-link">First Run</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/configuration.html" class="nav-list-link">Configuration</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/troubleshooting.html" class="nav-list-link">Troubleshooting</a></li></ul></li><li class="nav-list-item"><a href="/kalco/docs/commands/" class="nav-list-link">Commands Reference</a></li><li class="nav-list-item"><a href="/kalco/commands/" class="nav-list-link">Commands Reference</a></li><li class="nav-list-item"><a href="/kalco/configuration.html" class="nav-list-link">Configuration</a></li><li class="nav-list-item"><a href="/kalco/contributing.html" class="nav-list-link">Contributing</a></li><li class="nav-list-item"><a href="/kalco/faq.html" class="nav-list-link">FAQ</a></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="toggle items in Getting Started category" aria-pressed="false">
+      </button><a href="/kalco/docs/getting-started/" class="nav-list-link">Getting Started</a><ul class="nav-list"><li class="nav-list-item"><a href="/kalco/docs/getting-started/installation.html" class="nav-list-link">Installation</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/first-run.html" class="nav-list-link">First Run</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/configuration.html" class="nav-list-link">Configuration</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="toggle items in Commands Reference category" aria-pressed="false">
         <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
-      </button><a href="/kalco/getting-started.html" class="nav-list-link">Getting Started</a><ul class="nav-list"><li class="nav-list-item"><a href="/kalco/docs/getting-started/installation.html" class="nav-list-link">Installation</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/first-run.html" class="nav-list-link">First Run</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/configuration.html" class="nav-list-link">Configuration</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/troubleshooting.html" class="nav-list-link">Troubleshooting</a></li></ul></li><li class="nav-list-item"><a href="/kalco/use-cases.html" class="nav-list-link">Use Cases</a></li><li class="nav-list-item"><a href="/kalco/commands/analyze.html" class="nav-list-link">kalco analyze</a></li><li class="nav-list-item"><a href="/kalco/commands/export.html" class="nav-list-link">kalco export</a></li><li class="nav-list-item"><a href="/kalco/commands/validate.html" class="nav-list-link">kalco validate</a></li></ul>
+      </button><a href="/kalco/docs/commands/" class="nav-list-link">Commands Reference</a><ul class="nav-list"><li class="nav-list-item"><a href="/kalco/docs/commands/export.html" class="nav-list-link">kalco export</a></li></ul></li></ul>
   
 </nav>
 
@@ -204,237 +204,164 @@
 </h1>
     
 
-<p>Complete reference for all Kalco commands, options, and examples.</p>
-<h2 id="quick-navigation">
+<p>Complete reference for all Kalco commands and options.</p>
+<h2 id="-available-commands">
   
   
-    <a href="#quick-navigation" class="anchor-heading" aria-labelledby="quick-navigation"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Quick Navigation
+    <a href="#-available-commands" class="anchor-heading" aria-labelledby="-available-commands"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 📋 Available Commands
   
   
 </h2>
     
 
 <ul>
-  <li><strong><a href="/kalco/docs/commands/export">Export Commands</a></strong> - Export cluster resources</li>
-  <li><strong><a href="/kalco/docs/commands/validation">Validation Commands</a></strong> - Validate resources and references</li>
-  <li><strong><a href="/kalco/docs/commands/analysis">Analysis Commands</a></strong> - Analyze cluster health and resources</li>
-  <li><strong><a href="/kalco/docs/commands/reports">Report Commands</a></strong> - Generate comprehensive reports</li>
-  <li><strong><a href="/kalco/docs/commands/utilities">Utility Commands</a></strong> - Helper commands and utilities</li>
+  <li><strong><a href="/kalco/docs/commands/export">export</a></strong> - Export cluster resources to organized YAML files</li>
+  <li><strong><a href="/kalco/docs/commands/validate">validate</a></strong> - Validate cluster resources and cross-references</li>
+  <li><strong><a href="/kalco/docs/commands/analyze">analyze</a></strong> - Analyze cluster state and generate reports</li>
+  <li><strong><a href="/kalco/docs/commands/config">config</a></strong> - Manage Kalco configuration</li>
 </ul>
-<h2 id="command-structure">
+<h2 id="-global-options">
   
   
-    <a href="#command-structure" class="anchor-heading" aria-labelledby="command-structure"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Command Structure
-  
-  
-</h2>
-    
-
-<p>All Kalco commands follow this pattern:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kalco &lt;<span class="nb">command</span><span class="o">&gt;</span> <span class="o">[</span>subcommand] <span class="o">[</span>options] <span class="o">[</span>arguments]
-</code></pre></div></div>
-<h3 id="global-options">
-  
-  
-    <a href="#global-options" class="anchor-heading" aria-labelledby="global-options"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Global Options
-  
-  
-</h3>
-    
-
-<p>These options are available for all commands:</p>
-
-<div class="table-wrapper"><table>
-  <thead>
-    <tr>
-      <th>Option</th>
-      <th>Short</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">--help</code></td>
-      <td><code class="language-plaintext highlighter-rouge">-h</code></td>
-      <td>Show help information</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">--version</code></td>
-      <td><code class="language-plaintext highlighter-rouge">-v</code></td>
-      <td>Show version information</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">--verbose</code></td>
-      <td> </td>
-      <td>Enable verbose output</td>
-      <td><code class="language-plaintext highlighter-rouge">false</code></td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">--quiet</code></td>
-      <td> </td>
-      <td>Suppress output</td>
-      <td><code class="language-plaintext highlighter-rouge">false</code></td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">--kubeconfig</code></td>
-      <td> </td>
-      <td>Path to kubeconfig file</td>
-      <td>Auto-detected</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">--context</code></td>
-      <td> </td>
-      <td>Kubernetes context to use</td>
-      <td>Current context</td>
-    </tr>
-  </tbody>
-</table></div>
-<h2 id="common-patterns">
-  
-  
-    <a href="#common-patterns" class="anchor-heading" aria-labelledby="common-patterns"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Common Patterns
-  
-  
-</h2>
-    
-<h3 id="basic-command">
-  
-  
-    <a href="#basic-command" class="anchor-heading" aria-labelledby="basic-command"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Basic Command
-  
-  
-</h3>
-    
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kalco <span class="nb">export</span>
-</code></pre></div></div>
-<h3 id="with-options">
-  
-  
-    <a href="#with-options" class="anchor-heading" aria-labelledby="with-options"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> With Options
-  
-  
-</h3>
-    
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kalco <span class="nb">export</span> <span class="nt">--output-dir</span> ./my-cluster <span class="nt">--verbose</span>
-</code></pre></div></div>
-<h3 id="with-subcommands">
-  
-  
-    <a href="#with-subcommands" class="anchor-heading" aria-labelledby="with-subcommands"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> With Subcommands
-  
-  
-</h3>
-    
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kalco validate <span class="nt">--output</span> json
-</code></pre></div></div>
-<h3 id="with-arguments">
-  
-  
-    <a href="#with-arguments" class="anchor-heading" aria-labelledby="with-arguments"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> With Arguments
-  
-  
-</h3>
-    
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kalco <span class="nb">export</span> <span class="nt">--namespaces</span> default,kube-system
-</code></pre></div></div>
-<h2 id="output-formats">
-  
-  
-    <a href="#output-formats" class="anchor-heading" aria-labelledby="output-formats"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Output Formats
+    <a href="#-global-options" class="anchor-heading" aria-labelledby="-global-options"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 🚩 Global Options
   
   
 </h2>
     
 
-<p>Most commands support multiple output formats:</p>
+<p>All commands support these global options:</p>
 
-<ul>
-  <li><strong>Default</strong> - Human-readable text output</li>
-  <li><strong>JSON</strong> - Machine-readable JSON format</li>
-  <li><strong>YAML</strong> - YAML format for configuration</li>
-  <li><strong>HTML</strong> - Rich HTML reports</li>
-  <li><strong>Table</strong> - Tabular data output</li>
-</ul>
-
-<p>Example:</p>
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kalco validate <span class="nt">--output</span> json
-kalco analyze orphaned <span class="nt">--output</span> html
-kalco report <span class="nt">--output</span> yaml
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">--help</span>, <span class="nt">-h</span>          Show <span class="nb">help </span><span class="k">for </span>the <span class="nb">command</span>
+<span class="nt">--version</span>, <span class="nt">-v</span>       Show version information
+<span class="nt">--verbose</span>           Enable verbose output
+<span class="nt">--quiet</span>             Suppress non-error messages
+<span class="nt">--config</span>            Path to configuration file
 </code></pre></div></div>
-<h2 id="examples">
+<h2 id="-command-structure">
+  
+  
+    <a href="#-command-structure" class="anchor-heading" aria-labelledby="-command-structure"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 🔧 Command Structure
+  
+  
+</h2>
+    
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kalco &lt;<span class="nb">command</span><span class="o">&gt;</span> <span class="o">[</span>subcommand] <span class="o">[</span>flags] <span class="o">[</span>arguments]
+</code></pre></div></div>
+<h3 id="examples">
   
   
     <a href="#examples" class="anchor-heading" aria-labelledby="examples"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Examples
   
   
-</h2>
-    
-<h3 id="export-cluster-resources">
-  
-  
-    <a href="#export-cluster-resources" class="anchor-heading" aria-labelledby="export-cluster-resources"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Export Cluster Resources
-  
-  
 </h3>
     
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Export all resources</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Basic export</span>
 kalco <span class="nb">export</span>
 
-<span class="c"># Export specific namespaces</span>
-kalco <span class="nb">export</span> <span class="nt">--namespaces</span> default,production
+<span class="c"># Export with options</span>
+kalco <span class="nb">export</span> <span class="nt">--output</span> ./backup <span class="nt">--namespaces</span> default,kube-system
 
-<span class="c"># Export with Git integration</span>
-kalco <span class="nb">export</span> <span class="nt">--git-push</span> <span class="nt">--commit-message</span> <span class="s2">"Daily backup"</span>
+<span class="c"># Validate cluster</span>
+kalco validate <span class="nt">--cross-references</span>
+
+<span class="c"># Show configuration</span>
+kalco config show
 </code></pre></div></div>
-<h3 id="validate-resources">
+<h2 id="-command-categories">
   
   
-    <a href="#validate-resources" class="anchor-heading" aria-labelledby="validate-resources"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Validate Resources
+    <a href="#-command-categories" class="anchor-heading" aria-labelledby="-command-categories"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 📚 Command Categories
+  
+  
+</h2>
+    
+<h3 id="core-operations">
+  
+  
+    <a href="#core-operations" class="anchor-heading" aria-labelledby="core-operations"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Core Operations
+  
+  
+</h3>
+    
+<ul>
+  <li><strong>export</strong> - Primary functionality for cluster resource extraction</li>
+  <li><strong>validate</strong> - Resource validation and health checks</li>
+  <li><strong>analyze</strong> - Cluster analysis and reporting</li>
+</ul>
+<h3 id="configuration--management">
+  
+  
+    <a href="#configuration--management" class="anchor-heading" aria-labelledby="configuration--management"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Configuration &amp; Management
+  
+  
+</h3>
+    
+<ul>
+  <li><strong>config</strong> - Configuration management and validation</li>
+  <li><strong>completion</strong> - Shell completion generation</li>
+</ul>
+<h2 id="-getting-help">
+  
+  
+    <a href="#-getting-help" class="anchor-heading" aria-labelledby="-getting-help"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 🎯 Getting Help
+  
+  
+</h2>
+    
+<h3 id="command-help">
+  
+  
+    <a href="#command-help" class="anchor-heading" aria-labelledby="command-help"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Command Help
   
   
 </h3>
     
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Basic validation</span>
-kalco validate
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># General help</span>
+kalco <span class="nt">--help</span>
 
-<span class="c"># Detailed validation report</span>
-kalco validate <span class="nt">--detailed</span> <span class="nt">--output</span> html
-
-<span class="c"># Validate specific resource types</span>
-kalco validate <span class="nt">--resources</span> deployments,services
+<span class="c"># Command-specific help</span>
+kalco <span class="nb">export</span> <span class="nt">--help</span>
+kalco validate <span class="nt">--help</span>
 </code></pre></div></div>
-<h3 id="analyze-cluster">
+<h3 id="examples-1">
   
   
-    <a href="#analyze-cluster" class="anchor-heading" aria-labelledby="analyze-cluster"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Analyze Cluster
+    <a href="#examples-1" class="anchor-heading" aria-labelledby="examples-1"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Examples
   
   
 </h3>
     
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Find orphaned resources</span>
-kalco analyze orphaned
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Show examples for export command</span>
+kalco <span class="nb">export</span> <span class="nt">--help</span> | <span class="nb">grep</span> <span class="nt">-A</span> 10 <span class="s2">"Examples"</span>
 
-<span class="c"># Security analysis</span>
-kalco analyze security <span class="nt">--output</span> html
-
-<span class="c"># Resource usage analysis</span>
-kalco analyze usage <span class="nt">--detailed</span>
+<span class="c"># Show all available flags</span>
+kalco <span class="nb">export</span> <span class="nt">--help</span> | <span class="nb">grep</span> <span class="nt">-E</span> <span class="s2">"^  --"</span>
 </code></pre></div></div>
-<h2 id="next-steps">
+<h2 id="-command-discovery">
   
   
-    <a href="#next-steps" class="anchor-heading" aria-labelledby="next-steps"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Next Steps
+    <a href="#-command-discovery" class="anchor-heading" aria-labelledby="-command-discovery"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 🔍 Command Discovery
+  
+  
+</h2>
+    
+
+<p>Explore available commands:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># List all commands</span>
+kalco <span class="nt">--help</span>
+
+<span class="c"># Show command tree</span>
+kalco <span class="nt">--help</span> | <span class="nb">grep</span> <span class="nt">-E</span> <span class="s2">"^  [a-z]"</span>
+</code></pre></div></div>
+<h2 id="-next-steps">
+  
+  
+    <a href="#-next-steps" class="anchor-heading" aria-labelledby="-next-steps"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 📖 Next Steps
   
   
 </h2>
@@ -445,7 +372,16 @@ kalco analyze usage <span class="nt">--detailed</span>
           
 
           
-            
+            <hr>
+<h2 class="text-delta">Table of contents</h2>
+
+<ul>
+  
+  <li>
+    <a href="/kalco/docs/commands/export.html">kalco export</a>
+  </li>
+  
+</ul>
           
         </main>
         

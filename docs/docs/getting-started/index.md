@@ -5,36 +5,28 @@ nav_order: 2
 has_children: true
 ---
 
-# Getting Started with Kalco
+# Getting Started
 
-Get up and running with Kalco in minutes. This guide will walk you through installation, configuration, and your first cluster export.
+Welcome to Kalco! This guide will help you get up and running with Kubernetes cluster management in no time.
 
-## Quick Navigation
+## 🚀 Quick Start
 
-- **[Installation]({{ site.baseurl }}/docs/getting-started/installation)** - Choose your installation method
-- **[First Run]({{ site.baseurl }}/docs/getting-started/first-run)** - Export your first cluster
-- **[Configuration]({{ site.baseurl }}/docs/getting-started/configuration)** - Customize Kalco for your environment
-- **[Troubleshooting]({{ site.baseurl }}/docs/getting-started/troubleshooting)** - Common issues and solutions
+1. **[Install Kalco]({{ site.baseurl }}/docs/getting-started/installation)** - Get Kalco running on your system
+2. **[First Run]({{ site.baseurl }}/docs/getting-started/first-run)** - Export your first cluster
+3. **[Configuration]({{ site.baseurl }}/docs/getting-started/configuration)** - Customize Kalco for your needs
 
-## What You'll Learn
+## 🎯 What You'll Learn
 
-By the end of this guide, you'll be able to:
+- How to install and configure Kalco
+- Basic cluster export operations
+- Git integration and version control
+- Validation and analysis features
+- Best practices for cluster management
 
-- ✅ Install Kalco on your system
-- ✅ Connect to a Kubernetes cluster
-- ✅ Export cluster resources
-- ✅ Use Git integration for version control
-- ✅ Generate validation reports
-- ✅ Troubleshoot common issues
+## 📋 Prerequisites
 
-## Prerequisites
-
-Before you begin, ensure you have:
-
-- **Kubernetes Access** - Valid kubeconfig file or in-cluster access
-- **Git** (optional) - For version control functionality
-- **Terminal Access** - Command line interface
-
-## Next Steps
+- A Kubernetes cluster (local or remote)
+- `kubectl` configured and working
+- Git repository (optional, for version control)
 
 Ready to get started? Begin with the [installation guide]({{ site.baseurl }}/docs/getting-started/installation) to get Kalco running on your system.

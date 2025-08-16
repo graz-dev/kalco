@@ -1,7 +1,7 @@
 title: Kalco Documentation
 description: Kubernetes Analysis & Lifecycle Control - Comprehensive cluster management tool
 url: https://graz-dev.github.io
-# baseurl: /kalco  # Uncomment for GitHub Pages deployment, comment for local development
+baseurl: /kalco
 
 # Theme
 remote_theme: just-the-docs/just-the-docs
@@ -12,12 +12,11 @@ highlighter: rouge
 kramdown:
   input: GFM
   syntax_highlighter: rouge
+
+# Plugins
 plugins:
   - jekyll-remote-theme
   - jekyll-seo-tag
-  - jekyll-include-cache
-  - jekyll-feed
-  - jekyll-relative-links
 
 # Collections
 collections:
@@ -63,74 +62,8 @@ just_the_docs:
   # Enable last modified date
   last_edit_timestamp: true
   
-  # Enable last modified date format
-  last_edit_timestamp_format: "%B %d %Y"
-  
   # Enable git info
   git_info: true
-  
-  # Enable git info format
-  git_info_format: "%B %d %Y"
-  
-  # Enable git info locale
-  git_info_locale: "en"
-  
-  # Enable git info timezone
-  git_info_timezone: "UTC"
-  
-  # Enable parent links
-  parent_links: true
-  
-  # Enable child links
-  child_links: true
-  
-  # Enable sibling links
-  sibling_links: true
-  
-  # Enable external links
-  external_links: true
-  
-  # Enable external links target
-  external_links_target: "_blank"
-  
-  # Enable external links rel
-  external_links_rel: "noopener"
-  
-  # Enable callouts
-  callouts: true
-  
-  # Enable callouts level
-  callouts_level: 1
-  
-  # Enable callouts icon
-  callouts_icon: true
-  
-  # Enable callouts color
-  callouts_color: true
-  
-  # Enable callouts title
-  callouts_title: true
-  
-  # Enable callouts content
-  callouts_content: true
-  
-  # Enable callouts level 1
-  callouts_level_1:
-    icon: "💡"
-    color: "blue"
-    title: "Note"
-  
-  # Enable callouts level 2
-  callouts_level_2:
-    icon: "⚠️"
-    color: "yellow"
-    title: "Warning"
-  
-  # Enable callouts level 3
-  callouts_level_3:
-    icon: "🚨"
-    color: "red"
-    title: "Critical"
 
 # Exclude from processing
 exclude:

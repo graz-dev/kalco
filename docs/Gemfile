@@ -4,8 +4,6 @@ gem "jekyll", "~> 4.3.0"
 gem "jekyll-remote-theme"
 gem "jekyll-seo-tag"
 gem "jekyll-include-cache"
-gem "jekyll-feed"
-gem "jekyll-relative-links"
 
 # Ruby 3.4.0 compatibility - add missing default gems
 gem "csv"

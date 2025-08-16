@@ -157,9 +157,9 @@
   
     <ul class="nav-list"><li class="nav-list-item"><a href="/kalco/" class="nav-list-link">Home</a></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="toggle items in Getting Started category" aria-pressed="false">
         <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
-      </button><a href="/kalco/docs/getting-started/" class="nav-list-link">Getting Started</a><ul class="nav-list"><li class="nav-list-item"><a href="/kalco/docs/getting-started/installation.html" class="nav-list-link">Installation</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/first-run.html" class="nav-list-link">First Run</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/configuration.html" class="nav-list-link">Configuration</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/troubleshooting.html" class="nav-list-link">Troubleshooting</a></li></ul></li><li class="nav-list-item"><a href="/kalco/docs/commands/" class="nav-list-link">Commands Reference</a></li><li class="nav-list-item"><a href="/kalco/commands/" class="nav-list-link">Commands Reference</a></li><li class="nav-list-item"><a href="/kalco/configuration.html" class="nav-list-link">Configuration</a></li><li class="nav-list-item"><a href="/kalco/contributing.html" class="nav-list-link">Contributing</a></li><li class="nav-list-item"><a href="/kalco/faq.html" class="nav-list-link">FAQ</a></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="toggle items in Getting Started category" aria-pressed="false">
+      </button><a href="/kalco/docs/getting-started/" class="nav-list-link">Getting Started</a><ul class="nav-list"><li class="nav-list-item"><a href="/kalco/docs/getting-started/installation.html" class="nav-list-link">Installation</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/first-run.html" class="nav-list-link">First Run</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/configuration.html" class="nav-list-link">Configuration</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="toggle items in Commands Reference category" aria-pressed="false">
         <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
-      </button><a href="/kalco/getting-started.html" class="nav-list-link">Getting Started</a><ul class="nav-list"><li class="nav-list-item"><a href="/kalco/docs/getting-started/installation.html" class="nav-list-link">Installation</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/first-run.html" class="nav-list-link">First Run</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/configuration.html" class="nav-list-link">Configuration</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/troubleshooting.html" class="nav-list-link">Troubleshooting</a></li></ul></li><li class="nav-list-item"><a href="/kalco/use-cases.html" class="nav-list-link">Use Cases</a></li><li class="nav-list-item"><a href="/kalco/commands/analyze.html" class="nav-list-link">kalco analyze</a></li><li class="nav-list-item"><a href="/kalco/commands/export.html" class="nav-list-link">kalco export</a></li><li class="nav-list-item"><a href="/kalco/commands/validate.html" class="nav-list-link">kalco validate</a></li></ul>
+      </button><a href="/kalco/docs/commands/" class="nav-list-link">Commands Reference</a><ul class="nav-list"><li class="nav-list-item"><a href="/kalco/docs/commands/export.html" class="nav-list-link">kalco export</a></li></ul></li></ul>
   
 </nav>
 
@@ -214,325 +214,181 @@
 </h1>
     
 
-<p>Get Kalco running and export your first Kubernetes cluster in minutes.</p>
-<h2 id="prerequisites">
+<p>Learn how to export your first Kubernetes cluster with Kalco.</p>
+<h2 id="-prerequisites">
   
   
-    <a href="#prerequisites" class="anchor-heading" aria-labelledby="prerequisites"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Prerequisites
+    <a href="#-prerequisites" class="anchor-heading" aria-labelledby="-prerequisites"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 🎯 Prerequisites
   
   
 </h2>
     
 
-<p>Before running Kalco for the first time, ensure you have:</p>
+<p>Before you begin, ensure you have:</p>
 
 <ul>
-  <li>✅ <strong>Kalco installed</strong> - <a href="/kalco/docs/getting-started/installation">Installation guide</a></li>
-  <li>✅ <strong>Kubernetes access</strong> - Valid kubeconfig or in-cluster access</li>
-  <li>✅ <strong>Cluster running</strong> - A Kubernetes cluster to export</li>
+  <li>✅ Kalco installed and working</li>
+  <li>✅ <code class="language-plaintext highlighter-rouge">kubectl</code> configured and connected to a cluster</li>
+  <li>✅ Access to a Kubernetes cluster (local or remote)</li>
 </ul>
-<h2 id="verify-installation">
+<h2 id="-verify-cluster-access">
   
   
-    <a href="#verify-installation" class="anchor-heading" aria-labelledby="verify-installation"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Verify Installation
-  
-  
-</h2>
-    
-
-<p>First, let’s confirm Kalco is properly installed:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Check version</span>
-kalco <span class="nt">--version</span>
-
-<span class="c"># Check help</span>
-kalco <span class="nt">--help</span>
-
-<span class="c"># Verify binary location</span>
-which kalco
-</code></pre></div></div>
-
-<p>You should see output similar to:</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Kalco v1.0.0
-Kubernetes Analysis &amp; Lifecycle Control
-</code></pre></div></div>
-<h2 id="connect-to-your-cluster">
-  
-  
-    <a href="#connect-to-your-cluster" class="anchor-heading" aria-labelledby="connect-to-your-cluster"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Connect to Your Cluster
+    <a href="#-verify-cluster-access" class="anchor-heading" aria-labelledby="-verify-cluster-access"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 🔍 Verify Cluster Access
   
   
 </h2>
     
 
-<p>Kalco automatically detects your Kubernetes configuration:</p>
+<p>First, verify that you can access your cluster:</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Check current context</span>
-kubectl config current-context
-
-<span class="c"># List available contexts</span>
-kubectl config get-contexts
-
-<span class="c"># Switch context if needed</span>
-kubectl config use-context your-cluster-name
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl cluster-info
+kubectl get nodes
 </code></pre></div></div>
-<h2 id="your-first-export">
+<h2 id="-basic-export">
   
   
-    <a href="#your-first-export" class="anchor-heading" aria-labelledby="your-first-export"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Your First Export
+    <a href="#-basic-export" class="anchor-heading" aria-labelledby="-basic-export"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 🚀 Basic Export
   
   
 </h2>
-    
-<h3 id="basic-export">
-  
-  
-    <a href="#basic-export" class="anchor-heading" aria-labelledby="basic-export"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Basic Export
-  
-  
-</h3>
     
 
 <p>Start with a simple export to see Kalco in action:</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Export all resources to default directory</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Export to a timestamped directory</span>
 kalco <span class="nb">export</span>
+
+<span class="c"># Or specify a custom output directory</span>
+kalco <span class="nb">export</span> <span class="nt">--output</span> ./my-cluster-backup
 </code></pre></div></div>
-
-<p>This will:</p>
-<ul>
-  <li>Create a timestamped output directory</li>
-  <li>Export all cluster resources</li>
-  <li>Organize them by namespace and type</li>
-  <li>Initialize a Git repository (if Git is available)</li>
-</ul>
-<h3 id="custom-output-directory">
+<h2 id="-understanding-the-output">
   
   
-    <a href="#custom-output-directory" class="anchor-heading" aria-labelledby="custom-output-directory"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Custom Output Directory
-  
-  
-</h3>
-    
-
-<p>Specify where to save your export:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Export to specific directory</span>
-kalco <span class="nb">export</span> <span class="nt">--output-dir</span> ./my-cluster-backup
-
-<span class="c"># Export to absolute path</span>
-kalco <span class="nb">export</span> <span class="nt">--output-dir</span> /path/to/backups/production-cluster
-</code></pre></div></div>
-<h3 id="git-integration">
-  
-  
-    <a href="#git-integration" class="anchor-heading" aria-labelledby="git-integration"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Git Integration
-  
-  
-</h3>
-    
-
-<p>Enable version control for your exports:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Initialize Git and commit changes</span>
-kalco <span class="nb">export</span> <span class="nt">--git-push</span>
-
-<span class="c"># Custom commit message</span>
-kalco <span class="nb">export</span> <span class="nt">--commit-message</span> <span class="s2">"Initial cluster export </span><span class="si">$(</span><span class="nb">date</span><span class="si">)</span><span class="s2">"</span>
-
-<span class="c"># Push to remote (if configured)</span>
-kalco <span class="nb">export</span> <span class="nt">--git-push</span> <span class="nt">--remote</span> origin
-</code></pre></div></div>
-<h2 id="understanding-the-output">
-  
-  
-    <a href="#understanding-the-output" class="anchor-heading" aria-labelledby="understanding-the-output"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Understanding the Output
+    <a href="#-understanding-the-output" class="anchor-heading" aria-labelledby="-understanding-the-output"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 📁 Understanding the Output
   
   
 </h2>
     
 
-<p>After running <code class="language-plaintext highlighter-rouge">kalco export</code>, you’ll see a directory structure like this:</p>
+<p>Kalco creates an organized directory structure:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>my-cluster-backup/
-├── _cluster/                    # Cluster-scoped resources
+├── _cluster/           # Cluster-scoped resources
 │   ├── ClusterRole/
 │   ├── ClusterRoleBinding/
-│   ├── CustomResourceDefinition/
-│   └── StorageClass/
-├── default/                     # Default namespace
+│   ├── StorageClass/
+│   └── ...
+├── default/            # Default namespace
 │   ├── ConfigMap/
+│   ├── Service/
+│   └── ...
+├── kube-system/        # System namespace
 │   ├── Deployment/
 │   ├── Service/
-│   └── ServiceAccount/
-├── kube-system/                 # System namespace
-│   ├── ConfigMap/
-│   ├── DaemonSet/
-│   ├── Deployment/
-│   └── Service/
-└── kalco-reports/               # Generated reports
-    └── Initial-cluster-export.md
+│   └── ...
+└── kalco-reports/      # Analysis reports
+    ├── Cluster-snapshot-2025-08-16-14-55-34.md
+    └── ...
 </code></pre></div></div>
-<h2 id="what-gets-exported">
+<h2 id="-view-the-report">
   
   
-    <a href="#what-gets-exported" class="anchor-heading" aria-labelledby="what-gets-exported"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> What Gets Exported
+    <a href="#-view-the-report" class="anchor-heading" aria-labelledby="-view-the-report"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 🔍 View the Report
   
   
 </h2>
     
 
-<p>Kalco automatically discovers and exports:</p>
+<p>Check the generated report to understand your cluster:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># View the latest report</span>
+<span class="nb">ls</span> <span class="nt">-la</span> ./my-cluster-backup/kalco-reports/
+<span class="nb">cat</span> ./my-cluster-backup/kalco-reports/<span class="k">*</span>.md | <span class="nb">head</span> <span class="nt">-50</span>
+</code></pre></div></div>
+<h2 id="-what-the-report-shows">
+  
+  
+    <a href="#-what-the-report-shows" class="anchor-heading" aria-labelledby="-what-the-report-shows"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 📊 What the Report Shows
+  
+  
+</h2>
+    
+
+<p>The report includes:</p>
 
 <ul>
-  <li><strong>Native Kubernetes Resources</strong> - Pods, Deployments, Services, etc.</li>
-  <li><strong>Custom Resources (CRDs)</strong> - Any CRDs installed in your cluster</li>
-  <li><strong>All Namespaces</strong> - Including system namespaces</li>
-  <li><strong>Resource Metadata</strong> - Labels, annotations, and relationships</li>
+  <li><strong>Resource Summary</strong> - Count of each resource type</li>
+  <li><strong>Validation Results</strong> - Cross-reference checks</li>
+  <li><strong>Orphaned Resources</strong> - Unmanaged resources</li>
+  <li><strong>Detailed Changes</strong> - Since previous snapshot (if any)</li>
 </ul>
-<h2 id="next-steps">
+<h2 id="-git-integration">
   
   
-    <a href="#next-steps" class="anchor-heading" aria-labelledby="next-steps"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Next Steps
-  
-  
-</h2>
-    
-
-<p>Now that you’ve exported your first cluster:</p>
-
-<ol>
-  <li><strong><a href="/kalco/docs/getting-started/configuration">Explore the Output</a></strong> - Understand the exported structure</li>
-  <li><strong><a href="/kalco/docs/commands/validation">Validate Resources</a></strong> - Check for configuration issues</li>
-  <li><strong><a href="/kalco/docs/commands/analysis">Analyze Cluster</a></strong> - Find optimization opportunities</li>
-  <li><strong><a href="/kalco/docs/commands/reports">Generate Reports</a></strong> - Create comprehensive documentation</li>
-</ol>
-<h2 id="common-first-run-scenarios">
-  
-  
-    <a href="#common-first-run-scenarios" class="anchor-heading" aria-labelledby="common-first-run-scenarios"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Common First-Run Scenarios
+    <a href="#-git-integration" class="anchor-heading" aria-labelledby="-git-integration"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 🔄 Git Integration
   
   
 </h2>
     
-<h3 id="development-cluster">
-  
-  
-    <a href="#development-cluster" class="anchor-heading" aria-labelledby="development-cluster"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Development Cluster
-  
-  
-</h3>
-    
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Export development cluster</span>
-kalco <span class="nb">export</span> <span class="nt">--output-dir</span> ./dev-cluster <span class="nt">--commit-message</span> <span class="s2">"Dev cluster snapshot"</span>
+<p>Initialize Git tracking for version control:</p>
 
-<span class="c"># Exclude temporary resources</span>
-kalco <span class="nb">export</span> <span class="nt">--exclude</span> events,pods <span class="nt">--output-dir</span> ./dev-cluster-clean
-</code></pre></div></div>
-<h3 id="production-cluster">
-  
-  
-    <a href="#production-cluster" class="anchor-heading" aria-labelledby="production-cluster"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Production Cluster
-  
-  
-</h3>
-    
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> ./my-cluster-backup
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Export production with detailed logging</span>
-kalco <span class="nb">export</span> <span class="nt">--verbose</span> <span class="nt">--output-dir</span> ./prod-backup
-
-<span class="c"># Export with Git versioning</span>
-kalco <span class="nb">export</span> <span class="nt">--git-push</span> <span class="nt">--commit-message</span> <span class="s2">"Production backup </span><span class="si">$(</span><span class="nb">date</span><span class="si">)</span><span class="s2">"</span> <span class="nt">--output-dir</span> ./prod-backup
-</code></pre></div></div>
-<h3 id="multi-cluster-setup">
-  
-  
-    <a href="#multi-cluster-setup" class="anchor-heading" aria-labelledby="multi-cluster-setup"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Multi-Cluster Setup
-  
-  
-</h3>
-    
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Export staging cluster</span>
-kalco <span class="nb">export</span> <span class="nt">--context</span> staging <span class="nt">--output-dir</span> ./staging-cluster
-
-<span class="c"># Export production cluster</span>
-kalco <span class="nb">export</span> <span class="nt">--context</span> production <span class="nt">--output-dir</span> ./production-cluster
-</code></pre></div></div>
-<h2 id="troubleshooting">
-  
-  
-    <a href="#troubleshooting" class="anchor-heading" aria-labelledby="troubleshooting"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Troubleshooting
-  
-  
-</h2>
-    
-<h3 id="permission-issues">
-  
-  
-    <a href="#permission-issues" class="anchor-heading" aria-labelledby="permission-issues"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Permission Issues
-  
-  
-</h3>
-    
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Check cluster access</span>
-kubectl get nodes
-
-<span class="c"># Verify kubeconfig</span>
-kubectl config view
-</code></pre></div></div>
-<h3 id="resource-export-issues">
-  
-  
-    <a href="#resource-export-issues" class="anchor-heading" aria-labelledby="resource-export-issues"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Resource Export Issues
-  
-  
-</h3>
-    
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Enable verbose output</span>
-kalco <span class="nb">export</span> <span class="nt">--verbose</span>
-
-<span class="c"># Check specific resource types</span>
-kubectl api-resources
-</code></pre></div></div>
-<h3 id="git-issues">
-  
-  
-    <a href="#git-issues" class="anchor-heading" aria-labelledby="git-issues"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Git Issues
-  
-  
-</h3>
-    
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Check Git status</span>
-git status
-
-<span class="c"># Initialize Git manually</span>
+<span class="c"># Initialize Git repository</span>
 git init
 git add <span class="nb">.</span>
-git commit <span class="nt">-m</span> <span class="s2">"Initial commit"</span>
+git commit <span class="nt">-m</span> <span class="s2">"Initial cluster export - </span><span class="si">$(</span><span class="nb">date</span><span class="si">)</span><span class="s2">"</span>
+
+<span class="c"># Add remote origin (optional)</span>
+git remote add origin &lt;your-repo-url&gt;
+git push <span class="nt">-u</span> origin main
 </code></pre></div></div>
-<h2 id="success-indicators">
+<h2 id="-next-steps">
   
   
-    <a href="#success-indicators" class="anchor-heading" aria-labelledby="success-indicators"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Success Indicators
+    <a href="#-next-steps" class="anchor-heading" aria-labelledby="-next-steps"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 🎯 Next Steps
   
   
 </h2>
     
 
-<p>You’ll know your first run was successful when you see:</p>
+<p>Now that you’ve completed your first export:</p>
 
-<ul>
-  <li>✅ <strong>Export completed</strong> - No error messages</li>
-  <li>✅ <strong>Output directory created</strong> - With organized resource files</li>
-  <li>✅ <strong>Git repository initialized</strong> - If Git integration enabled</li>
-  <li>✅ <strong>Resources exported</strong> - YAML files for each resource</li>
-  <li>✅ <strong>Report generated</strong> - Summary of the export process</li>
-</ul>
+<ol>
+  <li><strong><a href="/kalco/docs/commands/">Explore Commands</a></strong> - Learn about all available options</li>
+  <li><strong><a href="/kalco/docs/getting-started/configuration">Configure Kalco</a></strong> - Customize for your workflow</li>
+  <li><strong><a href="/kalco/docs/use-cases/">Use Cases</a></strong> - Common scenarios and workflows</li>
+</ol>
+<h2 id="-troubleshooting">
+  
+  
+    <a href="#-troubleshooting" class="anchor-heading" aria-labelledby="-troubleshooting"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 🐛 Troubleshooting
+  
+  
+</h2>
+    
+<h3 id="common-issues">
+  
+  
+    <a href="#common-issues" class="anchor-heading" aria-labelledby="common-issues"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Common Issues
+  
+  
+</h3>
+    
+
+<p><strong>Permission denied</strong>: Ensure you have cluster access</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl auth can-i get pods <span class="nt">--all-namespaces</span>
+</code></pre></div></div>
+
+<p><strong>Empty export</strong>: Check if resources exist</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl get all <span class="nt">--all-namespaces</span>
+</code></pre></div></div>
+
+<p><strong>Report not generated</strong>: Verify output directory permissions</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">ls</span> <span class="nt">-la</span> ./my-cluster-backup/
+</code></pre></div></div>
 
 <p>Congratulations! You’ve successfully exported your first Kubernetes cluster with Kalco. 🎉</p>
 

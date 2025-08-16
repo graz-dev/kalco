@@ -157,9 +157,9 @@
   
     <ul class="nav-list"><li class="nav-list-item"><a href="/kalco/" class="nav-list-link">Home</a></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="toggle items in Getting Started category" aria-pressed="false">
         <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
-      </button><a href="/kalco/docs/getting-started/" class="nav-list-link">Getting Started</a><ul class="nav-list"><li class="nav-list-item"><a href="/kalco/docs/getting-started/installation.html" class="nav-list-link">Installation</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/first-run.html" class="nav-list-link">First Run</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/configuration.html" class="nav-list-link">Configuration</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/troubleshooting.html" class="nav-list-link">Troubleshooting</a></li></ul></li><li class="nav-list-item"><a href="/kalco/docs/commands/" class="nav-list-link">Commands Reference</a></li><li class="nav-list-item"><a href="/kalco/commands/" class="nav-list-link">Commands Reference</a></li><li class="nav-list-item"><a href="/kalco/configuration.html" class="nav-list-link">Configuration</a></li><li class="nav-list-item"><a href="/kalco/contributing.html" class="nav-list-link">Contributing</a></li><li class="nav-list-item"><a href="/kalco/faq.html" class="nav-list-link">FAQ</a></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="toggle items in Getting Started category" aria-pressed="false">
+      </button><a href="/kalco/docs/getting-started/" class="nav-list-link">Getting Started</a><ul class="nav-list"><li class="nav-list-item"><a href="/kalco/docs/getting-started/installation.html" class="nav-list-link">Installation</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/first-run.html" class="nav-list-link">First Run</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/configuration.html" class="nav-list-link">Configuration</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="toggle items in Commands Reference category" aria-pressed="false">
         <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
-      </button><a href="/kalco/getting-started.html" class="nav-list-link">Getting Started</a><ul class="nav-list"><li class="nav-list-item"><a href="/kalco/docs/getting-started/installation.html" class="nav-list-link">Installation</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/first-run.html" class="nav-list-link">First Run</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/configuration.html" class="nav-list-link">Configuration</a></li><li class="nav-list-item"><a href="/kalco/docs/getting-started/troubleshooting.html" class="nav-list-link">Troubleshooting</a></li></ul></li><li class="nav-list-item"><a href="/kalco/use-cases.html" class="nav-list-link">Use Cases</a></li><li class="nav-list-item"><a href="/kalco/commands/analyze.html" class="nav-list-link">kalco analyze</a></li><li class="nav-list-item"><a href="/kalco/commands/export.html" class="nav-list-link">kalco export</a></li><li class="nav-list-item"><a href="/kalco/commands/validate.html" class="nav-list-link">kalco validate</a></li></ul>
+      </button><a href="/kalco/docs/commands/" class="nav-list-link">Commands Reference</a><ul class="nav-list"><li class="nav-list-item"><a href="/kalco/docs/commands/export.html" class="nav-list-link">kalco export</a></li></ul></li></ul>
   
 </nav>
 
@@ -214,143 +214,76 @@
 </h1>
     
 
-<p>Customize Kalco to fit your environment and workflow requirements.</p>
-<h2 id="overview">
+<p>Customize Kalco to fit your workflow and requirements.</p>
+<h2 id="️-configuration-methods">
   
   
-    <a href="#overview" class="anchor-heading" aria-labelledby="overview"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Overview
+    <a href="#️-configuration-methods" class="anchor-heading" aria-labelledby="️-configuration-methods"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> ⚙️ Configuration Methods
   
   
 </h2>
     
 
-<p>Kalco works out of the box with sensible defaults, but you can customize its behavior through:</p>
+<p>Kalco supports multiple configuration methods in order of precedence:</p>
 
-<ul>
-  <li><strong>Command-line options</strong> - Per-command configuration</li>
-  <li><strong>Environment variables</strong> - System-wide settings</li>
-  <li><strong>Configuration files</strong> - Persistent settings</li>
-  <li><strong>Project-specific configs</strong> - Per-project customization</li>
-</ul>
-<h2 id="command-line-options">
+<ol>
+  <li><strong>Command-line flags</strong> (highest priority)</li>
+  <li><strong>Environment variables</strong></li>
+  <li><strong>Configuration files</strong></li>
+  <li><strong>Default values</strong> (lowest priority)</li>
+</ol>
+<h2 id="-command-line-options">
   
   
-    <a href="#command-line-options" class="anchor-heading" aria-labelledby="command-line-options"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Command-Line Options
+    <a href="#-command-line-options" class="anchor-heading" aria-labelledby="-command-line-options"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 🚩 Command-Line Options
   
   
 </h2>
     
-<h3 id="global-options">
+<h3 id="basic-options">
   
   
-    <a href="#global-options" class="anchor-heading" aria-labelledby="global-options"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Global Options
+    <a href="#basic-options" class="anchor-heading" aria-labelledby="basic-options"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Basic Options
   
   
 </h3>
     
 
-<p>These options are available for all commands:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Output directory</span>
+kalco <span class="nb">export</span> <span class="nt">--output</span> ./cluster-backup
 
-<div class="table-wrapper"><table>
-  <thead>
-    <tr>
-      <th>Option</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">--verbose</code></td>
-      <td>Enable detailed logging</td>
-      <td><code class="language-plaintext highlighter-rouge">false</code></td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">--quiet</code></td>
-      <td>Suppress output</td>
-      <td><code class="language-plaintext highlighter-rouge">false</code></td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">--kubeconfig</code></td>
-      <td>Path to kubeconfig file</td>
-      <td>Auto-detected</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">--context</code></td>
-      <td>Kubernetes context to use</td>
-      <td>Current context</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">--output-dir</code></td>
-      <td>Output directory path</td>
-      <td>Timestamped directory</td>
-    </tr>
-  </tbody>
-</table></div>
-<h3 id="export-options">
-  
-  
-    <a href="#export-options" class="anchor-heading" aria-labelledby="export-options"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Export Options
-  
-  
-</h3>
-    
+<span class="c"># Specific namespaces</span>
+kalco <span class="nb">export</span> <span class="nt">--namespaces</span> default,kube-system,production
 
-<p>Customize the export process:</p>
+<span class="c"># Resource filtering</span>
+kalco <span class="nb">export</span> <span class="nt">--resources</span> pods,services,deployments
+kalco <span class="nb">export</span> <span class="nt">--exclude</span> events,replicasets,endpoints
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Basic export with options</span>
-kalco <span class="nb">export</span> <span class="se">\</span>
-  <span class="nt">--output-dir</span> ./my-cluster <span class="se">\</span>
-  <span class="nt">--verbose</span> <span class="se">\</span>
-  <span class="nt">--exclude</span> events,pods <span class="se">\</span>
-  <span class="nt">--include-namespaces</span> default,production
+<span class="c"># Verbose output</span>
+kalco <span class="nb">export</span> <span class="nt">--verbose</span>
 </code></pre></div></div>
+<h3 id="git-integration">
+  
+  
+    <a href="#git-integration" class="anchor-heading" aria-labelledby="git-integration"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Git Integration
+  
+  
+</h3>
+    
 
-<div class="table-wrapper"><table>
-  <thead>
-    <tr>
-      <th>Option</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">--output-dir</code></td>
-      <td>Output directory</td>
-      <td><code class="language-plaintext highlighter-rouge">./kalco-export-&lt;timestamp&gt;</code></td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">--exclude</code></td>
-      <td>Resource types to exclude</td>
-      <td>None</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">--include-namespaces</code></td>
-      <td>Namespaces to include</td>
-      <td>All namespaces</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">--exclude-namespaces</code></td>
-      <td>Namespaces to exclude</td>
-      <td>None</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">--git-push</code></td>
-      <td>Enable Git integration</td>
-      <td><code class="language-plaintext highlighter-rouge">false</code></td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">--commit-message</code></td>
-      <td>Custom commit message</td>
-      <td>Timestamp-based</td>
-    </tr>
-  </tbody>
-</table></div>
-<h2 id="environment-variables">
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Enable Git operations</span>
+kalco <span class="nb">export</span> <span class="nt">--git-push</span>
+
+<span class="c"># Custom commit message</span>
+kalco <span class="nb">export</span> <span class="nt">--commit-message</span> <span class="s2">"Weekly backup - </span><span class="si">$(</span><span class="nb">date</span><span class="si">)</span><span class="s2">"</span>
+
+<span class="c"># Dry run (no actual export)</span>
+kalco <span class="nb">export</span> <span class="nt">--dry-run</span>
+</code></pre></div></div>
+<h2 id="-environment-variables">
   
   
-    <a href="#environment-variables" class="anchor-heading" aria-labelledby="environment-variables"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Environment Variables
+    <a href="#-environment-variables" class="anchor-heading" aria-labelledby="-environment-variables"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 🌍 Environment Variables
   
   
 </h2>
@@ -358,232 +291,128 @@ kalco <span class="nb">export</span> <span class="se">\</span>
 
 <p>Set these environment variables for persistent configuration:</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Set in your shell profile (.bashrc, .zshrc, etc.)</span>
-<span class="nb">export </span><span class="nv">KALCO_OUTPUT_DIR</span><span class="o">=</span><span class="s2">"/path/to/exports"</span>
-<span class="nb">export </span><span class="nv">KALCO_KUBECONFIG</span><span class="o">=</span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.kube/config"</span>
-<span class="nb">export </span><span class="nv">KALCO_VERBOSE</span><span class="o">=</span><span class="s2">"true"</span>
-<span class="nb">export </span><span class="nv">KALCO_GIT_PUSH</span><span class="o">=</span><span class="s2">"true"</span>
-</code></pre></div></div>
-<h3 id="available-variables">
-  
-  
-    <a href="#available-variables" class="anchor-heading" aria-labelledby="available-variables"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Available Variables
-  
-  
-</h3>
-    
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Output directory</span>
+<span class="nb">export </span><span class="nv">KALCO_OUTPUT_DIR</span><span class="o">=</span><span class="s2">"./cluster-exports"</span>
 
-<div class="table-wrapper"><table>
-  <thead>
-    <tr>
-      <th>Variable</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">KALCO_OUTPUT_DIR</code></td>
-      <td>Default output directory</td>
-      <td>Current directory</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">KALCO_KUBECONFIG</code></td>
-      <td>Path to kubeconfig</td>
-      <td>Auto-detected</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">KALCO_VERBOSE</code></td>
-      <td>Enable verbose output</td>
-      <td><code class="language-plaintext highlighter-rouge">false</code></td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">KALCO_GIT_PUSH</code></td>
-      <td>Enable Git integration</td>
-      <td><code class="language-plaintext highlighter-rouge">false</code></td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">KALCO_COMMIT_MESSAGE</code></td>
-      <td>Default commit message</td>
-      <td>Timestamp</td>
-    </tr>
-  </tbody>
-</table></div>
-<h2 id="configuration-files">
+<span class="c"># Default namespaces</span>
+<span class="nb">export </span><span class="nv">KALCO_NAMESPACES</span><span class="o">=</span><span class="s2">"default,kube-system,production"</span>
+
+<span class="c"># Git integration</span>
+<span class="nb">export </span><span class="nv">KALCO_GIT_PUSH</span><span class="o">=</span><span class="s2">"true"</span>
+<span class="nb">export </span><span class="nv">KALCO_COMMIT_MESSAGE</span><span class="o">=</span><span class="s2">"Cluster snapshot"</span>
+
+<span class="c"># Resource filtering</span>
+<span class="nb">export </span><span class="nv">KALCO_RESOURCES</span><span class="o">=</span><span class="s2">"pods,services,deployments,configmaps"</span>
+<span class="nb">export </span><span class="nv">KALCO_EXCLUDE</span><span class="o">=</span><span class="s2">"events,replicasets,endpoints"</span>
+</code></pre></div></div>
+<h2 id="-configuration-files">
   
   
-    <a href="#configuration-files" class="anchor-heading" aria-labelledby="configuration-files"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Configuration Files
+    <a href="#-configuration-files" class="anchor-heading" aria-labelledby="-configuration-files"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 📁 Configuration Files
   
   
 </h2>
     
-<h3 id="project-configuration">
-  
-  
-    <a href="#project-configuration" class="anchor-heading" aria-labelledby="project-configuration"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Project Configuration
-  
-  
-</h3>
-    
 
-<p>Create a <code class="language-plaintext highlighter-rouge">.kalco.yml</code> file in your project directory:</p>
+<p>Create a configuration file for complex setups:</p>
 
-<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># .kalco.yml</span>
-<span class="na">output_dir</span><span class="pi">:</span> <span class="s">./cluster-exports</span>
-<span class="na">exclude</span><span class="pi">:</span>
-  <span class="pi">-</span> <span class="s">events</span>
-  <span class="pi">-</span> <span class="s">pods</span>
-  <span class="pi">-</span> <span class="s">endpoints</span>
-<span class="na">include_namespaces</span><span class="pi">:</span>
-  <span class="pi">-</span> <span class="s">default</span>
-  <span class="pi">-</span> <span class="s">production</span>
-<span class="na">exclude_namespaces</span><span class="pi">:</span>
-  <span class="pi">-</span> <span class="s">kube-system</span>
-  <span class="pi">-</span> <span class="s">kube-public</span>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># ~/.kalco/config.yaml</span>
+<span class="na">output</span><span class="pi">:</span>
+  <span class="na">directory</span><span class="pi">:</span> <span class="s2">"</span><span class="s">./cluster-backups"</span>
+  <span class="na">format</span><span class="pi">:</span> <span class="s2">"</span><span class="s">yaml"</span>
+  <span class="na">compress</span><span class="pi">:</span> <span class="kc">false</span>
+
+<span class="na">filtering</span><span class="pi">:</span>
+  <span class="na">namespaces</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s2">"</span><span class="s">default"</span>
+    <span class="pi">-</span> <span class="s2">"</span><span class="s">kube-system"</span>
+    <span class="pi">-</span> <span class="s2">"</span><span class="s">production"</span>
+  <span class="na">resources</span><span class="pi">:</span>
+    <span class="na">include</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s2">"</span><span class="s">pods"</span>
+      <span class="pi">-</span> <span class="s2">"</span><span class="s">services"</span>
+      <span class="pi">-</span> <span class="s2">"</span><span class="s">deployments"</span>
+      <span class="pi">-</span> <span class="s2">"</span><span class="s">configmaps"</span>
+    <span class="na">exclude</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s2">"</span><span class="s">events"</span>
+      <span class="pi">-</span> <span class="s2">"</span><span class="s">replicasets"</span>
+      <span class="pi">-</span> <span class="s2">"</span><span class="s">endpoints"</span>
+
 <span class="na">git</span><span class="pi">:</span>
   <span class="na">enabled</span><span class="pi">:</span> <span class="kc">true</span>
-  <span class="na">commit_message</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Cluster</span><span class="nv"> </span><span class="s">export</span><span class="nv"> </span><span class="s">{timestamp}"</span>
-  <span class="na">push</span><span class="pi">:</span> <span class="kc">false</span>
+  <span class="na">auto_push</span><span class="pi">:</span> <span class="kc">false</span>
+  <span class="na">commit_message</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Cluster</span><span class="nv"> </span><span class="s">export</span><span class="nv"> </span><span class="s">-</span><span class="nv"> </span><span class="s">{timestamp}"</span>
+  <span class="na">remote_origin</span><span class="pi">:</span> <span class="s2">"</span><span class="s">origin"</span>
+
 <span class="na">validation</span><span class="pi">:</span>
-  <span class="na">enabled</span><span class="pi">:</span> <span class="kc">true</span>
-  <span class="na">output_format</span><span class="pi">:</span> <span class="s">html</span>
-<span class="na">analysis</span><span class="pi">:</span>
+  <span class="na">cross_references</span><span class="pi">:</span> <span class="kc">true</span>
   <span class="na">orphaned_resources</span><span class="pi">:</span> <span class="kc">true</span>
-  <span class="na">broken_references</span><span class="pi">:</span> <span class="kc">true</span>
-  <span class="na">security_scan</span><span class="pi">:</span> <span class="kc">true</span>
-</code></pre></div></div>
-<h3 id="global-configuration">
-  
-  
-    <a href="#global-configuration" class="anchor-heading" aria-labelledby="global-configuration"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Global Configuration
-  
-  
-</h3>
-    
+  <span class="na">detailed_reporting</span><span class="pi">:</span> <span class="kc">true</span>
 
-<p>Create a global configuration file at <code class="language-plaintext highlighter-rouge">~/.kalco/config.yml</code>:</p>
-
-<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># ~/.kalco/config.yml</span>
-<span class="na">defaults</span><span class="pi">:</span>
-  <span class="na">output_dir</span><span class="pi">:</span> <span class="s">~/kalco-exports</span>
-  <span class="na">verbose</span><span class="pi">:</span> <span class="kc">false</span>
-  <span class="na">git_push</span><span class="pi">:</span> <span class="kc">false</span>
-  
-<span class="na">clusters</span><span class="pi">:</span>
-  <span class="na">production</span><span class="pi">:</span>
-    <span class="na">context</span><span class="pi">:</span> <span class="s">prod-cluster</span>
-    <span class="na">output_dir</span><span class="pi">:</span> <span class="s">~/kalco-exports/production</span>
-    <span class="na">git_push</span><span class="pi">:</span> <span class="kc">true</span>
-    
-  <span class="na">staging</span><span class="pi">:</span>
-    <span class="na">context</span><span class="pi">:</span> <span class="s">staging-cluster</span>
-    <span class="na">output_dir</span><span class="pi">:</span> <span class="s">~/kalco-exports/staging</span>
-    <span class="na">git_push</span><span class="pi">:</span> <span class="kc">false</span>
-    
-  <span class="na">development</span><span class="pi">:</span>
-    <span class="na">context</span><span class="pi">:</span> <span class="s">dev-cluster</span>
-    <span class="na">output_dir</span><span class="pi">:</span> <span class="s">~/kalco-exports/dev</span>
-    <span class="na">git_push</span><span class="pi">:</span> <span class="kc">false</span>
+<span class="na">output</span><span class="pi">:</span>
+  <span class="na">reports</span><span class="pi">:</span>
+    <span class="na">enabled</span><span class="pi">:</span> <span class="kc">true</span>
+    <span class="na">format</span><span class="pi">:</span> <span class="s2">"</span><span class="s">markdown"</span>
+    <span class="na">include_changes</span><span class="pi">:</span> <span class="kc">true</span>
+    <span class="na">include_validation</span><span class="pi">:</span> <span class="kc">true</span>
 </code></pre></div></div>
-<h2 id="advanced-configuration">
+<h2 id="-advanced-configuration">
   
   
-    <a href="#advanced-configuration" class="anchor-heading" aria-labelledby="advanced-configuration"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Advanced Configuration
+    <a href="#-advanced-configuration" class="anchor-heading" aria-labelledby="-advanced-configuration"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 🔧 Advanced Configuration
   
   
 </h2>
     
-<h3 id="resource-filtering">
+<h3 id="custom-resource-types">
   
   
-    <a href="#resource-filtering" class="anchor-heading" aria-labelledby="resource-filtering"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Resource Filtering
-  
-  
-</h3>
-    
-
-<p>Fine-tune which resources get exported:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Export only specific resource types</span>
-kalco <span class="nb">export</span> <span class="nt">--resources</span> deployments,services,configmaps
-
-<span class="c"># Exclude specific resource types</span>
-kalco <span class="nb">export</span> <span class="nt">--exclude</span> events,pods,endpoints
-
-<span class="c"># Export resources with specific labels</span>
-kalco <span class="nb">export</span> <span class="nt">--label-selector</span> <span class="s2">"app=myapp,env=production"</span>
-
-<span class="c"># Export resources in specific namespaces</span>
-kalco <span class="nb">export</span> <span class="nt">--namespaces</span> default,production
-</code></pre></div></div>
-<h3 id="git-configuration">
-  
-  
-    <a href="#git-configuration" class="anchor-heading" aria-labelledby="git-configuration"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Git Configuration
+    <a href="#custom-resource-types" class="anchor-heading" aria-labelledby="custom-resource-types"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Custom Resource Types
   
   
 </h3>
     
 
-<p>Customize Git integration behavior:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Include Custom Resource Definitions</span>
+kalco <span class="nb">export</span> <span class="nt">--resources</span> pods,services,mycustomresource
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Initialize Git repository</span>
-kalco <span class="nb">export</span> <span class="nt">--git-init</span>
-
-<span class="c"># Commit changes with custom message</span>
-kalco <span class="nb">export</span> <span class="nt">--commit-message</span> <span class="s2">"Production backup </span><span class="si">$(</span><span class="nb">date</span><span class="si">)</span><span class="s2">"</span>
-
-<span class="c"># Push to remote repository</span>
-kalco <span class="nb">export</span> <span class="nt">--git-push</span> <span class="nt">--remote</span> origin
-
-<span class="c"># Configure Git user</span>
-kalco <span class="nb">export</span> <span class="nt">--git-user</span> <span class="s2">"Kalco Bot"</span> <span class="nt">--git-email</span> <span class="s2">"kalco@company.com"</span>
+<span class="c"># Exclude specific CRDs</span>
+kalco <span class="nb">export</span> <span class="nt">--exclude</span> events,replicasets,mycustomresource
 </code></pre></div></div>
-<h3 id="output-customization">
+<h3 id="output-formatting">
   
   
-    <a href="#output-customization" class="anchor-heading" aria-labelledby="output-customization"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Output Customization
+    <a href="#output-formatting" class="anchor-heading" aria-labelledby="output-formatting"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Output Formatting
   
   
 </h3>
     
 
-<p>Control the output format and structure:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Compressed output</span>
+kalco <span class="nb">export</span> <span class="nt">--compress</span>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Custom output directory</span>
-kalco <span class="nb">export</span> <span class="nt">--output-dir</span> /backups/cluster-<span class="si">$(</span><span class="nb">date</span> +%Y%m%d<span class="si">)</span>
-
-<span class="c"># Flatten directory structure</span>
-kalco <span class="nb">export</span> <span class="nt">--flatten-directories</span>
-
-<span class="c"># Include resource metadata</span>
-kalco <span class="nb">export</span> <span class="nt">--include-metadata</span>
-
-<span class="c"># Exclude status fields</span>
-kalco <span class="nb">export</span> <span class="nt">--exclude-status</span>
+<span class="c"># Custom file naming</span>
+kalco <span class="nb">export</span> <span class="nt">--output</span> <span class="s2">"./backups/cluster-{date}-{time}"</span>
 </code></pre></div></div>
-<h2 id="configuration-precedence">
+<h3 id="validation-options">
   
   
-    <a href="#configuration-precedence" class="anchor-heading" aria-labelledby="configuration-precedence"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Configuration Precedence
+    <a href="#validation-options" class="anchor-heading" aria-labelledby="validation-options"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Validation Options
   
   
-</h2>
+</h3>
     
 
-<p>Kalco follows this order of precedence (highest to lowest):</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Skip validation for faster export</span>
+kalco <span class="nb">export</span> <span class="nt">--skip-validation</span>
 
-<ol>
-  <li><strong>Command-line options</strong> - Override all other settings</li>
-  <li><strong>Project configuration</strong> - <code class="language-plaintext highlighter-rouge">.kalco.yml</code> in current directory</li>
-  <li><strong>Environment variables</strong> - System-wide settings</li>
-  <li><strong>Global configuration</strong> - <code class="language-plaintext highlighter-rouge">~/.kalco/config.yml</code></li>
-  <li><strong>Default values</strong> - Built-in defaults</li>
-</ol>
-<h2 id="examples">
+<span class="c"># Custom validation rules</span>
+kalco <span class="nb">export</span> <span class="nt">--validation-rules</span> ./rules.yaml
+</code></pre></div></div>
+<h2 id="-configuration-examples">
   
   
-    <a href="#examples" class="anchor-heading" aria-labelledby="examples"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Examples
+    <a href="#-configuration-examples" class="anchor-heading" aria-labelledby="-configuration-examples"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 📋 Configuration Examples
   
   
 </h2>
@@ -597,40 +426,28 @@ kalco <span class="nb">export</span> <span class="nt">--exclude-status</span>
 </h3>
     
 
-<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># .kalco.yml for development</span>
-<span class="na">output_dir</span><span class="pi">:</span> <span class="s">./dev-cluster</span>
-<span class="na">exclude</span><span class="pi">:</span>
-  <span class="pi">-</span> <span class="s">events</span>
-  <span class="pi">-</span> <span class="s">pods</span>
-  <span class="pi">-</span> <span class="s">endpoints</span>
-<span class="na">git</span><span class="pi">:</span>
-  <span class="na">enabled</span><span class="pi">:</span> <span class="kc">true</span>
-  <span class="na">commit_message</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Dev</span><span class="nv"> </span><span class="s">cluster</span><span class="nv"> </span><span class="s">export"</span>
-  <span class="na">push</span><span class="pi">:</span> <span class="kc">false</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Quick export for development</span>
+kalco <span class="nb">export</span> <span class="se">\</span>
+  <span class="nt">--output</span> <span class="s2">"./dev-cluster"</span> <span class="se">\</span>
+  <span class="nt">--namespaces</span> <span class="s2">"default,development"</span> <span class="se">\</span>
+  <span class="nt">--exclude</span> <span class="s2">"events,replicasets"</span> <span class="se">\</span>
+  <span class="nt">--verbose</span>
 </code></pre></div></div>
-<h3 id="production-environment">
+<h3 id="production-backup">
   
   
-    <a href="#production-environment" class="anchor-heading" aria-labelledby="production-environment"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Production Environment
+    <a href="#production-backup" class="anchor-heading" aria-labelledby="production-backup"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Production Backup
   
   
 </h3>
     
 
-<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># .kalco.yml for production</span>
-<span class="na">output_dir</span><span class="pi">:</span> <span class="s">/backups/production</span>
-<span class="na">exclude</span><span class="pi">:</span>
-  <span class="pi">-</span> <span class="s">events</span>
-  <span class="pi">-</span> <span class="s">pods</span>
-  <span class="pi">-</span> <span class="s">endpoints</span>
-  <span class="pi">-</span> <span class="s">secrets</span>
-<span class="na">git</span><span class="pi">:</span>
-  <span class="na">enabled</span><span class="pi">:</span> <span class="kc">true</span>
-  <span class="na">commit_message</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Production</span><span class="nv"> </span><span class="s">backup</span><span class="nv"> </span><span class="s">{timestamp}"</span>
-  <span class="na">push</span><span class="pi">:</span> <span class="kc">true</span>
-<span class="na">validation</span><span class="pi">:</span>
-  <span class="na">enabled</span><span class="pi">:</span> <span class="kc">true</span>
-  <span class="na">output_format</span><span class="pi">:</span> <span class="s">html</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Comprehensive production backup</span>
+kalco <span class="nb">export</span> <span class="se">\</span>
+  <span class="nt">--output</span> <span class="s2">"./production-backup-</span><span class="si">$(</span><span class="nb">date</span> +%Y%m%d<span class="si">)</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--namespaces</span> <span class="s2">"production,monitoring,security"</span> <span class="se">\</span>
+  <span class="nt">--git-push</span> <span class="se">\</span>
+  <span class="nt">--commit-message</span> <span class="s2">"Production backup - </span><span class="si">$(</span><span class="nb">date</span><span class="si">)</span><span class="s2">"</span>
 </code></pre></div></div>
 <h3 id="cicd-pipeline">
   
@@ -641,85 +458,45 @@ kalco <span class="nb">export</span> <span class="nt">--exclude-status</span>
 </h3>
     
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Export in CI/CD pipeline</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Automated export in CI/CD</span>
 kalco <span class="nb">export</span> <span class="se">\</span>
-  <span class="nt">--output-dir</span> ./cluster-snapshot <span class="se">\</span>
-  <span class="nt">--exclude</span> events,pods <span class="se">\</span>
+  <span class="nt">--output</span> <span class="s2">"./cluster-state"</span> <span class="se">\</span>
   <span class="nt">--git-push</span> <span class="se">\</span>
-  <span class="nt">--commit-message</span> <span class="s2">"CI/CD export </span><span class="si">$(</span><span class="nb">date</span> <span class="nt">-u</span> +%Y-%m-%dT%H:%M:%SZ<span class="si">)</span><span class="s2">"</span> <span class="se">\</span>
-  <span class="nt">--verbose</span>
+  <span class="nt">--commit-message</span> <span class="s2">"Automated backup - Build </span><span class="k">${</span><span class="nv">BUILD_NUMBER</span><span class="k">}</span><span class="s2">"</span>
 </code></pre></div></div>
-<h2 id="troubleshooting-configuration">
+<h2 id="-configuration-validation">
   
   
-    <a href="#troubleshooting-configuration" class="anchor-heading" aria-labelledby="troubleshooting-configuration"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Troubleshooting Configuration
+    <a href="#-configuration-validation" class="anchor-heading" aria-labelledby="-configuration-validation"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 🔍 Configuration Validation
   
   
 </h2>
     
-<h3 id="check-current-configuration">
-  
-  
-    <a href="#check-current-configuration" class="anchor-heading" aria-labelledby="check-current-configuration"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Check Current Configuration
-  
-  
-</h3>
-    
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Show effective configuration</span>
+<p>Validate your configuration:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Check configuration</span>
+kalco config validate
+
+<span class="c"># Show current configuration</span>
 kalco config show
 
-<span class="c"># Validate configuration file</span>
-kalco config validate .kalco.yml
-
-<span class="c"># List configuration sources</span>
-kalco config sources
+<span class="c"># Test configuration</span>
+kalco <span class="nb">export</span> <span class="nt">--dry-run</span> <span class="nt">--verbose</span>
 </code></pre></div></div>
-<h3 id="common-issues">
+<h2 id="-next-steps">
   
   
-    <a href="#common-issues" class="anchor-heading" aria-labelledby="common-issues"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Common Issues
-  
-  
-</h3>
-    
-
-<p><strong>Configuration not loaded:</strong></p>
-<ul>
-  <li>Check file permissions</li>
-  <li>Verify YAML syntax</li>
-  <li>Ensure file is in correct location</li>
-</ul>
-
-<p><strong>Options not working:</strong></p>
-<ul>
-  <li>Check option precedence</li>
-  <li>Verify option names</li>
-  <li>Check for typos in configuration</li>
-</ul>
-
-<p><strong>Environment variables ignored:</strong></p>
-<ul>
-  <li>Ensure variables are exported</li>
-  <li>Check variable names (case-sensitive)</li>
-  <li>Restart shell after setting variables</li>
-</ul>
-<h2 id="next-steps">
-  
-  
-    <a href="#next-steps" class="anchor-heading" aria-labelledby="next-steps"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Next Steps
+    <a href="#-next-steps" class="anchor-heading" aria-labelledby="-next-steps"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 📚 Next Steps
   
   
 </h2>
     
 
-<p>With configuration set up, you can:</p>
-
 <ol>
-  <li><strong><a href="/kalco/docs/commands/export">Run Advanced Exports</a></strong> - Use advanced filtering and options</li>
-  <li><strong><a href="/kalco/docs/use-cases/automation">Automate with Scripts</a></strong> - Create automated backup scripts</li>
-  <li><strong><a href="/kalco/docs/use-cases/ci-cd">Integrate with CI/CD</a></strong> - Add to your deployment pipeline</li>
-  <li><strong><a href="/kalco/docs/commands/export">Customize Output</a></strong> - Tailor exports to your needs</li>
+  <li><strong><a href="/kalco/docs/commands/">Commands Reference</a></strong> - Complete command documentation</li>
+  <li><strong><a href="/kalco/docs/use-cases/">Use Cases</a></strong> - Common scenarios and workflows</li>
+  <li><strong><a href="/kalco/docs/getting-started/troubleshooting">Troubleshooting</a></strong> - Solve common issues</li>
 </ol>
 
           

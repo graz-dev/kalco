@@ -7,121 +7,95 @@ has_children: true
 
 # Commands Reference
 
-Complete reference for all Kalco commands, options, and examples.
+Complete reference for all Kalco commands and options.
 
-## Quick Navigation
+## 📋 Available Commands
 
-- **[Export Commands]({{ site.baseurl }}/docs/commands/export)** - Export cluster resources
-- **[Validation Commands]({{ site.baseurl }}/docs/commands/validation)** - Validate resources and references
-- **[Analysis Commands]({{ site.baseurl }}/docs/commands/analysis)** - Analyze cluster health and resources
-- **[Report Commands]({{ site.baseurl }}/docs/commands/reports)** - Generate comprehensive reports
-- **[Utility Commands]({{ site.baseurl }}/docs/commands/utilities)** - Helper commands and utilities
+- **[export]({{ site.baseurl }}/docs/commands/export)** - Export cluster resources to organized YAML files
+- **[validate]({{ site.baseurl }}/docs/commands/validate)** - Validate cluster resources and cross-references
+- **[analyze]({{ site.baseurl }}/docs/commands/analyze)** - Analyze cluster state and generate reports
+- **[config]({{ site.baseurl }}/docs/commands/config)** - Manage Kalco configuration
 
-## Command Structure
+## 🚩 Global Options
 
-All Kalco commands follow this pattern:
+All commands support these global options:
 
 ```bash
-kalco <command> [subcommand] [options] [arguments]
+--help, -h          Show help for the command
+--version, -v       Show version information
+--verbose           Enable verbose output
+--quiet             Suppress non-error messages
+--config            Path to configuration file
 ```
 
-### Global Options
-
-These options are available for all commands:
-
-| Option | Short | Description | Default |
-|--------|-------|-------------|---------|
-| `--help` | `-h` | Show help information | |
-| `--version` | `-v` | Show version information | |
-| `--verbose` | | Enable verbose output | `false` |
-| `--quiet` | | Suppress output | `false` |
-| `--kubeconfig` | | Path to kubeconfig file | Auto-detected |
-| `--context` | | Kubernetes context to use | Current context |
-
-## Common Patterns
-
-### Basic Command
+## 🔧 Command Structure
 
 ```bash
-kalco export
+kalco <command> [subcommand] [flags] [arguments]
 ```
 
-### With Options
+### Examples
 
 ```bash
-kalco export --output-dir ./my-cluster --verbose
-```
-
-### With Subcommands
-
-```bash
-kalco validate --output json
-```
-
-### With Arguments
-
-```bash
-kalco export --namespaces default,kube-system
-```
-
-## Output Formats
-
-Most commands support multiple output formats:
-
-- **Default** - Human-readable text output
-- **JSON** - Machine-readable JSON format
-- **YAML** - YAML format for configuration
-- **HTML** - Rich HTML reports
-- **Table** - Tabular data output
-
-Example:
-```bash
-kalco validate --output json
-kalco analyze orphaned --output html
-kalco report --output yaml
-```
-
-## Examples
-
-### Export Cluster Resources
-
-```bash
-# Export all resources
+# Basic export
 kalco export
 
-# Export specific namespaces
-kalco export --namespaces default,production
+# Export with options
+kalco export --output ./backup --namespaces default,kube-system
 
-# Export with Git integration
-kalco export --git-push --commit-message "Daily backup"
+# Validate cluster
+kalco validate --cross-references
+
+# Show configuration
+kalco config show
 ```
 
-### Validate Resources
+## 📚 Command Categories
+
+### Core Operations
+- **export** - Primary functionality for cluster resource extraction
+- **validate** - Resource validation and health checks
+- **analyze** - Cluster analysis and reporting
+
+### Configuration & Management
+- **config** - Configuration management and validation
+- **completion** - Shell completion generation
+
+## 🎯 Getting Help
+
+### Command Help
 
 ```bash
-# Basic validation
-kalco validate
+# General help
+kalco --help
 
-# Detailed validation report
-kalco validate --detailed --output html
-
-# Validate specific resource types
-kalco validate --resources deployments,services
+# Command-specific help
+kalco export --help
+kalco validate --help
 ```
 
-### Analyze Cluster
+### Examples
 
 ```bash
-# Find orphaned resources
-kalco analyze orphaned
+# Show examples for export command
+kalco export --help | grep -A 10 "Examples"
 
-# Security analysis
-kalco analyze security --output html
-
-# Resource usage analysis
-kalco analyze usage --detailed
+# Show all available flags
+kalco export --help | grep -E "^  --"
 ```
 
-## Next Steps
+## 🔍 Command Discovery
+
+Explore available commands:
+
+```bash
+# List all commands
+kalco --help
+
+# Show command tree
+kalco --help | grep -E "^  [a-z]"
+```
+
+## 📖 Next Steps
 
 Explore the specific command categories to learn more about each command's options and usage patterns.
