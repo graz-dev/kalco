@@ -1,6 +1,8 @@
 ---
 layout: default
 title: Configuration
+nav_order: 4
+description: "Configuration options and examples for Kalco"
 ---
 
 # Configuration

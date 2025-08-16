@@ -1,6 +1,8 @@
 ---
 layout: default
 title: Getting Started
+nav_order: 2
+description: "Installation and first steps with Kalco"
 ---
 
 # Getting Started with Kalco

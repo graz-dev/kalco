@@ -1,6 +1,8 @@
 ---
 layout: default
 title: FAQ
+nav_order: 6
+description: "Frequently asked questions about Kalco"
 ---
 
 # Frequently Asked Questions

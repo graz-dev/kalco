@@ -1,6 +1,8 @@
 ---
 layout: default
 title: Use Cases
+nav_order: 5
+description: "Real-world scenarios and examples for using Kalco"
 ---
 
 # Use Cases

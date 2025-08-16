@@ -1,6 +1,8 @@
 ---
 layout: default
 title: Contributing
+nav_order: 7
+description: "How to contribute to Kalco development"
 ---
 
 # Contributing to Kalco
