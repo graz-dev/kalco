@@ -56,6 +56,11 @@ iwr -useb https://raw.githubusercontent.com/graz-dev/kalco/main/scripts/install.
 
 #### Package Managers
 
+**Homebrew (macOS/Linux):**
+```bash
+brew install graz-dev/tap/kalco
+```
+
 **Debian/Ubuntu:**
 ```bash
 # Download the .deb file from releases and install
