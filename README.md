@@ -16,7 +16,7 @@
 
 ---
 
-## 🌟 Why Kalco?
+## 🌟 Why Kalco? 
 
 Kalco transforms your Kubernetes cluster management experience by providing a **comprehensive, automated, and intelligent** approach to cluster analysis and lifecycle control. Whether you're managing production workloads, ensuring compliance, or planning migrations, Kalco has you covered.
 
