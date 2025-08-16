@@ -1,3 +1,8 @@
+---
+layout: default
+title: Commands Reference
+---
+
 # Commands Reference
 
 Complete reference for all Kalco commands and their options.

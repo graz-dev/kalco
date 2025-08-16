@@ -4,11 +4,12 @@ url: https://graz-dev.github.io/kalco
 baseurl: ""
 
 # Theme
-theme: minima
+remote_theme: jekyll/minima
 plugins:
   - jekyll-feed
   - jekyll-sitemap
   - jekyll-seo-tag
+  - jekyll-remote-theme
 
 # Navigation
 header_pages:
@@ -16,7 +17,6 @@ header_pages:
   - commands/index.md
   - configuration.md
   - use-cases.md
-  - api-reference.md
   - contributing.md
   - faq.md
 
@@ -35,6 +35,17 @@ highlighter: rouge
 kramdown:
   input: GFM
   syntax_highlighter: rouge
+
+# Permalink structure
+permalink: pretty
+
+# Default layouts
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"
 
 # Exclude from processing
 exclude:

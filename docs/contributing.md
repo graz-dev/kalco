@@ -1,3 +1,8 @@
+---
+layout: default
+title: Contributing
+---
+
 # Contributing to Kalco
 
 We welcome contributions to Kalco! This guide will help you get started with contributing to the project.

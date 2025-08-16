@@ -1,3 +1,8 @@
+---
+layout: default
+title: Use Cases
+---
+
 # Use Cases
 
 Real-world scenarios and examples for using Kalco effectively.

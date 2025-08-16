@@ -1,3 +1,8 @@
+---
+layout: default
+title: Configuration
+---
+
 # Configuration
 
 Kalco supports flexible configuration through YAML files, environment variables, and command-line flags.
