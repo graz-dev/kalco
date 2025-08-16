@@ -8,7 +8,7 @@ BINARY_NAME=kalco
 VERSION=$(shell git describe --tags --always --dirty)
 COMMIT=$(shell git rev-parse HEAD)
 DATE=$(shell date -u +'%Y-%m-%dT%H:%M:%SZ')
-LDFLAGS=-s -w -X main.version=$(VERSION) -X main.commit=$(COMMIT) -X main.date=$(DATE)
+LDFLAGS=-s -w -X kalco/cmd.version=$(VERSION) -X kalco/cmd.commit=$(COMMIT) -X kalco/cmd.date=$(DATE)
 
 # Default target
 help:

@@ -19,7 +19,7 @@ builds:
       - goos: windows
         goarch: arm64
     ldflags:
-      - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}}
+      - -s -w -X kalco/cmd.version={{.Version}} -X kalco/cmd.commit={{.Commit}} -X kalco/cmd.date={{.Date}}
     binary: kalco
 
 archives:

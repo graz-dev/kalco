@@ -1,111 +1,50 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
-	"time"
-
-	"kalco/pkg/dumper"
-	"kalco/pkg/git"
-	"kalco/pkg/kube"
-	"kalco/pkg/reports"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
 
+// Global flags
 var (
-	kubeconfig    string
-	outputDir     string
-	gitPush       bool
-	commitMessage string
+	kubeconfig string
+	verbose    bool
+	noColor    bool
 )
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "kalco",
-	Short: "🚀 Kubernetes Cluster Resource Dumper",
-	Long: `
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+	Short: "🚀 Kubernetes Analysis & Lifecycle Control",
+	Long: formatLongDescription(`
+Kalco is a powerful CLI tool for comprehensive Kubernetes cluster analysis, 
+resource extraction, validation, and lifecycle management.
 
-🚀 KALCO - Kubernetes Cluster Resource Dumper 🚀
+Extract, validate, analyze, and version control your entire cluster with 
+comprehensive validation and Git integration.
+`),
+	Example: `  # Export entire cluster to timestamped directory
+  kalco export
 
-🎯 Comprehensive cluster resource extraction tool
-🔍 Discovers ALL resources (native + CRDs) automatically
-📁 Creates organized YAML exports with clean directory structure
-🧹 Cleans metadata for easy re-application
-🌐 Works both in-cluster and out-of-cluster
-⚡ Fast, efficient, and production-ready
+  # Export to specific directory with custom options
+  kalco export --output ./my-backup --git-push
 
-Perfect for:
-  • Cluster backups and disaster recovery
-  • Resource auditing and compliance
-  • Development environment replication
-  • Documentation and resource cataloging
+  # Validate cluster resources for issues
+  kalco validate
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-`,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		// Create Kubernetes clients
-		clientset, discoveryClient, dynamicClient, err := kube.NewClients(kubeconfig)
-		if err != nil {
-			return fmt.Errorf("failed to create Kubernetes clients: %w", err)
-		}
+  # Analyze cluster for orphaned resources
+  kalco analyze orphaned
 
-		// Create dumper instance
-		d := dumper.NewDumper(clientset, discoveryClient)
-		d.SetDynamicClient(dynamicClient)
+  # Generate cluster report
+  kalco report --format json
 
-		// Execute the main dump function
-		fmt.Println("🚀 Starting Kubernetes cluster resource dump...")
-		fmt.Println("🔍 Discovering resources and building directory structure...")
-
-		if err := d.DumpAllResources(outputDir); err != nil {
-			return fmt.Errorf("❌ failed to dump resources: %w", err)
-		}
-
-		// Handle Git repository operations
-		fmt.Println("📦 Setting up Git repository for version control...")
-		gitRepo := git.NewGitRepo(outputDir)
-		if err := gitRepo.SetupAndCommit(commitMessage, gitPush); err != nil {
-			fmt.Printf("⚠️  Warning: Git operations failed: %v\n", err)
-			fmt.Println("  Continuing without Git version control...")
-		}
-
-		// Generate change report
-		fmt.Println("📊 Generating cluster change report...")
-		reportGen := reports.NewReportGenerator(outputDir)
-		if err := reportGen.GenerateReport(commitMessage); err != nil {
-			fmt.Printf("⚠️  Warning: Report generation failed: %v\n", err)
-			fmt.Println("  Continuing without change report...")
-		}
-
-		fmt.Println()
-		fmt.Println("🎉 SUCCESS! 🎉")
-		fmt.Println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-		fmt.Println()
-		fmt.Printf("📁 All resources have been successfully dumped to:\n")
-		fmt.Printf("   %s\n", outputDir)
-		fmt.Println()
-		fmt.Println("🎯 Your cluster snapshot is ready for:")
-		fmt.Println("   • Backup and disaster recovery")
-		fmt.Println("   • Resource auditing and compliance")
-		fmt.Println("   • Development environment replication")
-		fmt.Println("   • Documentation and resource cataloging")
-		fmt.Println()
-		if gitRepo.IsGitRepo() {
-			fmt.Println("📦 Git repository initialized/updated for version control")
-			if gitRepo.HasRemoteOrigin() {
-				if gitPush {
-					fmt.Println("🚀 Changes pushed to remote origin")
-				} else {
-					fmt.Println("💡 Use --git-push flag to automatically push changes")
-				}
-			}
-		}
-		fmt.Println()
-		fmt.Println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-		fmt.Println()
-		return nil
+  # List all available resources in cluster
+  kalco resources list`,
+	Run: func(cmd *cobra.Command, args []string) {
+		printBanner()
+		cmd.Help()
 	},
 }
 
@@ -118,13 +57,39 @@ func Execute() {
 }
 
 func init() {
-	// Generate default output directory with timestamp
-	timestamp := time.Now().Format("20060102-150405")
-	defaultOutputDir := "./kalco-dump-" + timestamp
-
 	// Add persistent flags
-	rootCmd.PersistentFlags().StringVar(&kubeconfig, "kubeconfig", "", "path to the kubeconfig file (optional)")
-	rootCmd.PersistentFlags().StringVarP(&outputDir, "output-dir", "o", defaultOutputDir, "path to the output directory")
-	rootCmd.PersistentFlags().BoolVar(&gitPush, "git-push", false, "automatically push changes to remote origin if available")
-	rootCmd.PersistentFlags().StringVar(&commitMessage, "commit-message", "", "custom commit message (default: timestamp-based message)")
+	rootCmd.PersistentFlags().StringVar(&kubeconfig, "kubeconfig", "", "path to the kubeconfig file")
+	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "enable verbose output")
+	rootCmd.PersistentFlags().BoolVar(&noColor, "no-color", false, "disable colored output")
+	
+	// Set custom help template
+	rootCmd.SetHelpTemplate(getHelpTemplate())
+}
+
+// formatLongDescription formats the long description with proper styling
+func formatLongDescription(desc string) string {
+	if noColor {
+		return strings.TrimSpace(desc)
+	}
+	
+	lines := strings.Split(strings.TrimSpace(desc), "\n")
+	var formatted []string
+	
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if line == "" {
+			formatted = append(formatted, "")
+			continue
+		}
+		formatted = append(formatted, "  "+line)
+	}
+	
+	return strings.Join(formatted, "\n")
+}
+
+// getHelpTemplate returns a custom help template with better styling
+func getHelpTemplate() string {
+	return `{{with (or .Long .Short)}}{{. | trimTrailingWhitespaces}}
+
+{{end}}{{if or .Runnable .HasSubCommands}}{{.UsageString}}{{end}}`
 }

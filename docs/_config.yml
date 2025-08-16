@@ -1,0 +1,47 @@
+title: Kalco Documentation
+description: Kubernetes Analysis & Lifecycle Control - Comprehensive cluster management tool
+url: https://graz-dev.github.io/kalco
+baseurl: ""
+
+# Theme
+theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# Navigation
+header_pages:
+  - getting-started.md
+  - commands/index.md
+  - configuration.md
+  - use-cases.md
+  - api-reference.md
+  - contributing.md
+  - faq.md
+
+# SEO
+author: Graz Dev
+twitter:
+  username: grazdev
+  card: summary_large_image
+
+# Social links
+github_username: graz-dev
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+
+# Exclude from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
