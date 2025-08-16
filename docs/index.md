@@ -12,7 +12,7 @@ nav_order: 1
 
 ---
 
-## 🚀 What is Kalco?
+## 🚀 What is Kalco? 
 
 Kalco is a powerful Kubernetes cluster management tool that provides comprehensive resource extraction, validation, and version control capabilities. It's designed to help DevOps engineers, SREs, and platform teams maintain clean, validated, and version-controlled cluster configurations.
 
