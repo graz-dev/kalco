@@ -1,0 +1,1038 @@
+{"0": {
+    "doc": "kalco analyze",
+    "title": "kalco analyze",
+    "content": "Analyze cluster resources for optimization opportunities. ",
+    "url": "/kalco/commands/analyze.html",
+    
+    "relUrl": "/commands/analyze.html"
+  },"1": {
+    "doc": "kalco analyze",
+    "title": "Synopsis",
+    "content": "The analyze command provides various analysis capabilities to help you optimize your Kubernetes cluster, identify cleanup opportunities, and improve security posture. kalco analyze &lt;subcommand&gt; [flags] . ",
+    "url": "/kalco/commands/analyze.html#synopsis",
+    
+    "relUrl": "/commands/analyze.html#synopsis"
+  },"2": {
+    "doc": "kalco analyze",
+    "title": "Subcommands",
+    "content": "orphaned . Find orphaned resources no longer managed by controllers. kalco analyze orphaned [flags] . Description: Identifies resources that are no longer managed by higher-level controllers and may be safe to clean up: . | Pods not owned by ReplicaSets, Deployments, or Jobs | ReplicaSets not owned by Deployments | ConfigMaps and Secrets not referenced by any resources | Services without matching endpoints | PersistentVolumes not bound to claims | . Flags: . | --namespaces, -n - Specific namespaces to analyze | --output, -o - Output format (table, json, yaml) | --detailed - Include detailed analysis information | . Examples: . # Find all orphaned resources kalco analyze orphaned # Analyze specific namespaces kalco analyze orphaned --namespaces production,staging # Detailed analysis with JSON output kalco analyze orphaned --detailed --output json . usage . Analyze resource usage and capacity. kalco analyze usage [flags] . Description: Analyzes cluster resource usage, capacity, and efficiency metrics including CPU, memory, and storage utilization across nodes, namespaces, and workloads. Examples: . # Analyze overall cluster usage kalco analyze usage # Analyze usage by namespace kalco analyze usage --by-namespace # Analyze node capacity kalco analyze usage --nodes . security . Analyze cluster security posture. kalco analyze security [flags] . Description: Analyzes your cluster’s security configuration and identifies potential security issues or improvements. Checks for common security misconfigurations and compliance with security best practices. Examples: . # Run security analysis kalco analyze security # Check specific security policies kalco analyze security --policies rbac,network,pod-security . ",
+    "url": "/kalco/commands/analyze.html#subcommands",
+    
+    "relUrl": "/commands/analyze.html#subcommands"
+  },"3": {
+    "doc": "kalco analyze",
+    "title": "Global Flags",
+    "content": "| Flag | Short | Type | Description | . | --output | -o | string | Output format (table, json, yaml) | . | --namespaces | -n | []string | Specific namespaces to analyze | . | --detailed |   | bool | Include detailed analysis information | . ",
+    "url": "/kalco/commands/analyze.html#global-flags",
+    
+    "relUrl": "/commands/analyze.html#global-flags"
+  },"4": {
+    "doc": "kalco analyze",
+    "title": "Output Examples",
+    "content": "Orphaned Resources (Table) . TYPE NAME NAMESPACE REASON Pod old-pod-123 default No Controller Owner ConfigMap unused-config production No References Secret old-secret staging No References Service orphaned-svc default No References . Orphaned Resources (JSON) . { \"summary\": { \"totalOrphanedResources\": 15, \"byType\": { \"Pod\": 5, \"ConfigMap\": 4, \"Secret\": 3, \"Service\": 2, \"PVC\": 1 } }, \"orphanedResources\": [ { \"type\": \"Pod\", \"name\": \"old-pod-123\", \"namespace\": \"default\", \"reason\": \"No Controller Owner\", \"details\": \"This Pod has no owner references and may be orphaned\" } ] } . ",
+    "url": "/kalco/commands/analyze.html#output-examples",
+    
+    "relUrl": "/commands/analyze.html#output-examples"
+  },"5": {
+    "doc": "kalco analyze",
+    "title": "Use Cases",
+    "content": "Cleanup Operations . # Find cleanup opportunities kalco analyze orphaned --output json &gt; cleanup-candidates.json # Review and create cleanup script cat cleanup-candidates.json | jq -r '.orphanedResources[] | \"kubectl delete \\(.type) \\(.name) -n \\(.namespace)\"' &gt; cleanup.sh . Capacity Planning . # Analyze resource usage for capacity planning kalco analyze usage --output json &gt; usage-report.json # Generate capacity planning report kalco analyze usage --detailed --output html &gt; capacity-report.html . Security Auditing . # Security assessment kalco analyze security --output json &gt; security-audit.json # Check specific security areas kalco analyze security --policies rbac,network --detailed . ",
+    "url": "/kalco/commands/analyze.html#use-cases",
+    
+    "relUrl": "/commands/analyze.html#use-cases"
+  },"6": {
+    "doc": "kalco analyze",
+    "title": "Related Commands",
+    "content": ". | kalco validate - Validate cluster resources | kalco export - Export resources for analysis | kalco report - Generate comprehensive reports | . | ← Validate Command | Report Command → | . ",
+    "url": "/kalco/commands/analyze.html#related-commands",
+    
+    "relUrl": "/commands/analyze.html#related-commands"
+  },"7": {
+    "doc": "Configuration",
+    "title": "Configuration",
+    "content": "Customize Kalco to fit your environment and workflow requirements. ",
+    "url": "/kalco/docs/getting-started/configuration.html",
+    
+    "relUrl": "/docs/getting-started/configuration.html"
+  },"8": {
+    "doc": "Configuration",
+    "title": "Overview",
+    "content": "Kalco works out of the box with sensible defaults, but you can customize its behavior through: . | Command-line options - Per-command configuration | Environment variables - System-wide settings | Configuration files - Persistent settings | Project-specific configs - Per-project customization | . ",
+    "url": "/kalco/docs/getting-started/configuration.html#overview",
+    
+    "relUrl": "/docs/getting-started/configuration.html#overview"
+  },"9": {
+    "doc": "Configuration",
+    "title": "Command-Line Options",
+    "content": "Global Options . These options are available for all commands: . | Option | Description | Default | . | --verbose | Enable detailed logging | false | . | --quiet | Suppress output | false | . | --kubeconfig | Path to kubeconfig file | Auto-detected | . | --context | Kubernetes context to use | Current context | . | --output-dir | Output directory path | Timestamped directory | . Export Options . Customize the export process: . # Basic export with options kalco export \\ --output-dir ./my-cluster \\ --verbose \\ --exclude events,pods \\ --include-namespaces default,production . | Option | Description | Default | . | --output-dir | Output directory | ./kalco-export-&lt;timestamp&gt; | . | --exclude | Resource types to exclude | None | . | --include-namespaces | Namespaces to include | All namespaces | . | --exclude-namespaces | Namespaces to exclude | None | . | --git-push | Enable Git integration | false | . | --commit-message | Custom commit message | Timestamp-based | . ",
+    "url": "/kalco/docs/getting-started/configuration.html#command-line-options",
+    
+    "relUrl": "/docs/getting-started/configuration.html#command-line-options"
+  },"10": {
+    "doc": "Configuration",
+    "title": "Environment Variables",
+    "content": "Set these environment variables for persistent configuration: . # Set in your shell profile (.bashrc, .zshrc, etc.) export KALCO_OUTPUT_DIR=\"/path/to/exports\" export KALCO_KUBECONFIG=\"$HOME/.kube/config\" export KALCO_VERBOSE=\"true\" export KALCO_GIT_PUSH=\"true\" . Available Variables . | Variable | Description | Default | . | KALCO_OUTPUT_DIR | Default output directory | Current directory | . | KALCO_KUBECONFIG | Path to kubeconfig | Auto-detected | . | KALCO_VERBOSE | Enable verbose output | false | . | KALCO_GIT_PUSH | Enable Git integration | false | . | KALCO_COMMIT_MESSAGE | Default commit message | Timestamp | . ",
+    "url": "/kalco/docs/getting-started/configuration.html#environment-variables",
+    
+    "relUrl": "/docs/getting-started/configuration.html#environment-variables"
+  },"11": {
+    "doc": "Configuration",
+    "title": "Configuration Files",
+    "content": "Project Configuration . Create a .kalco.yml file in your project directory: . # .kalco.yml output_dir: ./cluster-exports exclude: - events - pods - endpoints include_namespaces: - default - production exclude_namespaces: - kube-system - kube-public git: enabled: true commit_message: \"Cluster export {timestamp}\" push: false validation: enabled: true output_format: html analysis: orphaned_resources: true broken_references: true security_scan: true . Global Configuration . Create a global configuration file at ~/.kalco/config.yml: . # ~/.kalco/config.yml defaults: output_dir: ~/kalco-exports verbose: false git_push: false clusters: production: context: prod-cluster output_dir: ~/kalco-exports/production git_push: true staging: context: staging-cluster output_dir: ~/kalco-exports/staging git_push: false development: context: dev-cluster output_dir: ~/kalco-exports/dev git_push: false . ",
+    "url": "/kalco/docs/getting-started/configuration.html#configuration-files",
+    
+    "relUrl": "/docs/getting-started/configuration.html#configuration-files"
+  },"12": {
+    "doc": "Configuration",
+    "title": "Advanced Configuration",
+    "content": "Resource Filtering . Fine-tune which resources get exported: . # Export only specific resource types kalco export --resources deployments,services,configmaps # Exclude specific resource types kalco export --exclude events,pods,endpoints # Export resources with specific labels kalco export --label-selector \"app=myapp,env=production\" # Export resources in specific namespaces kalco export --namespaces default,production . Git Configuration . Customize Git integration behavior: . # Initialize Git repository kalco export --git-init # Commit changes with custom message kalco export --commit-message \"Production backup $(date)\" # Push to remote repository kalco export --git-push --remote origin # Configure Git user kalco export --git-user \"Kalco Bot\" --git-email \"kalco@company.com\" . Output Customization . Control the output format and structure: . # Custom output directory kalco export --output-dir /backups/cluster-$(date +%Y%m%d) # Flatten directory structure kalco export --flatten-directories # Include resource metadata kalco export --include-metadata # Exclude status fields kalco export --exclude-status . ",
+    "url": "/kalco/docs/getting-started/configuration.html#advanced-configuration",
+    
+    "relUrl": "/docs/getting-started/configuration.html#advanced-configuration"
+  },"13": {
+    "doc": "Configuration",
+    "title": "Configuration Precedence",
+    "content": "Kalco follows this order of precedence (highest to lowest): . | Command-line options - Override all other settings | Project configuration - .kalco.yml in current directory | Environment variables - System-wide settings | Global configuration - ~/.kalco/config.yml | Default values - Built-in defaults | . ",
+    "url": "/kalco/docs/getting-started/configuration.html#configuration-precedence",
+    
+    "relUrl": "/docs/getting-started/configuration.html#configuration-precedence"
+  },"14": {
+    "doc": "Configuration",
+    "title": "Examples",
+    "content": "Development Environment . # .kalco.yml for development output_dir: ./dev-cluster exclude: - events - pods - endpoints git: enabled: true commit_message: \"Dev cluster export\" push: false . Production Environment . # .kalco.yml for production output_dir: /backups/production exclude: - events - pods - endpoints - secrets git: enabled: true commit_message: \"Production backup {timestamp}\" push: true validation: enabled: true output_format: html . CI/CD Pipeline . # Export in CI/CD pipeline kalco export \\ --output-dir ./cluster-snapshot \\ --exclude events,pods \\ --git-push \\ --commit-message \"CI/CD export $(date -u +%Y-%m-%dT%H:%M:%SZ)\" \\ --verbose . ",
+    "url": "/kalco/docs/getting-started/configuration.html#examples",
+    
+    "relUrl": "/docs/getting-started/configuration.html#examples"
+  },"15": {
+    "doc": "Configuration",
+    "title": "Troubleshooting Configuration",
+    "content": "Check Current Configuration . # Show effective configuration kalco config show # Validate configuration file kalco config validate .kalco.yml # List configuration sources kalco config sources . Common Issues . Configuration not loaded: . | Check file permissions | Verify YAML syntax | Ensure file is in correct location | . Options not working: . | Check option precedence | Verify option names | Check for typos in configuration | . Environment variables ignored: . | Ensure variables are exported | Check variable names (case-sensitive) | Restart shell after setting variables | . ",
+    "url": "/kalco/docs/getting-started/configuration.html#troubleshooting-configuration",
+    
+    "relUrl": "/docs/getting-started/configuration.html#troubleshooting-configuration"
+  },"16": {
+    "doc": "Configuration",
+    "title": "Next Steps",
+    "content": "With configuration set up, you can: . | Run Advanced Exports - Use advanced filtering and options | Automate with Scripts - Create automated backup scripts | Integrate with CI/CD - Add to your deployment pipeline | Customize Output - Tailor exports to your needs | . ",
+    "url": "/kalco/docs/getting-started/configuration.html#next-steps",
+    
+    "relUrl": "/docs/getting-started/configuration.html#next-steps"
+  },"17": {
+    "doc": "Configuration",
+    "title": "Configuration",
+    "content": "Kalco supports flexible configuration through YAML files, environment variables, and command-line flags. ",
+    "url": "/kalco/configuration.html",
+    
+    "relUrl": "/configuration.html"
+  },"18": {
+    "doc": "Configuration",
+    "title": "Configuration Hierarchy",
+    "content": "Configuration is loaded in the following order (later sources override earlier ones): . | Default values - Built-in defaults | Global configuration - ~/.kalco/config.yaml | Project configuration - ./.kalco.yaml | Environment variables - KALCO_* prefixed variables | Command-line flags - Explicit flag values | . ",
+    "url": "/kalco/configuration.html#configuration-hierarchy",
+    
+    "relUrl": "/configuration.html#configuration-hierarchy"
+  },"19": {
+    "doc": "Configuration",
+    "title": "Configuration Files",
+    "content": "Global Configuration . Located at ~/.kalco/config.yaml, this file contains user-wide defaults. # Initialize global configuration kalco config init --global . Project Configuration . Located at ./.kalco.yaml in your project directory, this file contains project-specific settings. # Initialize project configuration kalco config init # Initialize with advanced template kalco config init --template advanced . ",
+    "url": "/kalco/configuration.html#configuration-files",
+    
+    "relUrl": "/configuration.html#configuration-files"
+  },"20": {
+    "doc": "Configuration",
+    "title": "Configuration Schema",
+    "content": "Basic Configuration . # Basic Kalco Configuration output: directory: \"./kalco-export-\" format: \"yaml\" filters: exclude: [\"events\"] ui: colors: true verbose: false . Advanced Configuration . # Advanced Kalco Configuration output: directory: \"./kalco-export-\" format: \"yaml\" git: enabled: true auto_push: false commit_message: \"Kalco export \" filters: namespaces: [] resources: [] exclude: [\"events\", \"replicasets\"] validation: enabled: true strict: false analysis: orphaned_resources: true security_scan: false reports: enabled: true formats: [\"html\", \"json\"] ui: colors: true verbose: false progress: true # Kubernetes connection kubernetes: kubeconfig: \"\" context: \"\" namespace: \"\" # Custom resource definitions crds: include_all: true specific: [] . ",
+    "url": "/kalco/configuration.html#configuration-schema",
+    
+    "relUrl": "/configuration.html#configuration-schema"
+  },"21": {
+    "doc": "Configuration",
+    "title": "Configuration Sections",
+    "content": "Output Configuration . Controls where and how resources are exported. output: directory: \"./exports/\" # Output directory template format: \"yaml\" # Output format (yaml, json) compression: false # Enable gzip compression git: enabled: true # Enable Git integration auto_push: false # Automatically push to remote commit_message: \"Export \" # Commit message template remote: \"origin\" # Git remote name . Template Variables: . | `` - Current date (YYYY-MM-DD) | `` - Current time (HH-MM-SS) | `` - Unix timestamp | `` - Kubernetes context name | . Filter Configuration . Controls which resources are included or excluded. filters: namespaces: [\"production\", \"staging\"] # Include specific namespaces exclude_namespaces: [\"kube-system\"] # Exclude specific namespaces resources: [\"pods\", \"services\"] # Include specific resource types exclude: [\"events\", \"endpoints\"] # Exclude specific resource types labels: # Filter by labels app: \"myapp\" environment: \"production\" annotations: # Filter by annotations \"deployment.kubernetes.io/revision\": \"1\" . Validation Configuration . Controls resource validation behavior. validation: enabled: true # Enable validation strict: false # Strict validation mode cross_references: true # Check cross-references schemas: true # Validate against schemas custom_rules: [] # Custom validation rules ignore_warnings: false # Ignore validation warnings . Analysis Configuration . Controls analysis and reporting features. analysis: orphaned_resources: true # Detect orphaned resources security_scan: false # Run security analysis resource_usage: true # Analyze resource usage dependencies: true # Analyze dependencies recommendations: true # Generate recommendations . UI Configuration . Controls command-line interface appearance and behavior. ui: colors: true # Enable colored output verbose: false # Enable verbose output progress: true # Show progress indicators interactive: true # Enable interactive prompts pager: \"less\" # Pager for long output . ",
+    "url": "/kalco/configuration.html#configuration-sections",
+    
+    "relUrl": "/configuration.html#configuration-sections"
+  },"22": {
+    "doc": "Configuration",
+    "title": "Environment Variables",
+    "content": "All configuration options can be set via environment variables using the KALCO_ prefix: . # Output configuration export KALCO_OUTPUT_DIRECTORY=\"./my-exports\" export KALCO_OUTPUT_FORMAT=\"json\" # Filter configuration export KALCO_FILTERS_EXCLUDE=\"events,endpoints\" export KALCO_FILTERS_NAMESPACES=\"production,staging\" # UI configuration export KALCO_UI_COLORS=\"false\" export KALCO_UI_VERBOSE=\"true\" # Kubernetes configuration export KALCO_KUBERNETES_KUBECONFIG=\"/path/to/kubeconfig\" export KALCO_KUBERNETES_CONTEXT=\"production\" . ",
+    "url": "/kalco/configuration.html#environment-variables",
+    
+    "relUrl": "/configuration.html#environment-variables"
+  },"23": {
+    "doc": "Configuration",
+    "title": "Command-Line Configuration",
+    "content": "Setting Configuration Values . # Set output directory kalco config set output.directory ./backups # Set global configuration kalco config set --global ui.colors false # Set filter exclusions kalco config set filters.exclude \"events,endpoints,replicasets\" # Set Git integration kalco config set output.git.enabled true kalco config set output.git.auto_push true . Viewing Configuration . # Show current configuration kalco config show # Show configuration in JSON format kalco config show --output json # Show specific configuration section kalco config show --section output . ",
+    "url": "/kalco/configuration.html#command-line-configuration",
+    
+    "relUrl": "/configuration.html#command-line-configuration"
+  },"24": {
+    "doc": "Configuration",
+    "title": "Configuration Templates",
+    "content": "Minimal Template . output: directory: \"./kalco-export\" ui: colors: true . Development Template . output: directory: \"./dev-exports/\" git: enabled: true commit_message: \"Dev export \" filters: namespaces: [\"default\", \"development\"] exclude: [\"events\", \"endpoints\"] ui: verbose: true progress: true . Production Template . output: directory: \"/backups/kubernetes/\" compression: true git: enabled: true auto_push: true commit_message: \"Production backup \" filters: exclude: [\"events\", \"endpoints\", \"replicasets\"] validation: enabled: true strict: true analysis: orphaned_resources: true security_scan: true reports: enabled: true formats: [\"html\", \"json\"] . CI/CD Template . output: directory: \"./ci-exports\" format: \"json\" filters: exclude: [\"events\", \"endpoints\", \"pods\"] validation: enabled: true strict: true ui: colors: false verbose: true interactive: false . ",
+    "url": "/kalco/configuration.html#configuration-templates",
+    
+    "relUrl": "/configuration.html#configuration-templates"
+  },"25": {
+    "doc": "Configuration",
+    "title": "Configuration Validation",
+    "content": "Validate your configuration file: . # Validate current configuration kalco config validate # Validate specific configuration file kalco config validate --file .kalco.yaml # Show configuration with resolved values kalco config show --resolved . ",
+    "url": "/kalco/configuration.html#configuration-validation",
+    
+    "relUrl": "/configuration.html#configuration-validation"
+  },"26": {
+    "doc": "Configuration",
+    "title": "Best Practices",
+    "content": "Security . | Sensitive Data: Don’t store sensitive information in configuration files | Permissions: Set appropriate file permissions (600) for configuration files | Git: Add .kalco.yaml to .gitignore if it contains sensitive data | . Organization . | Global Defaults: Use global configuration for user preferences | Project Specific: Use project configuration for project-specific settings | Environment Variables: Use environment variables in CI/CD environments | . Maintenance . | Version Control: Track configuration changes in version control | Documentation: Document custom configuration options | Validation: Regularly validate configuration files | . ",
+    "url": "/kalco/configuration.html#best-practices",
+    
+    "relUrl": "/configuration.html#best-practices"
+  },"27": {
+    "doc": "Configuration",
+    "title": "Troubleshooting",
+    "content": "Common Issues . Configuration Not Loading: . # Check configuration file syntax kalco config validate --file .kalco.yaml # Show effective configuration kalco config show --resolved . Permission Errors: . # Check file permissions ls -la ~/.kalco/config.yaml # Fix permissions chmod 600 ~/.kalco/config.yaml . Template Errors: . # Test template rendering kalco config show --section output . | ← Commands Reference | Use Cases → | . ",
+    "url": "/kalco/configuration.html#troubleshooting",
+    
+    "relUrl": "/configuration.html#troubleshooting"
+  },"28": {
+    "doc": "Contributing",
+    "title": "Contributing to Kalco",
+    "content": "We welcome contributions to Kalco! This guide will help you get started with contributing to the project. ",
+    "url": "/kalco/contributing.html#contributing-to-kalco",
+    
+    "relUrl": "/contributing.html#contributing-to-kalco"
+  },"29": {
+    "doc": "Contributing",
+    "title": "🤝 Ways to Contribute",
+    "content": ". | 🐛 Report Bugs - Help us identify and fix issues | 💡 Request Features - Suggest new functionality | 📖 Improve Documentation - Help make our docs better | 🔧 Submit Code - Contribute bug fixes and new features | 🧪 Write Tests - Help improve our test coverage | 🎨 Improve UX - Enhance the user experience | . ",
+    "url": "/kalco/contributing.html#-ways-to-contribute",
+    
+    "relUrl": "/contributing.html#-ways-to-contribute"
+  },"30": {
+    "doc": "Contributing",
+    "title": "🚀 Getting Started",
+    "content": "Prerequisites . | Go 1.21+ - Download here | Git - For version control | Make - For build automation | Kubernetes cluster - For testing (KIND, minikube, or real cluster) | . Development Setup . | Fork the repository on GitHub . | Clone your fork: git clone https://github.com/YOUR_USERNAME/kalco.git cd kalco . | Add upstream remote: git remote add upstream https://github.com/graz-dev/kalco.git . | Install dependencies: go mod tidy . | Build the project: make build . | Run tests: make test . | Verify everything works: ./kalco --help . | . ",
+    "url": "/kalco/contributing.html#-getting-started",
+    
+    "relUrl": "/contributing.html#-getting-started"
+  },"31": {
+    "doc": "Contributing",
+    "title": "🔧 Development Workflow",
+    "content": "Creating a Feature Branch . # Sync with upstream git fetch upstream git checkout master git merge upstream/master # Create feature branch git checkout -b feature/your-feature-name . Making Changes . | Write code following our coding standards | Add tests for new functionality | Update documentation if needed | Test your changes thoroughly | . Testing Your Changes . # Run all tests make test # Run specific tests go test ./pkg/dumper/... # Run with coverage make test-coverage # Build and test locally make build ./kalco export --dry-run . Committing Changes . We follow conventional commit messages: . # Format: type(scope): description git commit -m \"feat(export): add namespace filtering support\" git commit -m \"fix(validate): handle missing configmap references\" git commit -m \"docs(readme): update installation instructions\" . Commit Types: . | feat: New features | fix: Bug fixes | docs: Documentation changes | style: Code style changes | refactor: Code refactoring | test: Test additions or changes | chore: Build process or auxiliary tool changes | . Submitting a Pull Request . | Push your branch: git push origin feature/your-feature-name . | Create a Pull Request on GitHub with: . | Clear title and description | Reference to related issues | Screenshots (if UI changes) | Testing instructions | . | Address review feedback if needed . | Celebrate when your PR is merged! 🎉 | . ",
+    "url": "/kalco/contributing.html#-development-workflow",
+    
+    "relUrl": "/contributing.html#-development-workflow"
+  },"32": {
+    "doc": "Contributing",
+    "title": "📋 Coding Standards",
+    "content": "Go Code Style . We follow standard Go conventions: . | gofmt - Format code with go fmt | golint - Follow linting recommendations | go vet - Check for common mistakes | Effective Go - Follow Effective Go guidelines | . # Format code go fmt ./... # Run linter make lint # Check for issues go vet ./... Code Organization . kalco/ ├── cmd/ # CLI commands │ ├── root.go # Root command │ ├── export.go # Export command │ └── ... ├── pkg/ # Core packages │ ├── dumper/ # Resource dumping logic │ ├── validation/ # Validation logic │ └── ... ├── docs/ # Documentation ├── examples/ # Example scripts └── scripts/ # Build and install scripts . Naming Conventions . | Packages: lowercase, single word when possible | Functions: camelCase, exported functions start with uppercase | Variables: camelCase, descriptive names | Constants: UPPER_CASE or camelCase for unexported | . Error Handling . // Good: Wrap errors with context if err != nil { return fmt.Errorf(\"failed to export resources: %w\", err) } // Good: Use specific error types when appropriate type ValidationError struct { Resource string Message string } func (e *ValidationError) Error() string { return fmt.Sprintf(\"validation failed for %s: %s\", e.Resource, e.Message) } . Testing . | Unit tests for all public functions | Integration tests for complex workflows | Table-driven tests for multiple test cases | Mocks for external dependencies | . func TestExportResources(t *testing.T) { tests := []struct { name string input ExportConfig expected int wantErr bool }{ { name: \"basic export\", input: ExportConfig{OutputDir: \"/tmp/test\"}, expected: 10, wantErr: false, }, // More test cases... } for _, tt := range tests { t.Run(tt.name, func(t *testing.T) { result, err := ExportResources(tt.input) if (err != nil) != tt.wantErr { t.Errorf(\"ExportResources() error = %v, wantErr %v\", err, tt.wantErr) return } if result != tt.expected { t.Errorf(\"ExportResources() = %v, want %v\", result, tt.expected) } }) } } . ",
+    "url": "/kalco/contributing.html#-coding-standards",
+    
+    "relUrl": "/contributing.html#-coding-standards"
+  },"33": {
+    "doc": "Contributing",
+    "title": "📖 Documentation Standards",
+    "content": "Code Documentation . | Package comments for all packages | Function comments for exported functions | Example code in documentation | Godoc format for API documentation | . // Package dumper provides functionality for exporting Kubernetes resources // to organized YAML files with clean metadata suitable for re-application. package dumper // ExportResources exports all discoverable resources from the cluster // to the specified output directory. It returns the number of resources // exported and any error encountered. // // Example: // count, err := ExportResources(ExportConfig{ // OutputDir: \"./backup\", // Namespaces: []string{\"default\", \"production\"}, // }) func ExportResources(config ExportConfig) (int, error) { // Implementation... } . User Documentation . | Clear examples for all features | Step-by-step guides for common tasks | Troubleshooting sections for known issues | Screenshots for UI features | . ",
+    "url": "/kalco/contributing.html#-documentation-standards",
+    
+    "relUrl": "/contributing.html#-documentation-standards"
+  },"34": {
+    "doc": "Contributing",
+    "title": "🧪 Testing Guidelines",
+    "content": "Test Categories . | Unit Tests - Test individual functions | Integration Tests - Test component interactions | End-to-End Tests - Test complete workflows | Performance Tests - Test scalability and performance | . Running Tests . # All tests make test # Specific package go test ./pkg/dumper/ # With coverage make test-coverage # Verbose output go test -v ./... # Race condition detection go test -race ./... Test Data . | Use testdata directories for test files | Create minimal test cases that cover edge cases | Use table-driven tests for multiple scenarios | Mock external dependencies (Kubernetes API, Git, etc.) | . ",
+    "url": "/kalco/contributing.html#-testing-guidelines",
+    
+    "relUrl": "/contributing.html#-testing-guidelines"
+  },"35": {
+    "doc": "Contributing",
+    "title": "🐛 Bug Reports",
+    "content": "Before Reporting . | Search existing issues to avoid duplicates | Test with latest version to ensure bug still exists | Gather relevant information (version, OS, Kubernetes version) | . Bug Report Template . **Bug Description** A clear description of what the bug is. **Steps to Reproduce** 1. Run command: `kalco export --namespaces production` 2. See error: ... **Expected Behavior** What you expected to happen. **Actual Behavior** What actually happened. **Environment** - Kalco version: v1.0.0 - OS: macOS 13.0 - Kubernetes version: v1.28.0 - Go version: 1.21.0 **Additional Context** Any other context about the problem. ",
+    "url": "/kalco/contributing.html#-bug-reports",
+    
+    "relUrl": "/contributing.html#-bug-reports"
+  },"36": {
+    "doc": "Contributing",
+    "title": "💡 Feature Requests",
+    "content": "Before Requesting . | Check existing issues and discussions | Consider the scope - does it fit Kalco’s mission? | Think about implementation - how would it work? | . Feature Request Template . **Feature Description** A clear description of the feature you'd like to see. **Use Case** Describe the problem this feature would solve. **Proposed Solution** How you envision this feature working. **Alternatives Considered** Other approaches you've considered. **Additional Context** Any other context or screenshots. ",
+    "url": "/kalco/contributing.html#-feature-requests",
+    
+    "relUrl": "/contributing.html#-feature-requests"
+  },"37": {
+    "doc": "Contributing",
+    "title": "🏗️ Architecture Guidelines",
+    "content": "Design Principles . | Modularity - Keep components loosely coupled | Testability - Design for easy testing | Performance - Optimize for large clusters | Usability - Prioritize user experience | Reliability - Handle errors gracefully | . Adding New Commands . | Create command file in cmd/ directory | Implement command logic in appropriate pkg/ package | Add comprehensive tests | Update documentation | Add examples and use cases | . Adding New Features . | Design the API - How will users interact with it? | Plan the implementation - Which packages are affected? | Consider backwards compatibility - Will it break existing usage? | Write tests first - Test-driven development | Document thoroughly - Code comments and user docs | . ",
+    "url": "/kalco/contributing.html#%EF%B8%8F-architecture-guidelines",
+    
+    "relUrl": "/contributing.html#️-architecture-guidelines"
+  },"38": {
+    "doc": "Contributing",
+    "title": "📦 Release Process",
+    "content": "Version Numbering . We follow Semantic Versioning: . | MAJOR (v2.0.0) - Breaking changes | MINOR (v1.1.0) - New features, backwards compatible | PATCH (v1.0.1) - Bug fixes, backwards compatible | . Release Checklist . | Update version in relevant files | Update CHANGELOG with new features and fixes | Run full test suite | Update documentation | Create release tag | Publish release with release notes | . ",
+    "url": "/kalco/contributing.html#-release-process",
+    
+    "relUrl": "/contributing.html#-release-process"
+  },"39": {
+    "doc": "Contributing",
+    "title": "🎯 Areas for Contribution",
+    "content": "High Priority . | 🔧 Performance optimization for large clusters | 🧪 Test coverage improvement | 📖 Documentation enhancement | 🐛 Bug fixes and stability improvements | . Medium Priority . | 🎨 CLI UX improvements | 📊 New analysis features | 🔌 Integration with other tools | 🌐 Internationalization | . Ideas for New Contributors . | 📝 Fix typos in documentation | 🧪 Add test cases for existing functionality | 📖 Improve examples and tutorials | 🐛 Reproduce and fix reported bugs | 💡 Implement small feature requests | . ",
+    "url": "/kalco/contributing.html#-areas-for-contribution",
+    
+    "relUrl": "/contributing.html#-areas-for-contribution"
+  },"40": {
+    "doc": "Contributing",
+    "title": "📞 Getting Help",
+    "content": "Development Questions . | GitHub Discussions - Ask questions | Code Review - Request feedback on your approach | Architecture Decisions - Discuss design choices | . Communication Channels . | GitHub Issues - Bug reports and feature requests | GitHub Discussions - General questions and ideas | Pull Request Comments - Code-specific discussions | . ",
+    "url": "/kalco/contributing.html#-getting-help",
+    
+    "relUrl": "/contributing.html#-getting-help"
+  },"41": {
+    "doc": "Contributing",
+    "title": "🙏 Recognition",
+    "content": "We appreciate all contributions! Contributors are recognized in: . | CONTRIBUTORS.md file | Release notes for significant contributions | GitHub contributors page | Special mentions in documentation | . ",
+    "url": "/kalco/contributing.html#-recognition",
+    
+    "relUrl": "/contributing.html#-recognition"
+  },"42": {
+    "doc": "Contributing",
+    "title": "📄 License",
+    "content": "By contributing to Kalco, you agree that your contributions will be licensed under the MIT License. Thank you for contributing to Kalco! Together, we’re making Kubernetes cluster management better for everyone. 🚀 . | ← FAQ | Documentation Home → | . ",
+    "url": "/kalco/contributing.html#-license",
+    
+    "relUrl": "/contributing.html#-license"
+  },"43": {
+    "doc": "Contributing",
+    "title": "Contributing",
+    "content": " ",
+    "url": "/kalco/contributing.html",
+    
+    "relUrl": "/contributing.html"
+  },"44": {
+    "doc": "kalco export",
+    "title": "kalco export",
+    "content": "Export cluster resources to organized YAML files. ",
+    "url": "/kalco/commands/export.html",
+    
+    "relUrl": "/commands/export.html"
+  },"45": {
+    "doc": "kalco export",
+    "title": "Synopsis",
+    "content": "The export command is Kalco’s primary functionality. It discovers all available API resources (including CRDs) and exports them with clean metadata suitable for re-application. kalco export [flags] . ",
+    "url": "/kalco/commands/export.html#synopsis",
+    
+    "relUrl": "/commands/export.html#synopsis"
+  },"46": {
+    "doc": "kalco export",
+    "title": "Description",
+    "content": "The export command creates an intuitive directory structure: . | Namespaced resources: &lt;output&gt;/&lt;namespace&gt;/&lt;kind&gt;/&lt;name&gt;.yaml | Cluster resources: &lt;output&gt;/_cluster/&lt;kind&gt;/&lt;name&gt;.yaml | . Features: . | Automatic resource discovery (native K8s + CRDs) | Clean metadata removal for re-application | Git integration for version control | Flexible filtering options | Progress tracking and detailed output | . ",
+    "url": "/kalco/commands/export.html#description",
+    
+    "relUrl": "/commands/export.html#description"
+  },"47": {
+    "doc": "kalco export",
+    "title": "Flags",
+    "content": "| Flag | Short | Type | Description | . | --output | -o | string | Output directory path (default: ./kalco-export-&lt;timestamp&gt;) | . | --namespaces | -n | []string | Specific namespaces to export (comma-separated) | . | --resources | -r | []string | Specific resource types to export (comma-separated) | . | --exclude |   | []string | Resource types to exclude (comma-separated) | . | --git-push |   | bool | Automatically push changes to remote origin | . | --commit-message | -m | string | Custom Git commit message | . | --dry-run |   | bool | Show what would be exported without writing files | . ",
+    "url": "/kalco/commands/export.html#flags",
+    
+    "relUrl": "/commands/export.html#flags"
+  },"48": {
+    "doc": "kalco export",
+    "title": "Examples",
+    "content": "Basic Export . # Export entire cluster to timestamped directory kalco export # Export to specific directory kalco export --output ./cluster-backup . Filtered Export . # Export specific namespaces only kalco export --namespaces default,kube-system,production # Export specific resource types kalco export --resources pods,services,deployments,configmaps # Exclude noisy resources kalco export --exclude events,replicasets,endpoints . Git Integration . # Export with Git commit kalco export --commit-message \"Weekly cluster backup\" # Export and push to remote kalco export --git-push --commit-message \"Production snapshot $(date)\" # Export to existing Git repository kalco export --output ./existing-repo/cluster-state --git-push . Advanced Usage . # Dry run to see what would be exported kalco export --dry-run --verbose # Export production namespace with Git integration kalco export \\ --namespaces production \\ --exclude events,replicasets \\ --git-push \\ --commit-message \"Production backup - $(date +%Y-%m-%d)\" # Export for disaster recovery kalco export \\ --output ./disaster-recovery/cluster-$(date +%Y%m%d) \\ --exclude events,endpoints,replicasets \\ --commit-message \"DR backup\" . ",
+    "url": "/kalco/commands/export.html#examples",
+    
+    "relUrl": "/commands/export.html#examples"
+  },"49": {
+    "doc": "kalco export",
+    "title": "Output Structure",
+    "content": "The export creates the following directory structure: . cluster-backup/ ├── default/ # Namespace │ ├── Pod/ │ │ ├── app-pod-1.yaml │ │ └── app-pod-2.yaml │ ├── Service/ │ │ └── app-service.yaml │ └── Deployment/ │ └── app-deployment.yaml ├── kube-system/ # System namespace │ ├── Pod/ │ ├── Service/ │ └── DaemonSet/ ├── _cluster/ # Cluster-scoped resources │ ├── Node/ │ │ ├── node-1.yaml │ │ └── node-2.yaml │ ├── ClusterRole/ │ └── CustomResourceDefinition/ ├── .git/ # Git repository (if enabled) └── kalco-reports/ # Generated reports ├── export-summary.yaml └── change-report.html . ",
+    "url": "/kalco/commands/export.html#output-structure",
+    
+    "relUrl": "/commands/export.html#output-structure"
+  },"50": {
+    "doc": "kalco export",
+    "title": "Git Integration",
+    "content": "When Git integration is enabled: . | Repository Initialization: Creates a Git repository if none exists | Change Tracking: Commits changes with timestamps and metadata | Remote Push: Optionally pushes to remote origin | Change Reports: Generates detailed change reports between exports | . Git Workflow . # First export - initializes repository kalco export --output ./cluster-repo --commit-message \"Initial export\" # Subsequent exports - tracks changes kalco export --output ./cluster-repo --commit-message \"Weekly update\" # View change history cd cluster-repo git log --oneline git diff HEAD~1 HEAD . ",
+    "url": "/kalco/commands/export.html#git-integration-1",
+    
+    "relUrl": "/commands/export.html#git-integration-1"
+  },"51": {
+    "doc": "kalco export",
+    "title": "Filtering Options",
+    "content": "Namespace Filtering . # Single namespace kalco export --namespaces production # Multiple namespaces kalco export --namespaces \"default,kube-system,monitoring\" # All namespaces except system ones kalco export --exclude-namespaces \"kube-system,kube-public,kube-node-lease\" . Resource Type Filtering . # Core workload resources only kalco export --resources \"pods,services,deployments,configmaps,secrets\" # Exclude noisy resources kalco export --exclude \"events,replicasets,endpoints\" # Custom resources only kalco export --crds-only . ",
+    "url": "/kalco/commands/export.html#filtering-options",
+    
+    "relUrl": "/commands/export.html#filtering-options"
+  },"52": {
+    "doc": "kalco export",
+    "title": "Performance Considerations",
+    "content": ". | Large Clusters: Use namespace filtering to reduce export size | Network Resources: Exclude events and endpoints for faster exports | Storage: Consider using compression for large exports | Git History: Large repositories may need periodic cleanup | . ",
+    "url": "/kalco/commands/export.html#performance-considerations",
+    
+    "relUrl": "/commands/export.html#performance-considerations"
+  },"53": {
+    "doc": "kalco export",
+    "title": "Troubleshooting",
+    "content": "Common Issues . Permission Errors: . # Check cluster access kubectl auth can-i get pods --all-namespaces # Use specific kubeconfig kalco export --kubeconfig ~/.kube/production-config . Large Exports: . # Use filtering to reduce size kalco export --exclude events,endpoints,replicasets # Export specific namespaces kalco export --namespaces production,staging . Git Issues: . # Check Git configuration git config --global user.name \"Your Name\" git config --global user.email \"your.email@example.com\" # Manual Git setup cd output-directory git init git remote add origin &lt;repository-url&gt; . ",
+    "url": "/kalco/commands/export.html#troubleshooting",
+    
+    "relUrl": "/commands/export.html#troubleshooting"
+  },"54": {
+    "doc": "kalco export",
+    "title": "Related Commands",
+    "content": ". | kalco validate - Validate exported resources | kalco analyze orphaned - Find cleanup opportunities | kalco report - Generate comprehensive reports | . | ← Commands Overview | Validate Command → | . ",
+    "url": "/kalco/commands/export.html#related-commands",
+    
+    "relUrl": "/commands/export.html#related-commands"
+  },"55": {
+    "doc": "FAQ",
+    "title": "Frequently Asked Questions",
+    "content": "Common questions and answers about Kalco. ",
+    "url": "/kalco/faq.html#frequently-asked-questions",
+    
+    "relUrl": "/faq.html#frequently-asked-questions"
+  },"56": {
+    "doc": "FAQ",
+    "title": "General Questions",
+    "content": "What is Kalco? . Kalco (Kubernetes Analysis &amp; Lifecycle Control) is a comprehensive CLI tool for Kubernetes cluster management. It provides automated resource export, validation, analysis, and lifecycle management capabilities. How is Kalco different from kubectl? . While kubectl is the standard Kubernetes CLI for day-to-day operations, Kalco focuses on cluster-wide analysis, backup, and lifecycle management: . | kubectl: Resource manipulation, debugging, cluster interaction | Kalco: Cluster analysis, backup, validation, optimization, reporting | . They complement each other - use kubectl for operations and Kalco for analysis and management. Is Kalco safe to use in production? . Yes! Kalco is designed with production safety in mind: . | Read-only operations by default (export, validate, analyze) | No cluster modifications unless explicitly requested | Dry-run mode available for testing | Comprehensive logging for audit trails | . ",
+    "url": "/kalco/faq.html#general-questions",
+    
+    "relUrl": "/faq.html#general-questions"
+  },"57": {
+    "doc": "FAQ",
+    "title": "Installation &amp; Setup",
+    "content": "Which platforms are supported? . Kalco supports all major platforms: . | Linux: x86_64, ARM64 | macOS: Intel, Apple Silicon (M1/M2) | Windows: x86_64, ARM64 | . Do I need special permissions? . Kalco requires read access to Kubernetes resources. The specific permissions depend on what you want to export: . # Minimum RBAC for basic export apiVersion: rbac.authorization.k8s.io/v1 kind: ClusterRole metadata: name: kalco-reader rules: - apiGroups: [\"*\"] resources: [\"*\"] verbs: [\"get\", \"list\"] . Can I use Kalco with multiple clusters? . Yes! You can use Kalco with multiple clusters by: . | Different kubeconfig files: kalco export --kubeconfig ~/.kube/prod-config | Different contexts: Switch context with kubectl config use-context | Scripted workflows: Automate multi-cluster operations | . ",
+    "url": "/kalco/faq.html#installation--setup",
+    
+    "relUrl": "/faq.html#installation--setup"
+  },"58": {
+    "doc": "FAQ",
+    "title": "Usage Questions",
+    "content": "How do I export only specific namespaces? . Use the --namespaces flag: . # Single namespace kalco export --namespaces production # Multiple namespaces kalco export --namespaces \"production,staging,development\" . Can I exclude certain resource types? . Yes, use the --exclude flag: . # Exclude noisy resources kalco export --exclude \"events,endpoints,replicasets\" # Export only specific types kalco export --resources \"deployments,services,configmaps\" . How do I handle large clusters? . For large clusters, consider: . | Namespace filtering: Export specific namespaces | Resource filtering: Exclude unnecessary resource types | Parallel processing: Use multiple Kalco instances for different namespaces | Incremental exports: Regular small exports vs. large full exports | . # Optimized for large clusters kalco export \\ --namespaces production \\ --exclude \"events,endpoints,replicasets\" \\ --output ./production-backup . How does Git integration work? . Kalco can automatically manage Git repositories: . | Initialize repository if none exists | Commit changes with timestamps and metadata | Track changes between exports | Push to remote if configured | . # Enable Git integration kalco export --git-push --commit-message \"Weekly backup\" . ",
+    "url": "/kalco/faq.html#usage-questions",
+    
+    "relUrl": "/faq.html#usage-questions"
+  },"59": {
+    "doc": "FAQ",
+    "title": "Troubleshooting",
+    "content": "“Permission denied” errors . This usually indicates insufficient RBAC permissions: . # Check your permissions kubectl auth can-i get pods --all-namespaces kubectl auth can-i list customresourcedefinitions # Use a different kubeconfig kalco export --kubeconfig ~/.kube/admin-config . “Connection refused” errors . Check your Kubernetes connection: . # Test basic connectivity kubectl cluster-info # Check kubeconfig kubectl config current-context kubectl config view # Use specific kubeconfig kalco export --kubeconfig /path/to/kubeconfig . Large export files . If exports are too large: . # Use filtering kalco export --exclude \"events,endpoints,replicasets\" # Export specific namespaces kalco export --namespaces \"production,staging\" # Use compression (if available) kalco export --compress . Git integration issues . Common Git problems and solutions: . # Configure Git identity git config --global user.name \"Your Name\" git config --global user.email \"your.email@example.com\" # Check Git repository status cd output-directory git status git log --oneline # Manual Git setup git init git remote add origin &lt;repository-url&gt; . ",
+    "url": "/kalco/faq.html#troubleshooting",
+    
+    "relUrl": "/faq.html#troubleshooting"
+  },"60": {
+    "doc": "FAQ",
+    "title": "Advanced Usage",
+    "content": "Can I use Kalco in CI/CD pipelines? . Absolutely! Kalco is designed for automation: . # GitHub Actions example - name: Cluster Backup run: | kalco export \\ --output ./backup \\ --no-color \\ --commit-message \"CI backup $(date)\" . How do I integrate with monitoring systems? . Kalco supports multiple output formats for integration: . # JSON output for programmatic processing kalco validate --output json | jq '.summary' # Metrics export for Prometheus kalco analyze usage --output json | \\ jq -r '.metrics[] | \"kalco_\\(.name) \\(.value)\"' . Can I customize the output format? . Yes, Kalco supports multiple output formats: . | YAML: Default, human-readable | JSON: Machine-readable, API integration | HTML: Rich reports with styling | Table: Console-friendly tabular output | . kalco validate --output json kalco report --output html kalco resources list --output table . How do I handle Custom Resource Definitions (CRDs)? . Kalco automatically discovers and exports CRDs: . # Include all CRDs (default) kalco export # List only CRDs kalco resources list --crds-only # Export specific CRDs kalco export --resources \"certificates.cert-manager.io,issuers.cert-manager.io\" . ",
+    "url": "/kalco/faq.html#advanced-usage",
+    
+    "relUrl": "/faq.html#advanced-usage"
+  },"61": {
+    "doc": "FAQ",
+    "title": "Performance &amp; Optimization",
+    "content": "How can I speed up exports? . Several optimization strategies: . | Parallel processing: Use multiple Kalco instances | Filtering: Reduce the scope of exports | Incremental exports: Export only changed resources | Local caching: Cache discovery results | . # Optimized export kalco export \\ --namespaces production \\ --exclude \"events,endpoints\" \\ --parallel 4 . What about memory usage? . Kalco is designed to be memory-efficient: . | Streaming processing: Resources are processed as they’re discovered | Configurable batch sizes: Control memory usage | Garbage collection: Automatic cleanup of temporary data | . How do I monitor Kalco performance? . Use the verbose flag for detailed timing information: . kalco export --verbose . ",
+    "url": "/kalco/faq.html#performance--optimization",
+    
+    "relUrl": "/faq.html#performance--optimization"
+  },"62": {
+    "doc": "FAQ",
+    "title": "Security &amp; Compliance",
+    "content": "Is my cluster data secure? . Kalco follows security best practices: . | No data transmission: All processing is local | Configurable output: Control what gets exported | Audit logging: Track all operations | RBAC integration: Respects Kubernetes permissions | . Can I use Kalco for compliance auditing? . Yes! Kalco provides several compliance features: . # Security analysis kalco analyze security --output json # Validation reporting kalco validate --output html # Resource inventory kalco resources list --detailed . How do I handle sensitive data? . Best practices for sensitive data: . | Exclude secrets: Use --exclude secrets | Namespace filtering: Export only non-sensitive namespaces | Post-processing: Clean sensitive data from exports | Access control: Secure export directories | . # Safe export excluding sensitive resources kalco export \\ --exclude \"secrets,serviceaccounts\" \\ --namespaces \"production,staging\" . ",
+    "url": "/kalco/faq.html#security--compliance",
+    
+    "relUrl": "/faq.html#security--compliance"
+  },"63": {
+    "doc": "FAQ",
+    "title": "Getting Help",
+    "content": "Where can I get support? . | Documentation: https://graz-dev.github.io/kalco | GitHub Issues: Report bugs or request features | Discussions: Community discussions | CLI Help: kalco [command] --help | . How do I report a bug? . | Check existing issues: Search GitHub Issues | Gather information: Version, OS, Kubernetes version, error messages | Create detailed report: Include steps to reproduce | Provide context: Cluster size, configuration, use case | . How can I contribute? . We welcome contributions! See our Contributing Guide for details. | ← Use Cases | Contributing → | . ",
+    "url": "/kalco/faq.html#getting-help",
+    
+    "relUrl": "/faq.html#getting-help"
+  },"64": {
+    "doc": "FAQ",
+    "title": "FAQ",
+    "content": " ",
+    "url": "/kalco/faq.html",
+    
+    "relUrl": "/faq.html"
+  },"65": {
+    "doc": "First Run",
+    "title": "First Run",
+    "content": "Get Kalco running and export your first Kubernetes cluster in minutes. ",
+    "url": "/kalco/docs/getting-started/first-run.html",
+    
+    "relUrl": "/docs/getting-started/first-run.html"
+  },"66": {
+    "doc": "First Run",
+    "title": "Prerequisites",
+    "content": "Before running Kalco for the first time, ensure you have: . | ✅ Kalco installed - Installation guide | ✅ Kubernetes access - Valid kubeconfig or in-cluster access | ✅ Cluster running - A Kubernetes cluster to export | . ",
+    "url": "/kalco/docs/getting-started/first-run.html#prerequisites",
+    
+    "relUrl": "/docs/getting-started/first-run.html#prerequisites"
+  },"67": {
+    "doc": "First Run",
+    "title": "Verify Installation",
+    "content": "First, let’s confirm Kalco is properly installed: . # Check version kalco --version # Check help kalco --help # Verify binary location which kalco . You should see output similar to: . Kalco v1.0.0 Kubernetes Analysis &amp; Lifecycle Control . ",
+    "url": "/kalco/docs/getting-started/first-run.html#verify-installation",
+    
+    "relUrl": "/docs/getting-started/first-run.html#verify-installation"
+  },"68": {
+    "doc": "First Run",
+    "title": "Connect to Your Cluster",
+    "content": "Kalco automatically detects your Kubernetes configuration: . # Check current context kubectl config current-context # List available contexts kubectl config get-contexts # Switch context if needed kubectl config use-context your-cluster-name . ",
+    "url": "/kalco/docs/getting-started/first-run.html#connect-to-your-cluster",
+    
+    "relUrl": "/docs/getting-started/first-run.html#connect-to-your-cluster"
+  },"69": {
+    "doc": "First Run",
+    "title": "Your First Export",
+    "content": "Basic Export . Start with a simple export to see Kalco in action: . # Export all resources to default directory kalco export . This will: . | Create a timestamped output directory | Export all cluster resources | Organize them by namespace and type | Initialize a Git repository (if Git is available) | . Custom Output Directory . Specify where to save your export: . # Export to specific directory kalco export --output-dir ./my-cluster-backup # Export to absolute path kalco export --output-dir /path/to/backups/production-cluster . Git Integration . Enable version control for your exports: . # Initialize Git and commit changes kalco export --git-push # Custom commit message kalco export --commit-message \"Initial cluster export $(date)\" # Push to remote (if configured) kalco export --git-push --remote origin . ",
+    "url": "/kalco/docs/getting-started/first-run.html#your-first-export",
+    
+    "relUrl": "/docs/getting-started/first-run.html#your-first-export"
+  },"70": {
+    "doc": "First Run",
+    "title": "Understanding the Output",
+    "content": "After running kalco export, you’ll see a directory structure like this: . my-cluster-backup/ ├── _cluster/ # Cluster-scoped resources │ ├── ClusterRole/ │ ├── ClusterRoleBinding/ │ ├── CustomResourceDefinition/ │ └── StorageClass/ ├── default/ # Default namespace │ ├── ConfigMap/ │ ├── Deployment/ │ ├── Service/ │ └── ServiceAccount/ ├── kube-system/ # System namespace │ ├── ConfigMap/ │ ├── DaemonSet/ │ ├── Deployment/ │ └── Service/ └── kalco-reports/ # Generated reports └── Initial-cluster-export.md . ",
+    "url": "/kalco/docs/getting-started/first-run.html#understanding-the-output",
+    
+    "relUrl": "/docs/getting-started/first-run.html#understanding-the-output"
+  },"71": {
+    "doc": "First Run",
+    "title": "What Gets Exported",
+    "content": "Kalco automatically discovers and exports: . | Native Kubernetes Resources - Pods, Deployments, Services, etc. | Custom Resources (CRDs) - Any CRDs installed in your cluster | All Namespaces - Including system namespaces | Resource Metadata - Labels, annotations, and relationships | . ",
+    "url": "/kalco/docs/getting-started/first-run.html#what-gets-exported",
+    
+    "relUrl": "/docs/getting-started/first-run.html#what-gets-exported"
+  },"72": {
+    "doc": "First Run",
+    "title": "Next Steps",
+    "content": "Now that you’ve exported your first cluster: . | Explore the Output - Understand the exported structure | Validate Resources - Check for configuration issues | Analyze Cluster - Find optimization opportunities | Generate Reports - Create comprehensive documentation | . ",
+    "url": "/kalco/docs/getting-started/first-run.html#next-steps",
+    
+    "relUrl": "/docs/getting-started/first-run.html#next-steps"
+  },"73": {
+    "doc": "First Run",
+    "title": "Common First-Run Scenarios",
+    "content": "Development Cluster . # Export development cluster kalco export --output-dir ./dev-cluster --commit-message \"Dev cluster snapshot\" # Exclude temporary resources kalco export --exclude events,pods --output-dir ./dev-cluster-clean . Production Cluster . # Export production with detailed logging kalco export --verbose --output-dir ./prod-backup # Export with Git versioning kalco export --git-push --commit-message \"Production backup $(date)\" --output-dir ./prod-backup . Multi-Cluster Setup . # Export staging cluster kalco export --context staging --output-dir ./staging-cluster # Export production cluster kalco export --context production --output-dir ./production-cluster . ",
+    "url": "/kalco/docs/getting-started/first-run.html#common-first-run-scenarios",
+    
+    "relUrl": "/docs/getting-started/first-run.html#common-first-run-scenarios"
+  },"74": {
+    "doc": "First Run",
+    "title": "Troubleshooting",
+    "content": "Permission Issues . # Check cluster access kubectl get nodes # Verify kubeconfig kubectl config view . Resource Export Issues . # Enable verbose output kalco export --verbose # Check specific resource types kubectl api-resources . Git Issues . # Check Git status git status # Initialize Git manually git init git add . git commit -m \"Initial commit\" . ",
+    "url": "/kalco/docs/getting-started/first-run.html#troubleshooting",
+    
+    "relUrl": "/docs/getting-started/first-run.html#troubleshooting"
+  },"75": {
+    "doc": "First Run",
+    "title": "Success Indicators",
+    "content": "You’ll know your first run was successful when you see: . | ✅ Export completed - No error messages | ✅ Output directory created - With organized resource files | ✅ Git repository initialized - If Git integration enabled | ✅ Resources exported - YAML files for each resource | ✅ Report generated - Summary of the export process | . Congratulations! You’ve successfully exported your first Kubernetes cluster with Kalco. 🎉 . ",
+    "url": "/kalco/docs/getting-started/first-run.html#success-indicators",
+    
+    "relUrl": "/docs/getting-started/first-run.html#success-indicators"
+  },"76": {
+    "doc": "Getting Started",
+    "title": "Getting Started with Kalco",
+    "content": "This guide will help you get up and running with Kalco in minutes. ",
+    "url": "/kalco/getting-started.html#getting-started-with-kalco",
+    
+    "relUrl": "/getting-started.html#getting-started-with-kalco"
+  },"77": {
+    "doc": "Getting Started",
+    "title": "Prerequisites",
+    "content": ". | Kubernetes Access - Valid kubeconfig or in-cluster access | Go 1.21+ (if building from source) - Download here | Git (optional) - For version control functionality | . ",
+    "url": "/kalco/getting-started.html#prerequisites",
+    
+    "relUrl": "/getting-started.html#prerequisites"
+  },"78": {
+    "doc": "Getting Started",
+    "title": "Installation",
+    "content": "Quick Install (Recommended) . Linux/macOS: . curl -fsSL https://raw.githubusercontent.com/graz-dev/kalco/master/scripts/install.sh | bash . Windows (PowerShell): . iwr -useb https://raw.githubusercontent.com/graz-dev/kalco/master/scripts/install.ps1 | iex . Package Managers . Debian/Ubuntu: . wget https://github.com/graz-dev/kalco/releases/latest/download/kalco_Linux_x86_64.deb sudo dpkg -i kalco_Linux_x86_64.deb . RHEL/CentOS/Fedora: . wget https://github.com/graz-dev/kalco/releases/latest/download/kalco_Linux_x86_64.rpm sudo rpm -i kalco_Linux_x86_64.rpm . Manual Installation . | Download the appropriate binary for your platform from the releases page | Extract the archive and move the binary to your PATH | . Build from Source . git clone https://github.com/graz-dev/kalco.git cd kalco go mod tidy go build -o kalco sudo mv kalco /usr/local/bin/ . ",
+    "url": "/kalco/getting-started.html#installation",
+    
+    "relUrl": "/getting-started.html#installation"
+  },"79": {
+    "doc": "Getting Started",
+    "title": "First Steps",
+    "content": "1. Verify Installation . kalco version . 2. Check Available Commands . kalco --help . 3. Export Your First Cluster . # Export entire cluster to timestamped directory kalco export # Export to specific directory kalco export --output ./my-cluster-backup . 4. Validate Your Cluster . # Check for broken references and issues kalco validate . 5. Analyze for Optimization . # Find orphaned resources kalco analyze orphaned # Get detailed analysis kalco analyze orphaned --detailed . ",
+    "url": "/kalco/getting-started.html#first-steps",
+    
+    "relUrl": "/getting-started.html#first-steps"
+  },"80": {
+    "doc": "Getting Started",
+    "title": "Basic Workflow",
+    "content": "Here’s a typical workflow for using Kalco: . # 1. Export cluster resources kalco export --output ./cluster-backup --git-push # 2. Validate the exported resources kalco validate # 3. Analyze for cleanup opportunities kalco analyze orphaned --output json &gt; orphaned-resources.json # 4. Generate comprehensive report kalco report --output-file cluster-report.html . ",
+    "url": "/kalco/getting-started.html#basic-workflow",
+    
+    "relUrl": "/getting-started.html#basic-workflow"
+  },"81": {
+    "doc": "Getting Started",
+    "title": "Configuration",
+    "content": "Initialize Configuration . # Create local configuration kalco config init # Create global configuration kalco config init --global . Set Default Options . # Set default output directory kalco config set output.directory ./backups # Set default exclusions kalco config set filters.exclude \"events,replicasets\" . ",
+    "url": "/kalco/getting-started.html#configuration",
+    
+    "relUrl": "/getting-started.html#configuration"
+  },"82": {
+    "doc": "Getting Started",
+    "title": "Shell Completion",
+    "content": "Enable tab completion for faster workflows: . Bash: . kalco completion bash &gt; /etc/bash_completion.d/kalco . Zsh: . kalco completion zsh &gt; \"${fpath[1]}/_kalco\" . Fish: . kalco completion fish &gt; ~/.config/fish/completions/kalco.fish . PowerShell: . kalco completion powershell &gt; kalco.ps1 # Add to your PowerShell profile . ",
+    "url": "/kalco/getting-started.html#shell-completion",
+    
+    "relUrl": "/getting-started.html#shell-completion"
+  },"83": {
+    "doc": "Getting Started",
+    "title": "Next Steps",
+    "content": ". | Explore the Commands Reference for detailed command documentation | Learn about Configuration options | Check out Use Cases for real-world examples | Read the FAQ for common questions | . ",
+    "url": "/kalco/getting-started.html#next-steps",
+    
+    "relUrl": "/getting-started.html#next-steps"
+  },"84": {
+    "doc": "Getting Started",
+    "title": "Getting Help",
+    "content": "If you need help: . | Use kalco [command] --help for command-specific help | Check the FAQ for common issues | Search existing GitHub Issues | Create a new issue if you can’t find an answer | . ",
+    "url": "/kalco/getting-started.html#getting-help",
+    
+    "relUrl": "/getting-started.html#getting-help"
+  },"85": {
+    "doc": "Getting Started",
+    "title": "Navigation",
+    "content": ". | ← Back to Documentation Home | Commands Reference → | Configuration | Use Cases | FAQ | Contributing | . ",
+    "url": "/kalco/getting-started.html#navigation",
+    
+    "relUrl": "/getting-started.html#navigation"
+  },"86": {
+    "doc": "Getting Started",
+    "title": "Getting Started",
+    "content": " ",
+    "url": "/kalco/getting-started.html",
+    
+    "relUrl": "/getting-started.html"
+  },"87": {
+    "doc": "Home",
+    "title": "☸️ Kalco - Kubernetes Analysis &amp; Lifecycle Control",
+    "content": "Extract, validate, analyze, and version control your entire Kubernetes cluster with comprehensive validation and Git integration . ",
+    "url": "/kalco/#%EF%B8%8F-kalco---kubernetes-analysis--lifecycle-control",
+    
+    "relUrl": "/#️-kalco---kubernetes-analysis--lifecycle-control"
+  },"88": {
+    "doc": "Home",
+    "title": "🚀 What is Kalco?",
+    "content": "Kalco transforms your Kubernetes cluster management experience by providing a comprehensive, automated, and intelligent approach to cluster analysis and lifecycle control. Whether you’re managing production workloads, ensuring compliance, or planning migrations, Kalco has you covered. ",
+    "url": "/kalco/#-what-is-kalco",
+    
+    "relUrl": "/#-what-is-kalco"
+  },"89": {
+    "doc": "Home",
+    "title": "✨ Key Features",
+    "content": "### 🔍 **Intelligent Discovery** - **Zero Configuration** - Works out of the box - **Complete Coverage** - Native K8s + CRDs - **Smart Filtering** - Namespace, resource, and label-based - **Real-time Analysis** - Live cluster insights ### 🛡️ **Enterprise Ready** - **Git Integration** - Automatic version control - **Validation Engine** - Cross-reference checking - **Security Analysis** - Compliance and best practices - **Scalable Architecture** - Handles clusters of any size ### 📊 **Actionable Insights** - **Orphaned Resources** - Identify cleanup opportunities - **Broken References** - Find configuration issues - **Usage Analytics** - Resource utilization analysis - **Change Tracking** - Historical cluster evolution ### 🎨 **Developer Experience** - **Modern CLI** - Intuitive commands with rich output - **Multiple Formats** - JSON, YAML, HTML reports - **Shell Completion** - Bash, Zsh, Fish, PowerShell - **Extensive Documentation** - Comprehensive guides and examples ",
+    "url": "/kalco/#-key-features",
+    
+    "relUrl": "/#-key-features"
+  },"90": {
+    "doc": "Home",
+    "title": "🚀 Quick Start",
+    "content": "⚡ One-Line Install . Linux/macOS: . curl -fsSL https://raw.githubusercontent.com/graz-dev/kalco/master/scripts/install.sh | bash . Windows (PowerShell): . iwr -useb https://raw.githubusercontent.com/graz-dev/kalco/master/scripts/install.ps1 | iex . 📦 Package Managers . Homebrew (macOS/Linux): . brew install graz-dev/tap/kalco . Debian/Ubuntu: . wget https://github.com/graz-dev/kalco/releases/latest/download/kalco_Linux_x86_64.deb sudo dpkg -i kalco_Linux_x86_64.deb . 🔧 Build from Source . git clone https://github.com/graz-dev/kalco.git cd kalco go mod tidy go build -o kalco ./cmd . ",
+    "url": "/kalco/#-quick-start",
+    
+    "relUrl": "/#-quick-start"
+  },"91": {
+    "doc": "Home",
+    "title": "💡 Common Use Cases",
+    "content": "🎯 Cluster Analysis &amp; Backup . # Complete cluster export with Git versioning kalco export --git-push --commit-message \"Weekly backup\" # Validate cluster health kalco validate --output json # Find cleanup opportunities kalco analyze orphaned --detailed . 🛡️ Security &amp; Compliance . # Security posture analysis kalco analyze security --output html # Export security-related resources kalco export --resources \"roles,rolebindings,networkpolicies,podsecuritypolicies\" # Generate compliance report kalco report --types security,validation --output-file compliance-report.html . 🚀 DevOps &amp; Automation . # CI/CD integration kalco export --namespaces production --exclude events,pods --output ./gitops-repo # Environment replication kalco export --namespaces staging --resources deployments,services,configmaps # Resource inventory kalco resources list --detailed --output json &gt; inventory.json . ",
+    "url": "/kalco/#-common-use-cases",
+    
+    "relUrl": "/#-common-use-cases"
+  },"92": {
+    "doc": "Home",
+    "title": "🌟 Why Choose Kalco?",
+    "content": "### 🎯 **Perfect for DevOps Teams** - **Site Reliability Engineers** - Automated cluster backups and disaster recovery - **Platform Engineers** - Infrastructure as Code and GitOps workflows - **Security Teams** - Compliance auditing and security posture analysis - **Developers** - Environment replication and configuration management ### 📊 **Project Stats** - **0 Configuration Required** - Works out of the box - **100% Resource Coverage** - Native K8s + CRDs - **⚡ Lightning Fast** - Optimized for speed - **🔒 Enterprise Ready** - Production-grade reliability ",
+    "url": "/kalco/#-why-choose-kalco",
+    
+    "relUrl": "/#-why-choose-kalco"
+  },"93": {
+    "doc": "Home",
+    "title": "🚀 Next Steps",
+    "content": ". | Install Kalco - Get up and running quickly | Explore Commands - Learn all available options | Configuration Guide - Customize for your environment | Use Cases - Real-world examples and workflows | . **Made with ❤️ for the Kubernetes community** [🌟 Star us on GitHub](https://github.com/graz-dev/kalco){: .btn .btn-primary .btn-lg } [📖 Read the Docs](/kalco/docs/getting-started/){: .btn .btn-outline .btn-lg } ",
+    "url": "/kalco/#-next-steps",
+    
+    "relUrl": "/#-next-steps"
+  },"94": {
+    "doc": "Home",
+    "title": "Home",
+    "content": " ",
+    "url": "/kalco/",
+    
+    "relUrl": "/"
+  },"95": {
+    "doc": "Commands Reference",
+    "title": "Commands Reference",
+    "content": "Complete reference for all Kalco commands, options, and examples. ",
+    "url": "/kalco/docs/commands/",
+    
+    "relUrl": "/docs/commands/"
+  },"96": {
+    "doc": "Commands Reference",
+    "title": "Quick Navigation",
+    "content": ". | Export Commands - Export cluster resources | Validation Commands - Validate resources and references | Analysis Commands - Analyze cluster health and resources | Report Commands - Generate comprehensive reports | Utility Commands - Helper commands and utilities | . ",
+    "url": "/kalco/docs/commands/#quick-navigation",
+    
+    "relUrl": "/docs/commands/#quick-navigation"
+  },"97": {
+    "doc": "Commands Reference",
+    "title": "Command Structure",
+    "content": "All Kalco commands follow this pattern: . kalco &lt;command&gt; [subcommand] [options] [arguments] . Global Options . These options are available for all commands: . | Option | Short | Description | Default | . | --help | -h | Show help information |   | . | --version | -v | Show version information |   | . | --verbose |   | Enable verbose output | false | . | --quiet |   | Suppress output | false | . | --kubeconfig |   | Path to kubeconfig file | Auto-detected | . | --context |   | Kubernetes context to use | Current context | . ",
+    "url": "/kalco/docs/commands/#command-structure",
+    
+    "relUrl": "/docs/commands/#command-structure"
+  },"98": {
+    "doc": "Commands Reference",
+    "title": "Common Patterns",
+    "content": "Basic Command . kalco export . With Options . kalco export --output-dir ./my-cluster --verbose . With Subcommands . kalco validate --output json . With Arguments . kalco export --namespaces default,kube-system . ",
+    "url": "/kalco/docs/commands/#common-patterns",
+    
+    "relUrl": "/docs/commands/#common-patterns"
+  },"99": {
+    "doc": "Commands Reference",
+    "title": "Output Formats",
+    "content": "Most commands support multiple output formats: . | Default - Human-readable text output | JSON - Machine-readable JSON format | YAML - YAML format for configuration | HTML - Rich HTML reports | Table - Tabular data output | . Example: . kalco validate --output json kalco analyze orphaned --output html kalco report --output yaml . ",
+    "url": "/kalco/docs/commands/#output-formats",
+    
+    "relUrl": "/docs/commands/#output-formats"
+  },"100": {
+    "doc": "Commands Reference",
+    "title": "Examples",
+    "content": "Export Cluster Resources . # Export all resources kalco export # Export specific namespaces kalco export --namespaces default,production # Export with Git integration kalco export --git-push --commit-message \"Daily backup\" . Validate Resources . # Basic validation kalco validate # Detailed validation report kalco validate --detailed --output html # Validate specific resource types kalco validate --resources deployments,services . Analyze Cluster . # Find orphaned resources kalco analyze orphaned # Security analysis kalco analyze security --output html # Resource usage analysis kalco analyze usage --detailed . ",
+    "url": "/kalco/docs/commands/#examples",
+    
+    "relUrl": "/docs/commands/#examples"
+  },"101": {
+    "doc": "Commands Reference",
+    "title": "Next Steps",
+    "content": "Explore the specific command categories to learn more about each command’s options and usage patterns. ",
+    "url": "/kalco/docs/commands/#next-steps",
+    
+    "relUrl": "/docs/commands/#next-steps"
+  },"102": {
+    "doc": "Getting Started",
+    "title": "Getting Started with Kalco",
+    "content": "Get up and running with Kalco in minutes. This guide will walk you through installation, configuration, and your first cluster export. ",
+    "url": "/kalco/docs/getting-started/#getting-started-with-kalco",
+    
+    "relUrl": "/docs/getting-started/#getting-started-with-kalco"
+  },"103": {
+    "doc": "Getting Started",
+    "title": "Quick Navigation",
+    "content": ". | Installation - Choose your installation method | First Run - Export your first cluster | Configuration - Customize Kalco for your environment | Troubleshooting - Common issues and solutions | . ",
+    "url": "/kalco/docs/getting-started/#quick-navigation",
+    
+    "relUrl": "/docs/getting-started/#quick-navigation"
+  },"104": {
+    "doc": "Getting Started",
+    "title": "What You’ll Learn",
+    "content": "By the end of this guide, you’ll be able to: . | ✅ Install Kalco on your system | ✅ Connect to a Kubernetes cluster | ✅ Export cluster resources | ✅ Use Git integration for version control | ✅ Generate validation reports | ✅ Troubleshoot common issues | . ",
+    "url": "/kalco/docs/getting-started/#what-youll-learn",
+    
+    "relUrl": "/docs/getting-started/#what-youll-learn"
+  },"105": {
+    "doc": "Getting Started",
+    "title": "Prerequisites",
+    "content": "Before you begin, ensure you have: . | Kubernetes Access - Valid kubeconfig file or in-cluster access | Git (optional) - For version control functionality | Terminal Access - Command line interface | . ",
+    "url": "/kalco/docs/getting-started/#prerequisites",
+    
+    "relUrl": "/docs/getting-started/#prerequisites"
+  },"106": {
+    "doc": "Getting Started",
+    "title": "Next Steps",
+    "content": "Ready to get started? Begin with the installation guide to get Kalco running on your system. ",
+    "url": "/kalco/docs/getting-started/#next-steps",
+    
+    "relUrl": "/docs/getting-started/#next-steps"
+  },"107": {
+    "doc": "Getting Started",
+    "title": "Getting Started",
+    "content": " ",
+    "url": "/kalco/docs/getting-started/",
+    
+    "relUrl": "/docs/getting-started/"
+  },"108": {
+    "doc": "Commands Reference",
+    "title": "Commands Reference",
+    "content": "Complete reference for all Kalco commands and their options. ",
+    "url": "/kalco/commands/",
+    
+    "relUrl": "/commands/"
+  },"109": {
+    "doc": "Commands Reference",
+    "title": "Command Overview",
+    "content": "| Command | Description | . | export | Export cluster resources to organized YAML files | . | validate | Validate cluster resources for issues and broken references | . | analyze | Analyze cluster for optimization opportunities | . | resources | List and inspect cluster resources | . | report | Generate comprehensive cluster reports | . | config | Manage kalco configuration | . | completion | Generate shell completion scripts | . | version | Show version information | . ",
+    "url": "/kalco/commands/#command-overview",
+    
+    "relUrl": "/commands/#command-overview"
+  },"110": {
+    "doc": "Commands Reference",
+    "title": "Global Flags",
+    "content": "These flags are available for all commands: . | Flag | Description | . | --kubeconfig string | Path to kubeconfig file | . | --verbose, -v | Enable verbose output | . | --no-color | Disable colored output | . | --help, -h | Show help information | . ",
+    "url": "/kalco/commands/#global-flags",
+    
+    "relUrl": "/commands/#global-flags"
+  },"111": {
+    "doc": "Commands Reference",
+    "title": "Command Categories",
+    "content": "Core Operations . | kalco export - Primary functionality for exporting cluster resources | kalco validate - Validate exported or live cluster resources | . Analysis &amp; Insights . | kalco analyze orphaned - Find orphaned resources | kalco analyze usage - Analyze resource usage | kalco analyze security - Security posture analysis | . Resource Management . | kalco resources list - List available resource types | kalco resources describe - Describe specific resources | kalco resources count - Count resources by type | . Reporting &amp; Documentation . | kalco report - Generate comprehensive reports | . Configuration &amp; Setup . | kalco config - Manage configuration settings | kalco completion - Set up shell completion | kalco version - Version and build information | . ",
+    "url": "/kalco/commands/#command-categories",
+    
+    "relUrl": "/commands/#command-categories"
+  },"112": {
+    "doc": "Commands Reference",
+    "title": "Quick Examples",
+    "content": "Export Operations . # Basic export kalco export # Export with filtering kalco export --namespaces production,staging --exclude events # Export with Git integration kalco export --git-push --commit-message \"Weekly backup\" . Validation &amp; Analysis . # Validate cluster kalco validate --output json # Find orphaned resources kalco analyze orphaned --detailed # Generate security report kalco analyze security --output yaml . Resource Discovery . # List all resources kalco resources list # List only CRDs kalco resources list --crds-only # Count resources by namespace kalco resources count --by-namespace . ",
+    "url": "/kalco/commands/#quick-examples",
+    
+    "relUrl": "/commands/#quick-examples"
+  },"113": {
+    "doc": "Commands Reference",
+    "title": "Command Aliases",
+    "content": "Many commands have convenient aliases: . | export → dump, backup | validate → check, lint | resources → res, resource | resources list → resources ls | . ",
+    "url": "/kalco/commands/#command-aliases",
+    
+    "relUrl": "/commands/#command-aliases"
+  },"114": {
+    "doc": "Commands Reference",
+    "title": "Output Formats",
+    "content": "Most commands support multiple output formats: . | table (default) - Human-readable table format | json - JSON format for programmatic use | yaml - YAML format for configuration | html - HTML format for reports (where applicable) | . Use the --output or -o flag to specify the format: . kalco validate --output json kalco analyze orphaned --output yaml kalco report --output html . | ← Getting Started | Export Command → | . ",
+    "url": "/kalco/commands/#output-formats",
+    
+    "relUrl": "/commands/#output-formats"
+  },"115": {
+    "doc": "Installation",
+    "title": "Installation",
+    "content": "Choose the installation method that best fits your environment and get Kalco running in minutes. ",
+    "url": "/kalco/docs/getting-started/installation.html",
+    
+    "relUrl": "/docs/getting-started/installation.html"
+  },"116": {
+    "doc": "Installation",
+    "title": "Quick Install (Recommended)",
+    "content": "The fastest way to get started with Kalco: . Linux/macOS . curl -fsSL https://raw.githubusercontent.com/graz-dev/kalco/master/scripts/install.sh | bash . This script automatically: . | Downloads the latest version | Installs to /usr/local/bin/ | Sets up shell completion | Verifies the installation | . Windows (PowerShell) . iwr -useb https://raw.githubusercontent.com/graz-dev/kalco/master/scripts/install.ps1 | iex . ",
+    "url": "/kalco/docs/getting-started/installation.html#quick-install-recommended",
+    
+    "relUrl": "/docs/getting-started/installation.html#quick-install-recommended"
+  },"117": {
+    "doc": "Installation",
+    "title": "Package Managers",
+    "content": "Homebrew (macOS/Linux) . # Add the tap brew tap graz-dev/tap # Install Kalco brew install kalco . Debian/Ubuntu . # Download the .deb package wget https://github.com/graz-dev/kalco/releases/latest/download/kalco_Linux_x86_64.deb # Install sudo dpkg -i kalco_Linux_x86_64.deb . RHEL/CentOS/Fedora . # Download the .rpm package wget https://github.com/graz-dev/kalco/releases/latest/download/kalco_Linux_x86_64.rpm # Install sudo rpm -i kalco_Linux_x86_64.rpm . ",
+    "url": "/kalco/docs/getting-started/installation.html#package-managers",
+    
+    "relUrl": "/docs/getting-started/installation.html#package-managers"
+  },"118": {
+    "doc": "Installation",
+    "title": "Build from Source",
+    "content": "For the latest development version or custom builds: . Prerequisites . | Go 1.21+ - Download here | Git - For cloning the repository | . Build Steps . # Clone the repository git clone https://github.com/graz-dev/kalco.git cd kalco # Install dependencies go mod tidy # Build the binary go build -o kalco ./cmd # Make it available system-wide (optional) sudo mv kalco /usr/local/bin/ . ",
+    "url": "/kalco/docs/getting-started/installation.html#build-from-source",
+    
+    "relUrl": "/docs/getting-started/installation.html#build-from-source"
+  },"119": {
+    "doc": "Installation",
+    "title": "Manual Installation",
+    "content": ". | Download Binary . | Visit the releases page | Download the appropriate binary for your platform | . | Extract and Install # Extract the archive tar -xzf kalco-*.tar.gz # Move to a directory in your PATH sudo mv kalco /usr/local/bin/ # Verify installation kalco --version . | . ",
+    "url": "/kalco/docs/getting-started/installation.html#manual-installation",
+    
+    "relUrl": "/docs/getting-started/installation.html#manual-installation"
+  },"120": {
+    "doc": "Installation",
+    "title": "Verify Installation",
+    "content": "After installation, verify that Kalco is working: . # Check version kalco --version # Check help kalco --help # Verify binary location which kalco . ",
+    "url": "/kalco/docs/getting-started/installation.html#verify-installation",
+    
+    "relUrl": "/docs/getting-started/installation.html#verify-installation"
+  },"121": {
+    "doc": "Installation",
+    "title": "Shell Completion",
+    "content": "Kalco provides shell completion for faster workflows: . Bash . # Generate completion script kalco completion bash &gt; /etc/bash_completion.d/kalco # Reload shell or source the file source /etc/bash_completion.d/kalco . Zsh . # Generate completion script kalco completion zsh &gt; ~/.zsh/completion/_kalco # Add to .zshrc echo 'autoload -U compinit &amp;&amp; compinit' &gt;&gt; ~/.zshrc . Fish . # Generate completion script kalco completion fish &gt; ~/.config/fish/completions/kalco.fish . PowerShell . # Generate completion script kalco completion powershell &gt; kalco-completion.ps1 # Source the file .\\kalco-completion.ps1 . ",
+    "url": "/kalco/docs/getting-started/installation.html#shell-completion",
+    
+    "relUrl": "/docs/getting-started/installation.html#shell-completion"
+  },"122": {
+    "doc": "Installation",
+    "title": "Next Steps",
+    "content": "Once Kalco is installed, proceed to First Run to export your first cluster. ",
+    "url": "/kalco/docs/getting-started/installation.html#next-steps",
+    
+    "relUrl": "/docs/getting-started/installation.html#next-steps"
+  },"123": {
+    "doc": "Installation",
+    "title": "Troubleshooting",
+    "content": "Permission Denied . # Make binary executable chmod +x kalco # Check file permissions ls -la kalco . Command Not Found . # Check if binary is in PATH echo $PATH # Verify binary location which kalco # Add to PATH if needed export PATH=$PATH:/path/to/kalco . Version Issues . # Check Go version go version # Ensure Go 1.21+ is installed # Download from https://golang.org/dl/ . ",
+    "url": "/kalco/docs/getting-started/installation.html#troubleshooting",
+    
+    "relUrl": "/docs/getting-started/installation.html#troubleshooting"
+  },"124": {
+    "doc": "Troubleshooting",
+    "title": "Troubleshooting",
+    "content": "Common issues and their solutions when using Kalco. ",
+    "url": "/kalco/docs/getting-started/troubleshooting.html",
+    
+    "relUrl": "/docs/getting-started/troubleshooting.html"
+  },"125": {
+    "doc": "Troubleshooting",
+    "title": "Quick Diagnosis",
+    "content": "Start with these diagnostic commands: . # Check Kalco version and status kalco --version kalco --help # Verify Kubernetes access kubectl get nodes kubectl config current-context # Check system resources df -h free -h . ",
+    "url": "/kalco/docs/getting-started/troubleshooting.html#quick-diagnosis",
+    
+    "relUrl": "/docs/getting-started/troubleshooting.html#quick-diagnosis"
+  },"126": {
+    "doc": "Troubleshooting",
+    "title": "Common Issues",
+    "content": "Installation Problems . Permission Denied . Error: ./kalco: Permission denied . Solution: . # Make binary executable chmod +x kalco # Check file permissions ls -la kalco # Install to system directory sudo mv kalco /usr/local/bin/ . Command Not Found . Error: . kalco: command not found . Solution: . # Check if binary is in PATH echo $PATH # Verify binary location which kalco # Add to PATH if needed export PATH=$PATH:/path/to/kalco # Or move to system PATH sudo mv kalco /usr/local/bin/ . Version Compatibility . Error: . kalco: version compatibility error . Solution: . # Check Go version go version # Ensure Go 1.21+ is installed # Download from https://golang.org/dl/ # Rebuild from source go mod tidy go build -o kalco ./cmd . Kubernetes Connection Issues . No Configuration Provided . Error: . error: no configuration has been provided . Solution: . # Check kubeconfig location echo $KUBECONFIG # Set kubeconfig path export KUBECONFIG=\"$HOME/.kube/config\" # Or use --kubeconfig flag kalco export --kubeconfig ~/.kube/config # Verify context kubectl config current-context . Context Not Found . Error: . error: context \"my-cluster\" does not exist . Solution: . # List available contexts kubectl config get-contexts # Switch to existing context kubectl config use-context existing-context # Or create new context kubectl config set-context my-cluster --cluster=my-cluster --user=my-user . Access Denied . Error: . error: You must be logged in to the server (Unauthorized) . Solution: . # Check authentication kubectl auth can-i get pods # Re-authenticate kubectl login # Check RBAC permissions kubectl auth can-i get nodes kubectl auth can-i list deployments . Export Issues . Resource Discovery Failed . Error: . error: failed to discover resources . Solution: . # Check API server access kubectl api-resources # Verify cluster health kubectl get componentstatuses # Check for API server issues kubectl get events --all-namespaces . Output Directory Issues . Error: . error: failed to create output directory . Solution: . # Check directory permissions ls -la /path/to/output # Create directory with proper permissions mkdir -p /path/to/output chmod 755 /path/to/output # Use absolute path kalco export --output-dir /absolute/path/to/output . Memory Issues . Error: . error: out of memory . Solution: . # Check available memory free -h # Export with resource limits kalco export --max-memory 2GB # Export specific namespaces only kalco export --namespaces default,production # Exclude large resource types kalco export --exclude events,pods,logs . Git Integration Issues . Not a Git Repository . Error: . error: not a git repository . Solution: . # Initialize Git repository git init # Or use --no-git flag kalco export --no-git # Check Git status git status . Git Authentication Failed . Error: . error: authentication failed . Solution: . # Configure Git credentials git config --global user.name \"Your Name\" git config --global user.email \"your.email@example.com\" # Set up SSH keys or personal access token # For GitHub: https://docs.github.com/en/authentication # Test Git access git ls-remote origin . Git Push Failed . Error: . error: failed to push to remote . Solution: . # Check remote configuration git remote -v # Verify remote access git ls-remote origin # Force push if needed (use with caution) git push --force-with-lease origin main # Or skip push kalco export --git-push=false . Performance Issues . Slow Export . Symptoms: . | Export takes a very long time | High CPU/memory usage | Timeout errors | . Solutions: . # Enable verbose output to identify bottlenecks kalco export --verbose # Export specific namespaces only kalco export --namespaces default,production # Exclude resource types that cause delays kalco export --exclude events,pods,logs # Use resource limits kalco export --max-memory 4GB --max-cpu 2 . High Resource Usage . Solutions: . # Limit concurrent operations kalco export --max-concurrency 5 # Set memory limits kalco export --max-memory 2GB # Use batch processing kalco export --batch-size 100 # Enable progress monitoring kalco export --progress . ",
+    "url": "/kalco/docs/getting-started/troubleshooting.html#common-issues",
+    
+    "relUrl": "/docs/getting-started/troubleshooting.html#common-issues"
+  },"127": {
+    "doc": "Troubleshooting",
+    "title": "Debug Mode",
+    "content": "Enable detailed debugging: . # Enable debug output kalco export --debug # Set log level export KALCO_LOG_LEVEL=debug # Enable trace logging export KALCO_TRACE=true # Check debug information kalco debug info . ",
+    "url": "/kalco/docs/getting-started/troubleshooting.html#debug-mode",
+    
+    "relUrl": "/docs/getting-started/troubleshooting.html#debug-mode"
+  },"128": {
+    "doc": "Troubleshooting",
+    "title": "Getting Help",
+    "content": "Self-Service . | Check Documentation - This troubleshooting guide | Review Logs - Enable verbose/debug output | Test Commands - Try with minimal options first | Verify Environment - Check system requirements | . Community Support . | GitHub Issues - Report bugs | Discussions - Ask questions | Documentation - Browse docs | . Reporting Issues . When reporting an issue, include: . # System information kalco --version kubectl version --client go version uname -a # Error details kalco export --verbose 2&gt;&amp;1 | tee kalco-debug.log # Configuration cat .kalco.yml 2&gt;/dev/null || echo \"No config file\" echo \"KUBECONFIG: $KUBECONFIG\" . ",
+    "url": "/kalco/docs/getting-started/troubleshooting.html#getting-help",
+    
+    "relUrl": "/docs/getting-started/troubleshooting.html#getting-help"
+  },"129": {
+    "doc": "Troubleshooting",
+    "title": "Prevention",
+    "content": "Best Practices . | Regular Updates - Keep Kalco updated | Resource Monitoring - Monitor system resources | Backup Strategy - Regular cluster exports | Testing - Test in non-production first | Documentation - Keep configuration documented | . Monitoring . # Check Kalco health kalco health # Monitor resource usage kalco export --monitor # Set up alerts for failures # Integrate with your monitoring system . ",
+    "url": "/kalco/docs/getting-started/troubleshooting.html#prevention",
+    
+    "relUrl": "/docs/getting-started/troubleshooting.html#prevention"
+  },"130": {
+    "doc": "Troubleshooting",
+    "title": "Next Steps",
+    "content": "After resolving issues: . | Review Configuration - Optimize your setup | Explore Commands - Learn advanced features | Automate Workflows - Prevent future issues | Join Community - Share solutions | . ",
+    "url": "/kalco/docs/getting-started/troubleshooting.html#next-steps",
+    
+    "relUrl": "/docs/getting-started/troubleshooting.html#next-steps"
+  },"131": {
+    "doc": "Use Cases",
+    "title": "Use Cases",
+    "content": "Real-world scenarios and examples for using Kalco effectively. ",
+    "url": "/kalco/use-cases.html",
+    
+    "relUrl": "/use-cases.html"
+  },"132": {
+    "doc": "Use Cases",
+    "title": "Disaster Recovery",
+    "content": "Complete Cluster Backup . Create comprehensive backups for disaster recovery scenarios. # Daily backup with Git versioning kalco export \\ --output ./backups/cluster-$(date +%Y%m%d) \\ --exclude events,endpoints,replicasets \\ --git-push \\ --commit-message \"Daily backup - $(date)\" # Automated backup script #!/bin/bash BACKUP_DIR=\"/backups/kubernetes/$(date +%Y/%m)\" mkdir -p \"$BACKUP_DIR\" kalco export \\ --output \"$BACKUP_DIR/cluster-$(date +%Y%m%d-%H%M)\" \\ --exclude events,endpoints \\ --commit-message \"Automated backup $(date)\" . Environment Replication . Replicate production environments for testing or staging. # Export production configuration kalco export \\ --namespaces production \\ --exclude events,pods,replicasets \\ --output ./production-config # Apply to staging (after review and modification) kubectl apply -R -f ./production-config/production/ . ",
+    "url": "/kalco/use-cases.html#disaster-recovery",
+    
+    "relUrl": "/use-cases.html#disaster-recovery"
+  },"133": {
+    "doc": "Use Cases",
+    "title": "Compliance &amp; Auditing",
+    "content": "Security Auditing . Regular security assessments and compliance reporting. # Generate security report kalco analyze security --output json &gt; security-audit-$(date +%Y%m%d).json # Validate cluster configuration kalco validate --output yaml &gt; validation-report-$(date +%Y%m%d).yaml # Export for compliance review kalco export \\ --resources \"roles,rolebindings,clusterroles,clusterrolebindings,networkpolicies,podsecuritypolicies\" \\ --output ./compliance-review . Change Tracking . Track and document cluster changes over time. # Weekly change tracking kalco export \\ --output ./cluster-history \\ --git-push \\ --commit-message \"Weekly snapshot - $(date +%Y-W%U)\" # Generate change report kalco report \\ --types changes \\ --since 7d \\ --output-file weekly-changes.html . ",
+    "url": "/kalco/use-cases.html#compliance--auditing",
+    
+    "relUrl": "/use-cases.html#compliance--auditing"
+  },"134": {
+    "doc": "Use Cases",
+    "title": "Development &amp; Testing",
+    "content": "Local Development Setup . Set up local development environments that mirror production. # Export development namespace kalco export \\ --namespaces development \\ --exclude events,pods \\ --output ./dev-config # Create KIND cluster with exported config kind create cluster --name dev-cluster kubectl apply -R -f ./dev-config/development/ . CI/CD Integration . Integrate Kalco into CI/CD pipelines for automated testing and deployment. # GitHub Actions example name: Cluster Validation on: schedule: - cron: '0 2 * * *' # Daily at 2 AM jobs: validate: runs-on: ubuntu-latest steps: - uses: actions/checkout@v4 - name: Install Kalco run: | curl -fsSL https://raw.githubusercontent.com/graz-dev/kalco/master/scripts/install.sh | bash - name: Export and Validate Cluster run: | kalco export --output ./cluster-state kalco validate --output json &gt; validation-results.json - name: Upload Results uses: actions/upload-artifact@v3 with: name: cluster-validation path: | ./cluster-state validation-results.json . ",
+    "url": "/kalco/use-cases.html#development--testing",
+    
+    "relUrl": "/use-cases.html#development--testing"
+  },"135": {
+    "doc": "Use Cases",
+    "title": "Operations &amp; Maintenance",
+    "content": "Resource Cleanup . Identify and clean up unused resources to optimize cluster efficiency. # Find orphaned resources kalco analyze orphaned --detailed --output json &gt; orphaned-resources.json # Generate cleanup script cat orphaned-resources.json | jq -r '.orphanedResources[] | \"kubectl delete \\(.type) \\(.name) -n \\(.namespace)\"' &gt; cleanup-script.sh # Review and execute cleanup (after careful review!) chmod +x cleanup-script.sh # ./cleanup-script.sh # Execute after review . Capacity Planning . Analyze resource usage for capacity planning decisions. # Analyze resource usage kalco analyze usage --by-namespace --output json &gt; usage-analysis.json # Generate capacity report kalco report \\ --types resources,usage \\ --output-file capacity-report.html . Migration Planning . Plan and execute cluster migrations between environments or providers. # Export source cluster kalco export \\ --exclude events,pods,replicasets,endpoints \\ --output ./migration-source # Validate configuration before migration kalco validate --output json &gt; pre-migration-validation.json # Apply to target cluster (after modification) # kubectl apply -R -f ./migration-source/ . ",
+    "url": "/kalco/use-cases.html#operations--maintenance",
+    
+    "relUrl": "/use-cases.html#operations--maintenance"
+  },"136": {
+    "doc": "Use Cases",
+    "title": "Monitoring &amp; Alerting",
+    "content": "Health Monitoring . Regular cluster health checks and alerting. #!/bin/bash # health-check.sh - Run daily health checks # Validate cluster kalco validate --output json &gt; /tmp/validation.json # Check for broken references BROKEN_REFS=$(jq '.summary.brokenReferences' /tmp/validation.json) if [ \"$BROKEN_REFS\" -gt 0 ]; then echo \"ALERT: $BROKEN_REFS broken references found!\" # Send alert (email, Slack, etc.) fi # Check for orphaned resources kalco analyze orphaned --output json &gt; /tmp/orphaned.json ORPHANED_COUNT=$(jq '.summary.totalOrphanedResources' /tmp/orphaned.json) if [ \"$ORPHANED_COUNT\" -gt 10 ]; then echo \"WARNING: $ORPHANED_COUNT orphaned resources found\" # Send notification fi . Prometheus Integration . Export metrics for Prometheus monitoring. # Generate metrics kalco analyze usage --output json | \\ jq -r '.metrics[] | \"kalco_resource_count{\\(.labels)} \\(.value)\"' &gt; \\ /var/lib/prometheus/node-exporter/kalco-metrics.prom . ",
+    "url": "/kalco/use-cases.html#monitoring--alerting",
+    
+    "relUrl": "/use-cases.html#monitoring--alerting"
+  },"137": {
+    "doc": "Use Cases",
+    "title": "Documentation &amp; Knowledge Sharing",
+    "content": "Cluster Documentation . Generate comprehensive cluster documentation. # Generate complete cluster documentation kalco report \\ --types summary,resources,security \\ --output-file cluster-documentation.html # Export configuration for documentation kalco export \\ --resources \"configmaps,secrets\" \\ --output ./config-documentation # Generate resource inventory kalco resources list --detailed --output json &gt; resource-inventory.json . Team Onboarding . Help new team members understand cluster structure. # Create onboarding package mkdir -p ./onboarding/cluster-overview # Export key resources kalco export \\ --resources \"deployments,services,ingresses,configmaps\" \\ --output ./onboarding/cluster-overview # Generate overview report kalco report \\ --types summary,resources \\ --output-file ./onboarding/cluster-overview.html # List available resources kalco resources list --output json &gt; ./onboarding/available-resources.json . ",
+    "url": "/kalco/use-cases.html#documentation--knowledge-sharing",
+    
+    "relUrl": "/use-cases.html#documentation--knowledge-sharing"
+  },"138": {
+    "doc": "Use Cases",
+    "title": "Advanced Scenarios",
+    "content": "Multi-Cluster Management . Manage multiple clusters with centralized tooling. #!/bin/bash # multi-cluster-export.sh CLUSTERS=(\"production\" \"staging\" \"development\") BASE_DIR=\"./multi-cluster-backup/$(date +%Y%m%d)\" for cluster in \"${CLUSTERS[@]}\"; do echo \"Exporting cluster: $cluster\" kalco export \\ --kubeconfig ~/.kube/config-$cluster \\ --output \"$BASE_DIR/$cluster\" \\ --exclude events,endpoints \\ --commit-message \"Multi-cluster backup: $cluster\" done # Generate cross-cluster report kalco report \\ --input-dirs \"$BASE_DIR/*\" \\ --output-file \"$BASE_DIR/multi-cluster-report.html\" . GitOps Integration . Integrate with GitOps workflows for declarative cluster management. # Export to GitOps repository kalco export \\ --output ./gitops-repo/clusters/production \\ --exclude events,pods,replicasets \\ --git-push \\ --commit-message \"Production state update\" # Validate GitOps configuration kalco validate \\ --input ./gitops-repo/clusters/production \\ --output json &gt; gitops-validation.json . | ← Configuration | API Reference → | . ",
+    "url": "/kalco/use-cases.html#advanced-scenarios",
+    
+    "relUrl": "/use-cases.html#advanced-scenarios"
+  },"139": {
+    "doc": "kalco validate",
+    "title": "kalco validate",
+    "content": "Validate cluster resources for issues and broken references. ",
+    "url": "/kalco/commands/validate.html",
+    
+    "relUrl": "/commands/validate.html"
+  },"140": {
+    "doc": "kalco validate",
+    "title": "Synopsis",
+    "content": "The validate command performs comprehensive validation of your Kubernetes cluster resources, checking for broken references, configuration issues, and potential problems that could cause issues during re-application. kalco validate [flags] . ",
+    "url": "/kalco/commands/validate.html#synopsis",
+    
+    "relUrl": "/commands/validate.html#synopsis"
+  },"141": {
+    "doc": "kalco validate",
+    "title": "Description",
+    "content": "The validate command performs several types of validation: . | Cross-reference validation - Checks for broken references between resources | Configuration validation - Validates resource configurations against schemas | Dependency analysis - Analyzes resource dependencies and relationships | Security validation - Checks for common security misconfigurations | . ",
+    "url": "/kalco/commands/validate.html#description",
+    
+    "relUrl": "/commands/validate.html#description"
+  },"142": {
+    "doc": "kalco validate",
+    "title": "Flags",
+    "content": "| Flag | Short | Type | Description | . | --output | -o | string | Output format (table, json, yaml) (default: “table”) | . | --namespaces | -n | []string | Specific namespaces to validate | . | --resources | -r | []string | Specific resource types to validate | . | --fix |   | bool | Attempt to fix validation issues where possible | . ",
+    "url": "/kalco/commands/validate.html#flags",
+    
+    "relUrl": "/commands/validate.html#flags"
+  },"143": {
+    "doc": "kalco validate",
+    "title": "Examples",
+    "content": "Basic Validation . # Validate entire cluster kalco validate # Validate specific namespaces kalco validate --namespaces production,staging # Validate specific resource types kalco validate --resources deployments,services,configmaps . Output Formats . # Human-readable table (default) kalco validate # JSON output for automation kalco validate --output json # YAML output for configuration kalco validate --output yaml . Advanced Usage . # Validate and attempt fixes kalco validate --fix # Validate production namespace only kalco validate --namespaces production --output json &gt; validation-report.json # Validate core workload resources kalco validate --resources \"deployments,services,configmaps,secrets\" . ",
+    "url": "/kalco/commands/validate.html#examples",
+    
+    "relUrl": "/commands/validate.html#examples"
+  },"144": {
+    "doc": "kalco validate",
+    "title": "Validation Types",
+    "content": "Cross-Reference Validation . Checks for broken references between resources: . | Service selectors pointing to non-existent pods | ConfigMap/Secret references from pods and deployments | PVC references from pods | ServiceAccount references in role bindings | . Configuration Validation . Validates resource configurations: . | Required fields and proper syntax | Resource limits and requests | Security contexts and policies | Network policies and ingress rules | . Dependency Analysis . Analyzes resource relationships: . | Orphaned resources without owners | Circular dependencies | Missing dependencies | Unused resources | . ",
+    "url": "/kalco/commands/validate.html#validation-types",
+    
+    "relUrl": "/commands/validate.html#validation-types"
+  },"145": {
+    "doc": "kalco validate",
+    "title": "Output Format",
+    "content": "Table Output (Default) . RESOURCE TYPE NAME NAMESPACE STATUS ISSUES Deployment app-deploy default ✓ Valid 0 Service app-service default ✗ Error 1 ConfigMap app-config default ⚠ Warning 1 . JSON Output . { \"summary\": { \"totalReferences\": 45, \"validReferences\": 42, \"brokenReferences\": 2, \"warningReferences\": 1 }, \"brokenReferences\": [ { \"sourceType\": \"Service\", \"sourceName\": \"app-service\", \"targetType\": \"Pod\", \"targetName\": \"missing-pod\", \"field\": \"spec.selector.app\" } ] } . ",
+    "url": "/kalco/commands/validate.html#output-format",
+    
+    "relUrl": "/commands/validate.html#output-format"
+  },"146": {
+    "doc": "kalco validate",
+    "title": "Exit Codes",
+    "content": ". | 0 - Validation passed with no issues | 1 - Validation found warnings but no errors | 2 - Validation found errors | 3 - Validation failed to run | . ",
+    "url": "/kalco/commands/validate.html#exit-codes",
+    
+    "relUrl": "/commands/validate.html#exit-codes"
+  },"147": {
+    "doc": "kalco validate",
+    "title": "Related Commands",
+    "content": ". | kalco export - Export resources for validation | kalco analyze orphaned - Find orphaned resources | kalco report - Generate comprehensive reports | . | ← Commands Overview | Analyze Command → | . ",
+    "url": "/kalco/commands/validate.html#related-commands",
+    
+    "relUrl": "/commands/validate.html#related-commands"
+  }
+}

@@ -1,7 +1,7 @@
 title: Kalco Documentation
 description: Kubernetes Analysis & Lifecycle Control - Comprehensive cluster management tool
 url: https://graz-dev.github.io
-baseurl: /kalco
+# baseurl: /kalco  # Uncomment for GitHub Pages deployment, comment for local development
 
 # Theme
 remote_theme: just-the-docs/just-the-docs
@@ -9,9 +9,15 @@ remote_theme: just-the-docs/just-the-docs
 # Build settings
 markdown: kramdown
 highlighter: rouge
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
 plugins:
   - jekyll-remote-theme
   - jekyll-seo-tag
+  - jekyll-include-cache
+  - jekyll-feed
+  - jekyll-relative-links
 
 # Collections
 collections:
@@ -48,7 +54,7 @@ just_the_docs:
   # Enable back to top button
   back_to_top: true
   
-  # Enable back to top text
+  # Enable back to top button
   back_to_top_text: "Back to top"
   
   # Enable footer content
