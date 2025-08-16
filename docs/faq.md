@@ -5,7 +5,7 @@ Common questions and answers about Kalco.
 ## General Questions
 
 ### What is Kalco?
-
+ 
 Kalco (Kubernetes Analysis & Lifecycle Control) is a comprehensive CLI tool for Kubernetes cluster management. It provides automated resource export, validation, analysis, and lifecycle management capabilities.
 
 ### How is Kalco different from kubectl?
