@@ -51,21 +51,21 @@ changelog:
       - '^docs:'
       - '^test:'
 
-brews:
-  - name: kalco
-    homepage: https://github.com/graz-dev/kalco
-    description: "Kubernetes Analysis & Lifecycle Control - Extract, validate, analyze, and version control your entire cluster"
-    license: "MIT"
-    repository:
-      owner: graz-dev
-      name: homebrew-tap
-    commit_author:
-      name: goreleaserbot
-      email: bot@goreleaser.com
-    install: |
-      bin.install "kalco"
-    test: |
-      system "#{bin}/kalco --help"
+# brews:
+#   - name: kalco
+#     homepage: https://github.com/graz-dev/kalco
+#     description: "Kubernetes Analysis & Lifecycle Control - Extract, validate, analyze, and version control your entire cluster"
+#     license: "MIT"
+#     repository:
+#       owner: graz-dev
+#       name: homebrew-tap
+#     commit_author:
+#       name: goreleaserbot
+#       email: bot@goreleaser.com
+#     install: |
+#       bin.install "kalco"
+#     test: |
+#       system "#{bin}/kalco --help"
 
 nfpms:
   - file_name_template: '{{ .ConventionalFileName }}'
@@ -111,9 +111,13 @@ release:
     
     ### Installation
     
-    #### Homebrew (macOS/Linux)
+    #### Quick Install
     ```bash
-    brew install graz-dev/tap/kalco
+    # Linux/macOS
+    curl -fsSL https://raw.githubusercontent.com/graz-dev/kalco/main/scripts/install.sh | bash
+    
+    # Windows PowerShell
+    iwr -useb https://raw.githubusercontent.com/graz-dev/kalco/main/scripts/install.ps1 | iex
     ```
     
     #### Direct Download
