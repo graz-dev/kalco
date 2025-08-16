@@ -40,10 +40,10 @@ kalco export --git-push --commit-message "Cluster snapshot $(date)"
 
 ## 📚 Documentation
 
-- **[Getting Started]({{ site.baseurl }}/docs/getting-started/)** - Installation and first steps
-- **[Commands Reference]({{ site.baseurl }}/docs/commands/)** - Complete command documentation
-- **[Use Cases]({{ site.baseurl }}/docs/use-cases/)** - Common scenarios and workflows
-- **[Configuration]({{ site.baseurl }}/docs/configuration/)** - Customization options
+- **[Getting Started]({{ site.baseurl }}/getting-started/)** - Installation and first steps
+- **[Commands Reference]({{ site.baseurl }}/commands/)** - Complete command documentation
+- **[Use Cases]({{ site.baseurl }}/use-cases/)** - Common scenarios and workflows
+- **[Configuration]({{ site.baseurl }}/configuration/)** - Customization options
 
 ## 🔗 Useful Links
 

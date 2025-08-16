@@ -18,17 +18,11 @@ plugins:
   - jekyll-remote-theme
   - jekyll-seo-tag
 
-# Collections
-collections:
-  docs:
-    output: true
-    permalink: /:collection/:name/
-
 # Defaults
 defaults:
   - scope:
       path: ""
-      type: "docs"
+      type: "pages"
     values:
       layout: "default"
       author: "Graz Dev"
