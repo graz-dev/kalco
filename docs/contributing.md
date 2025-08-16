@@ -62,8 +62,8 @@ We welcome contributions to Kalco! This guide will help you get started with con
 ```bash
 # Sync with upstream
 git fetch upstream
-git checkout main
-git merge upstream/main
+git checkout master
+git merge upstream/master
 
 # Create feature branch
 git checkout -b feature/your-feature-name

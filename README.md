@@ -5,7 +5,6 @@
 **🚀 The ultimate CLI tool for Kubernetes cluster management, analysis, and lifecycle control**
 
 [![Release](https://img.shields.io/github/v/release/graz-dev/kalco)](https://github.com/graz-dev/kalco/releases)
-[![Go Report Card](https://goreportcard.com/badge/github.com/graz-dev/kalco)](https://goreportcard.com/report/github.com/graz-dev/kalco)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Documentation](https://img.shields.io/badge/docs-available-brightgreen)](https://graz-dev.github.io/kalco)
 
@@ -108,7 +107,7 @@ Kalco transforms your Kubernetes cluster management experience by providing a **
 <td>
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/graz-dev/kalco/main/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/graz-dev/kalco/master/scripts/install.sh | bash
 ```
 
 </td>
@@ -118,7 +117,7 @@ curl -fsSL https://raw.githubusercontent.com/graz-dev/kalco/main/scripts/install
 <td>
 
 ```powershell
-iwr -useb https://raw.githubusercontent.com/graz-dev/kalco/main/scripts/install.ps1 | iex
+iwr -useb https://raw.githubusercontent.com/graz-dev/kalco/master/scripts/install.ps1 | iex
 ```
 
 </td>
@@ -137,12 +136,12 @@ iwr -useb https://raw.githubusercontent.com/graz-dev/kalco/main/scripts/install.
 
 **Linux/macOS:**
 ```bash
-curl -fsSL https://raw.githubusercontent.com/graz-dev/kalco/main/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/graz-dev/kalco/master/scripts/install.sh | bash
 ```
 
 **Windows (PowerShell):**
 ```powershell
-iwr -useb https://raw.githubusercontent.com/graz-dev/kalco/main/scripts/install.ps1 | iex
+iwr -useb https://raw.githubusercontent.com/graz-dev/kalco/master/scripts/install.ps1 | iex
 ```
 
 #### Package Managers

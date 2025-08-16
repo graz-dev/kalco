@@ -33,7 +33,7 @@ Kalco is a powerful CLI tool that performs comprehensive analysis, validation, a
 
 ```bash
 # Install Kalco
-curl -fsSL https://raw.githubusercontent.com/graz-dev/kalco/main/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/graz-dev/kalco/master/scripts/install.sh | bash
 
 # Export your entire cluster
 kalco export

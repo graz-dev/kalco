@@ -116,7 +116,7 @@ jobs:
       
       - name: Install Kalco
         run: |
-          curl -fsSL https://raw.githubusercontent.com/graz-dev/kalco/main/scripts/install.sh | bash
+          curl -fsSL https://raw.githubusercontent.com/graz-dev/kalco/master/scripts/install.sh | bash
       
       - name: Export and Validate Cluster
         run: |

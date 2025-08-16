@@ -73,10 +73,10 @@ After a release is published, users can install kalco using:
 ### Quick Install Scripts
 ```bash
 # Linux/macOS
-curl -fsSL https://raw.githubusercontent.com/graz-dev/kalco/main/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/graz-dev/kalco/master/scripts/install.sh | bash
 
 # Windows PowerShell
-iwr -useb https://raw.githubusercontent.com/graz-dev/kalco/main/scripts/install.ps1 | iex
+iwr -useb https://raw.githubusercontent.com/graz-dev/kalco/master/scripts/install.ps1 | iex
 ```
 
 ### Package Managers
