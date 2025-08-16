@@ -1,8 +1,6 @@
 ---
 layout: default
 title: kalco analyze
-parent: Commands Reference
-nav_order: 3
 description: "Analyze cluster resources for optimization opportunities"
 ---
 

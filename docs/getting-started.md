@@ -1,7 +1,6 @@
 ---
 layout: default
 title: Getting Started
-nav_order: 2
 description: "Installation and first steps with Kalco"
 ---
 
@@ -182,4 +181,11 @@ If you need help:
 
 ---
 
-[← Back to Documentation Home](index.md) | [Commands Reference →](commands/index.md)
+## Navigation
+
+- [← Back to Documentation Home](index.md)
+- [Commands Reference →](commands/index.md)
+- [Configuration](configuration.md)
+- [Use Cases](use-cases.md)
+- [FAQ](faq.md)
+- [Contributing](contributing.md)

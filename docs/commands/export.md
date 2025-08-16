@@ -1,8 +1,6 @@
 ---
 layout: default
 title: kalco export
-parent: Commands Reference
-nav_order: 1
 description: "Export cluster resources to organized YAML files"
 ---
 

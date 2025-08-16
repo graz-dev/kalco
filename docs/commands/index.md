@@ -1,8 +1,6 @@
 ---
 layout: default
 title: Commands Reference
-nav_order: 3
-has_children: true
 description: "Complete reference for all Kalco commands"
 ---
 

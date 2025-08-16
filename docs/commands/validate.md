@@ -1,8 +1,6 @@
 ---
 layout: default
 title: kalco validate
-parent: Commands Reference
-nav_order: 2
 description: "Validate cluster resources for issues and broken references"
 ---
 

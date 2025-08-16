@@ -1,19 +1,17 @@
 ---
 layout: default
-title: Home
-nav_order: 1
-description: "Kalco - Kubernetes Analysis & Lifecycle Control. Extract, validate, analyze, and version control your entire cluster."
-permalink: /
+title: Kalco Documentation
+description: "Kubernetes Analysis & Lifecycle Control - Extract, validate, analyze, and version control your entire cluster."
 ---
 
 # Kalco Documentation
-{: .fs-9 }
 
-Kubernetes Analysis & Lifecycle Control - Extract, validate, analyze, and version control your entire cluster with comprehensive validation and Git integration.
-{: .fs-6 .fw-300 }
+**Kubernetes Analysis & Lifecycle Control** - Extract, validate, analyze, and version control your entire cluster with comprehensive validation and Git integration.
 
-[Get started now](#quick-start){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }
-[View it on GitHub](https://github.com/graz-dev/kalco){: .btn .fs-5 .mb-4 .mb-md-0 }
+<div style="margin: 20px 0;">
+  <a href="#quick-start" class="btn" style="background-color: #159957; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-right: 10px;">Get Started</a>
+  <a href="https://github.com/graz-dev/kalco" class="btn" style="background-color: #606c76; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">View on GitHub</a>
+</div>
 
 ---
 
@@ -21,18 +19,18 @@ Kubernetes Analysis & Lifecycle Control - Extract, validate, analyze, and versio
 
 Kalco is a powerful CLI tool that performs comprehensive analysis, validation, and export of all resources from your Kubernetes cluster into organized YAML files. It automatically discovers and exports every available API resource - including native Kubernetes resources and Custom Resources (CRDs) - with zero configuration required.
 
-### Key Features
+## Key Features
 
-- **Complete Resource Discovery** - Automatically finds ALL available API resources
-- **Comprehensive Coverage** - Includes both native K8s resources and Custom Resources (CRDs)  
-- **Structured Output** - Creates intuitive directory structures for easy navigation
-- **Clean YAML** - Intelligently removes metadata fields that aren't useful for re-application
-- **Lightning Fast** - Optimized for speed and efficiency
-- **Git Integration** - Automatic version control with commit history and change tracking
-- **Smart Reporting** - Generates detailed change reports with before/after comparisons
-- **Cross-Reference Validation** - Analyzes exported resources for broken references
-- **Orphaned Resource Detection** - Identifies resources no longer managed by controllers
-- **Modern CLI Experience** - Intuitive commands with rich styling and helpful output
+- ✅ **Complete Resource Discovery** - Automatically finds ALL available API resources
+- ✅ **Comprehensive Coverage** - Includes both native K8s resources and Custom Resources (CRDs)  
+- ✅ **Structured Output** - Creates intuitive directory structures for easy navigation
+- ✅ **Clean YAML** - Intelligently removes metadata fields that aren't useful for re-application
+- ✅ **Lightning Fast** - Optimized for speed and efficiency
+- ✅ **Git Integration** - Automatic version control with commit history and change tracking
+- ✅ **Smart Reporting** - Generates detailed change reports with before/after comparisons
+- ✅ **Cross-Reference Validation** - Analyzes exported resources for broken references
+- ✅ **Orphaned Resource Detection** - Identifies resources no longer managed by controllers
+- ✅ **Modern CLI Experience** - Intuitive commands with rich styling and helpful output
 
 ---
 
@@ -68,34 +66,25 @@ kalco report
 
 ---
 
-## Navigation
+## Documentation Navigation
 
-<div class="code-example" markdown="1">
-
-**Getting Started**
-: [Installation and first steps]({% link getting-started.md %})
-
-**Commands Reference**  
-: [Complete command documentation]({% link commands/index.md %})
-
-**Configuration**
-: [Configuration options and examples]({% link configuration.md %})
-
-**Use Cases**
-: [Real-world scenarios and examples]({% link use-cases.md %})
-
-**FAQ**
-: [Frequently asked questions]({% link faq.md %})
-
-**Contributing**
-: [How to contribute to Kalco]({% link contributing.md %})
-
-</div>
+| Section | Description |
+|---------|-------------|
+| [**Getting Started**](getting-started.md) | Installation and first steps |
+| [**Commands Reference**](commands/index.md) | Complete command documentation |
+| [**Configuration**](configuration.md) | Configuration options and examples |
+| [**Use Cases**](use-cases.md) | Real-world scenarios and examples |
+| [**FAQ**](faq.md) | Frequently asked questions |
+| [**Contributing**](contributing.md) | How to contribute to Kalco |
 
 ---
 
 ## Community & Support
 
-- **GitHub**: [graz-dev/kalco](https://github.com/graz-dev/kalco)
-- **Issues**: [Report bugs or request features](https://github.com/graz-dev/kalco/issues)  
-- **Discussions**: [Community discussions](https://github.com/graz-dev/kalco/discussions)
+- 🐙 **GitHub**: [graz-dev/kalco](https://github.com/graz-dev/kalco)
+- 🐛 **Issues**: [Report bugs or request features](https://github.com/graz-dev/kalco/issues)  
+- 💬 **Discussions**: [Community discussions](https://github.com/graz-dev/kalco/discussions)
+
+---
+
+*Made with ❤️ for the Kubernetes community*

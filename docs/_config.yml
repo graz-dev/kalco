@@ -3,50 +3,12 @@ description: Kubernetes Analysis & Lifecycle Control - Comprehensive cluster man
 url: https://graz-dev.github.io/kalco
 baseurl: ""
 
-# Theme - Just the Docs (popular documentation theme)
-remote_theme: just-the-docs/just-the-docs
-
-# Color scheme
-color_scheme: light
-
-# Logo
-logo: "/assets/images/kalco-logo.png"
-
-# Search
-search_enabled: true
-search:
-  heading_level: 2
-  previews: 3
-  preview_words_before: 5
-  preview_words_after: 10
-  tokenizer_separator: /[\s/]+/
-  rel_url: true
-  button: false
-
-# Navigation structure
-nav_sort: case_insensitive
-
-# Footer content
-footer_content: "Made with ❤️ for the Kubernetes community. <a href=\"https://github.com/graz-dev/kalco\">View on GitHub</a>"
-
-# Back to top link
-back_to_top: true
-back_to_top_text: "Back to top"
-
-# Last edit timestamp
-last_edit_timestamp: true
-last_edit_time_format: "%b %e %Y at %I:%M %p"
-
-# GitHub integration
-gh_edit_link: true
-gh_edit_link_text: "Edit this page on GitHub"
-gh_edit_repository: "https://github.com/graz-dev/kalco"
-gh_edit_branch: "master"
-gh_edit_source: docs
-gh_edit_view_mode: "tree"
+# Theme - Using Cayman theme (officially supported by GitHub Pages)
+remote_theme: pages-themes/cayman@v0.2.0
 
 # Plugins
 plugins:
+  - jekyll-remote-theme
   - jekyll-seo-tag
   - jekyll-sitemap
   - jekyll-feed
@@ -64,18 +26,8 @@ github_username: graz-dev
 markdown: kramdown
 highlighter: rouge
 kramdown:
-  syntax_highlighter_opts:
-    block:
-      line_numbers: false
-
-# Compress HTML
-compress_html:
-  clippings: all
-  comments: all
-  endings: all
-  startings: []
-  blanklines: false
-  profile: false
+  input: GFM
+  syntax_highlighter: rouge
 
 # Exclude from processing
 exclude:
