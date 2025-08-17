@@ -12,7 +12,7 @@ nav_order: 1
 
 ---
 
-## 🚀 What is Kalco? 
+## 🚀 What is Kalco?
 
 Kalco is a powerful Kubernetes cluster management tool that provides comprehensive resource extraction, validation, and version control capabilities. It's designed to help DevOps engineers, SREs, and platform teams maintain clean, validated, and version-controlled cluster configurations.
 
@@ -24,6 +24,7 @@ Kalco is a powerful Kubernetes cluster management tool that provides comprehensi
 - **🎯 Flexible Filtering** - Export specific namespaces, resources, or exclude noisy types
 - **📊 Detailed Reporting** - Comprehensive change analysis and resource summaries
 - **🔄 Incremental Updates** - Track changes between cluster snapshots
+- **🌐 Context Management** - Manage multiple clusters with easy switching
 
 ## 🚀 Quick Start
 
@@ -31,8 +32,17 @@ Kalco is a powerful Kubernetes cluster management tool that provides comprehensi
 # Install Kalco
 go install github.com/graz-dev/kalco/cmd/kalco@latest
 
+# Set up a cluster context
+kalco context set production \
+  --kubeconfig ~/.kube/prod-config \
+  --output ./prod-exports \
+  --labels env=prod,team=platform
+
+# Use the context
+kalco context use production
+
 # Export your cluster
-kalco export --output ./cluster-backup
+kalco export
 
 # Export with Git integration
 kalco export --git-push --commit-message "Cluster snapshot $(date)"

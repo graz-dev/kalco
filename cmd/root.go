@@ -25,7 +25,12 @@ resource extraction, validation, and lifecycle management.
 Extract, validate, analyze, and version control your entire cluster with 
 comprehensive validation and Git integration.
 `),
-	Example: `  # Export entire cluster to timestamped directory
+	Example: `  # Manage cluster contexts
+  kalco context set production --kubeconfig ~/.kube/prod-config --output ./prod-exports
+  kalco context use production
+  kalco context list
+
+  # Export entire cluster to timestamped directory
   kalco export
 
   # Export to specific directory with custom options
