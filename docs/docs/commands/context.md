@@ -20,6 +20,56 @@ A Kalco context defines a complete configuration for working with a specific Kub
 
 Contexts make it easy to switch between different clusters and configurations without specifying the same flags repeatedly.
 
+## 📋 Available Commands
+
+- **[context]({{ site.baseurl }}/docs/commands/context)** - Manage cluster contexts and configurations
+- **[export]({{ site.baseurl }}/docs/commands/export)** - Export cluster resources to organized YAML files
+- **[validate]({{ site.baseurl }}/docs/commands/validate)** - Validate cluster resources and cross-references
+- **[analyze]({{ site.baseurl }}/docs/commands/analyze)** - Analyze cluster state and generate reports
+- **[config]({{ site.baseurl }}/docs/commands/config)** - Manage configuration
+- **[load]({{ site.baseurl }}/docs/commands/load)** - Load context configuration from an existing kalco directory
+
+## 🚩 Global Options
+
+All commands support these global options:
+
+```bash
+--help, -h          Show help for the command
+--version, -v       Show version information
+--verbose           Enable verbose output
+--quiet             Suppress non-error messages
+--config            Path to configuration file
+```
+
+## 🔧 Command Structure
+
+```bash
+kalco <command> [subcommand] [flags] [arguments]
+```
+
+### Examples
+
+```bash
+# Basic export
+kalco export
+
+# Export with options
+kalco export --output ./backup --namespaces default,kube-system
+
+# Manage contexts
+kalco context set production --kubeconfig ~/.kube/prod-config --output ./prod-exports
+kalco context use production
+
+# Load existing context
+kalco context load ./existing-kalco-export
+
+# Validate cluster
+kalco validate --cross-references
+
+# Show configuration
+kalco config show
+```
+
 ## Commands
 
 ### kalco context set
@@ -65,6 +115,12 @@ kalco context set production \
   --labels team=platform \
   --labels region=eu-west
 ```
+
+**Note**: When specifying an `--output` directory, Kalco will:
+- Create the directory if it doesn't exist
+- Initialize a Git repository
+- Create a `kalco-config.json` file with context metadata
+- Make an initial commit
 
 ### kalco context list
 
@@ -158,7 +214,7 @@ kalco context show dev
 
 ### kalco context delete
 
-Delete the specified context. Cannot delete the currently active context.
+Delete the specified context. Can now delete the current context as well.
 
 ```bash
 kalco context delete <name>
@@ -167,12 +223,53 @@ kalco context delete <name>
 #### Examples
 
 ```bash
-# Delete a context (must not be active)
+# Delete any context (including current)
 kalco context delete old-cluster
 
-# Switch context first, then delete
-kalco context use production
-kalco context delete old-cluster
+# Delete current context (will clear current context)
+kalco context delete production
+```
+
+### kalco context load
+
+Load a context configuration from an existing kalco directory by reading the `kalco-config.json` file.
+
+```bash
+kalco context load <directory>
+```
+
+This is useful for importing contexts from existing kalco exports or for team collaboration.
+
+#### Examples
+
+```bash
+# Load context from existing kalco export
+kalco context load ./my-cluster-export
+
+# Load context from team member's export
+kalco context load ./team-prod-export
+
+# Load context from backup directory
+kalco context load ./backups/production-2025-08-17
+```
+
+#### Requirements
+
+The directory must contain a valid `kalco-config.json` file with the following structure:
+
+```json
+{
+  "context_name": "production",
+  "kubeconfig": "/path/to/kubeconfig",
+  "output_dir": "./exports/production",
+  "labels": {
+    "env": "production",
+    "team": "platform"
+  },
+  "description": "Production cluster",
+  "created_at": "2025-08-17T15:30:45Z",
+  "version": "1.0"
+}
 ```
 
 ## Context Integration

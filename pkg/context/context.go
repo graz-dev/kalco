@@ -1,10 +1,13 @@
 package context
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
 	"time"
+
+	"os/exec"
 
 	"gopkg.in/yaml.v3"
 )
@@ -56,6 +59,18 @@ func NewContextManager(configDir string) (*ContextManager, error) {
 func (cm *ContextManager) SetContext(name, kubeconfig, outputDir, description string, labels map[string]string) error {
 	if name == "" {
 		return fmt.Errorf("context name cannot be empty")
+	}
+
+	// Create output directory if specified
+	if outputDir != "" {
+		if err := os.MkdirAll(outputDir, 0755); err != nil {
+			return fmt.Errorf("failed to create output directory '%s': %w", outputDir, err)
+		}
+
+		// Initialize Git repository and create kalco-config.json
+		if err := cm.initializeKalcoDirectory(outputDir, name, kubeconfig, labels, description); err != nil {
+			return fmt.Errorf("failed to initialize kalco directory: %w", err)
+		}
 	}
 
 	now := time.Now()
@@ -130,9 +145,13 @@ func (cm *ContextManager) DeleteContext(name string) error {
 		return fmt.Errorf("context '%s' not found", name)
 	}
 
-	// Don't allow deleting current context
+	// If deleting current context, clear it first
 	if cm.current == name {
-		return fmt.Errorf("cannot delete current context '%s'. Switch to another context first", name)
+		cm.current = ""
+		// Save the cleared current context
+		if err := cm.saveCurrentContext(); err != nil {
+			return fmt.Errorf("failed to clear current context: %w", err)
+		}
 	}
 
 	delete(cm.contexts, name)
@@ -148,7 +167,7 @@ func (cm *ContextManager) DeleteContext(name string) error {
 // loadContexts loads contexts from disk
 func (cm *ContextManager) loadContexts() error {
 	contextsFile := filepath.Join(cm.configDir, "contexts.yaml")
-	
+
 	if _, err := os.Stat(contextsFile); os.IsNotExist(err) {
 		return nil // No contexts file yet
 	}
@@ -168,7 +187,7 @@ func (cm *ContextManager) loadContexts() error {
 // saveContexts saves contexts to disk
 func (cm *ContextManager) saveContexts() error {
 	contextsFile := filepath.Join(cm.configDir, "contexts.yaml")
-	
+
 	data, err := yaml.Marshal(cm.contexts)
 	if err != nil {
 		return fmt.Errorf("failed to marshal contexts: %w", err)
@@ -184,7 +203,7 @@ func (cm *ContextManager) saveContexts() error {
 // loadCurrentContext loads the current context from disk
 func (cm *ContextManager) loadCurrentContext() error {
 	currentFile := filepath.Join(cm.configDir, "current-context")
-	
+
 	if _, err := os.Stat(currentFile); os.IsNotExist(err) {
 		return nil // No current context file yet
 	}
@@ -201,7 +220,7 @@ func (cm *ContextManager) loadCurrentContext() error {
 // saveCurrentContext saves the current context to disk
 func (cm *ContextManager) saveCurrentContext() error {
 	currentFile := filepath.Join(cm.configDir, "current-context")
-	
+
 	if err := os.WriteFile(currentFile, []byte(cm.current), 0644); err != nil {
 		return fmt.Errorf("failed to write current context file: %w", err)
 	}
@@ -231,6 +250,55 @@ func (cm *ContextManager) ValidateContext(context *Context) error {
 		dir := context.OutputDir
 		if err := os.MkdirAll(dir, 0755); err != nil {
 			return fmt.Errorf("cannot create output directory '%s': %w", dir, err)
+		}
+	}
+
+	return nil
+}
+
+// initializeKalcoDirectory creates the kalco-config.json file and initializes Git repository
+func (cm *ContextManager) initializeKalcoDirectory(outputDir, contextName, kubeconfig string, labels map[string]string, description string) error {
+	// Create kalco-config.json
+	config := map[string]interface{}{
+		"context_name": contextName,
+		"kubeconfig":   kubeconfig,
+		"labels":       labels,
+		"description":  description,
+		"created_at":   time.Now().Format(time.RFC3339),
+		"version":      "1.0",
+	}
+
+	configData, err := json.MarshalIndent(config, "", "  ")
+	if err != nil {
+		return fmt.Errorf("failed to marshal kalco config: %w", err)
+	}
+
+	configFile := filepath.Join(outputDir, "kalco-config.json")
+	if err := os.WriteFile(configFile, configData, 0644); err != nil {
+		return fmt.Errorf("failed to write kalco config file: %w", err)
+	}
+
+	// Initialize Git repository if not already initialized
+	gitDir := filepath.Join(outputDir, ".git")
+	if _, err := os.Stat(gitDir); os.IsNotExist(err) {
+		// Initialize Git repository
+		cmd := exec.Command("git", "init")
+		cmd.Dir = outputDir
+		if err := cmd.Run(); err != nil {
+			return fmt.Errorf("failed to initialize Git repository: %w", err)
+		}
+
+		// Add and commit initial files
+		cmd = exec.Command("git", "add", ".")
+		cmd.Dir = outputDir
+		if err := cmd.Run(); err != nil {
+			return fmt.Errorf("failed to add files to Git: %w", err)
+		}
+
+		cmd = exec.Command("git", "commit", "-m", fmt.Sprintf("Initial kalco context: %s", contextName))
+		cmd.Dir = outputDir
+		if err := cmd.Run(); err != nil {
+			return fmt.Errorf("failed to commit initial files: %w", err)
 		}
 	}
 
