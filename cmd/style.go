@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Color codes for terminal output
+// Color constants
 const (
 	ColorReset  = "\033[0m"
 	ColorRed    = "\033[31m"
@@ -17,242 +17,289 @@ const (
 	ColorCyan   = "\033[36m"
 	ColorWhite  = "\033[37m"
 	ColorBold   = "\033[1m"
-	ColorDim    = "\033[2m"
 )
-
-// Icons for different message types
-const (
-	IconSuccess = "✅"
-	IconError   = "❌"
-	IconWarning = "⚠️"
-	IconInfo    = "ℹ️"
-	IconRocket  = "🚀"
-	IconFolder  = "📁"
-	IconGear    = "⚙️"
-	IconChart   = "📊"
-	IconLock    = "🔒"
-	IconSearch  = "🔍"
-	IconPackage = "📦"
-	IconGit     = "🔀"
-)
-
-// isColorEnabled checks if colored output should be used
-func isColorEnabled() bool {
-	if noColor {
-		return false
-	}
-	
-	// Check if we're in a terminal
-	if os.Getenv("TERM") == "dumb" {
-		return false
-	}
-	
-	// Check NO_COLOR environment variable
-	if os.Getenv("NO_COLOR") != "" {
-		return false
-	}
-	
-	return true
-}
 
 // colorize applies color to text if colors are enabled
 func colorize(color, text string) string {
-	if !isColorEnabled() {
+	if noColor {
 		return text
 	}
 	return color + text + ColorReset
 }
 
-// printSuccess prints a success message with green color and checkmark
-func printSuccess(message string) {
-	icon := IconSuccess
-	if !isColorEnabled() {
-		icon = "[SUCCESS]"
-	}
-	fmt.Printf("%s %s\n", icon, colorize(ColorGreen, message))
-}
-
-// printError prints an error message with red color and X mark
-func printError(message string) {
-	icon := IconError
-	if !isColorEnabled() {
-		icon = "[ERROR]"
-	}
-	fmt.Printf("%s %s\n", icon, colorize(ColorRed, message))
-}
-
-// printWarning prints a warning message with yellow color and warning icon
-func printWarning(message string) {
-	icon := IconWarning
-	if !isColorEnabled() {
-		icon = "[WARNING]"
-	}
-	fmt.Printf("%s %s\n", icon, colorize(ColorYellow, message))
-}
-
-// printInfo prints an info message with blue color and info icon
-func printInfo(message string) {
-	icon := IconInfo
-	if !isColorEnabled() {
-		icon = "[INFO]"
-	}
-	fmt.Printf("%s %s\n", icon, colorize(ColorBlue, message))
-}
-
-// printHeader prints a styled header
+// printHeader prints a main section header
 func printHeader(title string) {
-	if !isColorEnabled() {
-		fmt.Printf("\n=== %s ===\n", strings.ToUpper(title))
-		return
+	if noColor {
+		fmt.Printf("\n%s\n", title)
+		fmt.Println(strings.Repeat("=", len(title)))
+	} else {
+		fmt.Printf("\n%s %s\n", colorize(ColorCyan+ColorBold, title), colorize(ColorCyan, strings.Repeat("=", len(title))))
 	}
-	
-	border := strings.Repeat("━", len(title)+4)
-	fmt.Printf("\n%s\n", colorize(ColorCyan, border))
-	fmt.Printf("%s %s %s\n", colorize(ColorCyan, "━"), colorize(ColorBold+ColorWhite, title), colorize(ColorCyan, "━"))
-	fmt.Printf("%s\n", colorize(ColorCyan, border))
 }
 
-// printSubHeader prints a styled sub-header
+// printSubHeader prints a subsection header
 func printSubHeader(title string) {
-	if !isColorEnabled() {
-		fmt.Printf("\n--- %s ---\n", title)
-		return
+	if noColor {
+		fmt.Printf("\n%s\n", title)
+		fmt.Println(strings.Repeat("-", len(title)))
+	} else {
+		fmt.Printf("\n%s %s\n", colorize(ColorBlue+ColorBold, title), colorize(ColorBlue, strings.Repeat("-", len(title))))
 	}
-	
-	fmt.Printf("\n%s %s\n", colorize(ColorPurple, "▶"), colorize(ColorBold, title))
+}
+
+// printCommandHeader prints a command execution header
+func printCommandHeader(title, subtitle string) {
+	if noColor {
+		fmt.Printf("\n%s\n", title)
+		if subtitle != "" {
+			fmt.Printf("%s\n", subtitle)
+		}
+		fmt.Println(strings.Repeat("=", len(title)))
+	} else {
+		fmt.Printf("\n%s %s\n", colorize(ColorPurple+ColorBold, title), colorize(ColorPurple, strings.Repeat("=", len(title))))
+		if subtitle != "" {
+			fmt.Printf("%s\n", colorize(ColorCyan, subtitle))
+		}
+	}
+}
+
+// printInfo prints informational text
+func printInfo(message string) {
+	if noColor {
+		fmt.Printf("INFO: %s\n", message)
+	} else {
+		fmt.Printf("%s %s\n", colorize(ColorBlue, "INFO:"), message)
+	}
+}
+
+// printSuccess prints success text
+func printSuccess(message string) {
+	if noColor {
+		fmt.Printf("SUCCESS: %s\n", message)
+	} else {
+		fmt.Printf("%s %s\n", colorize(ColorGreen, "SUCCESS:"), message)
+	}
+}
+
+// printWarning prints warning text
+func printWarning(message string) {
+	if noColor {
+		fmt.Printf("WARNING: %s\n", message)
+	} else {
+		fmt.Printf("%s %s\n", colorize(ColorYellow, "WARNING:"), message)
+	}
+}
+
+// printError prints error text
+func printError(message string) {
+	if noColor {
+		fmt.Printf("ERROR: %s\n", message)
+	} else {
+		fmt.Printf("%s %s\n", colorize(ColorRed, "ERROR:"), message)
+	}
+}
+
+// printSeparator prints a visual separator
+func printSeparator() {
+	if noColor {
+		fmt.Println("---")
+	} else {
+		fmt.Println(colorize(ColorCyan, "---"))
+	}
 }
 
 // printBanner prints the kalco banner
 func printBanner() {
 	if noColor {
-		fmt.Println("KALCO - Kubernetes Analysis & Lifecycle Control")
-		fmt.Println("Extract, validate, analyze, and version control your cluster")
-		return
-	}
-	
-	banner := `
+		fmt.Println("Kalco - Kubernetes Analysis & Lifecycle Control")
+		fmt.Println("===============================================")
+	} else {
+		banner := `
 ██╗  ██╗ █████╗ ██╗      ██████╗ ██████╗ 
 ██║ ██╔╝██╔══██╗██║     ██╔════╝██╔═══██╗
 █████╔╝ ███████║██║     ██║     ██║   ██║
 ██╔═██╗ ██╔══██║██║     ██║     ██║   ██║
 ██║  ██╗██║  ██║███████╗╚██████╗╚██████╔╝
 ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═════╝ 
-                                          
-🚀 Kubernetes Analysis & Lifecycle Control
-   Extract, validate, analyze, and version control your cluster`
-
-	fmt.Println(colorize(ColorCyan+ColorBold, banner))
-	fmt.Println()
-}
-
-// printCommandHeader prints a styled command header
-func printCommandHeader(command, description string) {
-	if !isColorEnabled() {
-		fmt.Printf("=== %s ===\n%s\n\n", strings.ToUpper(command), description)
-		return
-	}
-	
-	fmt.Printf("%s %s %s\n", 
-		colorize(ColorBlue+ColorBold, "▶"), 
-		colorize(ColorWhite+ColorBold, command), 
-		colorize(ColorDim, description))
-	fmt.Println()
-}
-
-// printFlag prints a styled flag description
-func printFlag(flag, description string) {
-	if !isColorEnabled() {
-		fmt.Printf("  %s: %s\n", flag, description)
-		return
-	}
-	
-	fmt.Printf("  %s %s\n", 
-		colorize(ColorGreen+ColorBold, flag), 
-		colorize(ColorWhite, description))
-}
-
-// printExample prints a styled example
-func printExample(title, command string) {
-	if !isColorEnabled() {
-		fmt.Printf("Example - %s:\n  %s\n\n", title, command)
-		return
-	}
-	
-	fmt.Printf("%s %s\n", 
-		colorize(ColorYellow+ColorBold, "Example:"), 
-		colorize(ColorWhite+ColorBold, title))
-	fmt.Printf("  %s\n\n", 
-		colorize(ColorCyan, command))
-}
-
-// printTable prints data in a simple table format
-func printTable(headers []string, rows [][]string) {
-	if len(rows) == 0 {
-		printInfo("No data to display")
-		return
-	}
-	
-	// Calculate column widths
-	widths := make([]int, len(headers))
-	for i, header := range headers {
-		widths[i] = len(header)
-	}
-	
-	for _, row := range rows {
-		for i, cell := range row {
-			if i < len(widths) && len(cell) > widths[i] {
-				widths[i] = len(cell)
-			}
-		}
-	}
-	
-	// Print header
-	fmt.Print(colorize(ColorBold, ""))
-	for i, header := range headers {
-		fmt.Printf("%-*s", widths[i]+2, header)
-	}
-	fmt.Print(colorize(ColorReset, ""))
-	fmt.Println()
-	
-	// Print separator
-	for i := range headers {
-		fmt.Print(strings.Repeat("-", widths[i]+2))
-	}
-	fmt.Println()
-	
-	// Print rows
-	for _, row := range rows {
-		for i, cell := range row {
-			if i < len(widths) {
-				fmt.Printf("%-*s", widths[i]+2, cell)
-			}
-		}
+                                           
+Kubernetes Analysis & Lifecycle Control
+Extract, validate, analyze, and version control your cluster`
+		fmt.Println(colorize(ColorCyan+ColorBold, banner))
 		fmt.Println()
 	}
 }
 
-// printProgress prints a progress indicator
-func printProgress(current, total int, message string) {
-	if !isColorEnabled() {
-		fmt.Printf("[%d/%d] %s\n", current, total, message)
-		return
+// printUsage prints usage information
+func printUsage(cmd string, description string) {
+	if noColor {
+		fmt.Printf("Usage: %s\n", cmd)
+		fmt.Printf("Description: %s\n", description)
+	} else {
+		fmt.Printf("Usage: %s\n", colorize(ColorGreen, cmd))
+		fmt.Printf("Description: %s\n", colorize(ColorCyan, description))
 	}
-	
-	percentage := float64(current) / float64(total) * 100
-	fmt.Printf("%s [%d/%d] %.1f%% %s\n", 
-		colorize(ColorBlue, IconGear), 
-		current, 
-		total, 
-		percentage, 
-		message)
 }
 
-// printSeparator prints a visual separator
-func printSeparator() {
-	if !isColorEnabled() {
-		fmt.Println(strings.Repeat("-", 50))
-		return
+// printTableHeader prints a table header
+func printTableHeader(headers ...string) {
+	if noColor {
+		fmt.Println(strings.Join(headers, " | "))
+		fmt.Println(strings.Repeat("-", len(strings.Join(headers, " | "))))
+	} else {
+		fmt.Println(colorize(ColorBold, strings.Join(headers, " | ")))
+		fmt.Println(colorize(ColorCyan, strings.Repeat("-", len(strings.Join(headers, " | ")))))
 	}
-	
-	fmt.Println(colorize(ColorDim, strings.Repeat("─", 50)))
+}
+
+// printTableRow prints a table row
+func printTableRow(cells ...string) {
+	fmt.Println(strings.Join(cells, " | "))
+}
+
+// printProgress prints a progress indicator
+func printProgress(current, total int, message string) {
+	percentage := float64(current) / float64(total) * 100
+	if noColor {
+		fmt.Printf("Progress: %d/%d (%.1f%%) - %s\n", current, total, percentage, message)
+	} else {
+		fmt.Printf("Progress: %s/%s (%.1f%%) - %s\n", 
+			colorize(ColorGreen, fmt.Sprintf("%d", current)), 
+			colorize(ColorCyan, fmt.Sprintf("%d", total)), 
+			percentage, 
+			message)
+	}
+}
+
+// printStatus prints a status message with appropriate color
+func printStatus(status, message string) {
+	switch strings.ToLower(status) {
+	case "success", "ok", "done":
+		printSuccess(message)
+	case "warning", "warn":
+		printWarning(message)
+	case "error", "fail":
+		printError(message)
+	default:
+		printInfo(message)
+	}
+}
+
+// printHelp prints help text
+func printHelp(topic, content string) {
+	if noColor {
+		fmt.Printf("\n%s\n", topic)
+		fmt.Println(strings.Repeat("-", len(topic)))
+		fmt.Println(content)
+	} else {
+		fmt.Printf("\n%s\n", colorize(ColorCyan+ColorBold, topic))
+		fmt.Println(colorize(ColorCyan, strings.Repeat("-", len(topic))))
+		fmt.Println(content)
+	}
+}
+
+// printVersion prints version information
+func printVersion(version, commit, date string) {
+	if noColor {
+		fmt.Printf("Version: %s\n", version)
+		if commit != "" {
+			fmt.Printf("Commit: %s\n", commit)
+		}
+		if date != "" {
+			fmt.Printf("Date: %s\n", date)
+		}
+	} else {
+		fmt.Printf("Version: %s\n", colorize(ColorGreen, version))
+		if commit != "" {
+			fmt.Printf("Commit: %s\n", colorize(ColorCyan, commit))
+		}
+		if date != "" {
+			fmt.Printf("Date: %s\n", colorize(ColorCyan, date))
+		}
+	}
+}
+
+// printConfig prints configuration information
+func printConfig(key, value string) {
+	if noColor {
+		fmt.Printf("%s: %s\n", key, value)
+	} else {
+		fmt.Printf("%s: %s\n", colorize(ColorBlue, key), colorize(ColorCyan, value))
+	}
+}
+
+// printResource prints resource information
+func printResource(kind, name, namespace string) {
+	if noColor {
+		if namespace != "" {
+			fmt.Printf("%s/%s in %s\n", kind, name, namespace)
+		} else {
+			fmt.Printf("%s/%s\n", kind, name)
+		}
+	} else {
+		if namespace != "" {
+			fmt.Printf("%s %s in %s\n", 
+				colorize(ColorGreen, kind), 
+				colorize(ColorCyan, name), 
+				colorize(ColorYellow, namespace))
+		} else {
+			fmt.Printf("%s %s\n", 
+				colorize(ColorGreen, kind), 
+				colorize(ColorCyan, name))
+		}
+	}
+}
+
+// printDiff prints diff information
+func printDiff(added, removed, modified int) {
+	if noColor {
+		fmt.Printf("Changes: +%d -%d ~%d\n", added, removed, modified)
+	} else {
+		fmt.Printf("Changes: %s %s %s\n", 
+			colorize(ColorGreen, fmt.Sprintf("+%d", added)), 
+			colorize(ColorRed, fmt.Sprintf("-%d", removed)), 
+			colorize(ColorYellow, fmt.Sprintf("~%d", modified)))
+	}
+}
+
+// printSummary prints a summary with counts
+func printSummary(title string, counts map[string]int) {
+	if noColor {
+		fmt.Printf("\n%s\n", title)
+		fmt.Println(strings.Repeat("-", len(title)))
+		for key, value := range counts {
+			fmt.Printf("%s: %d\n", key, value)
+		}
+	} else {
+		fmt.Printf("\n%s\n", colorize(ColorCyan+ColorBold, title))
+		fmt.Println(colorize(ColorCyan, strings.Repeat("-", len(title))))
+		for key, value := range counts {
+			fmt.Printf("%s: %s\n", colorize(ColorBlue, key), colorize(ColorGreen, fmt.Sprintf("%d", value)))
+		}
+	}
+}
+
+// printFooter prints a footer message
+func printFooter(message string) {
+	if noColor {
+		fmt.Printf("\n%s\n", message)
+	} else {
+		fmt.Printf("\n%s\n", colorize(ColorCyan, message))
+	}
+}
+
+// checkTerminalSize checks if the terminal supports colors
+func checkTerminalSize() bool {
+	// Simple check for non-interactive terminals
+	if os.Getenv("TERM") == "" {
+		return false
+	}
+	return true
+}
+
+// initStyle initializes the styling system
+func initStyle() {
+	// Check if colors should be disabled
+	if !checkTerminalSize() {
+		noColor = true
+	}
 }

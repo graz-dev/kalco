@@ -7,95 +7,208 @@ has_children: true
 
 # Commands Reference
 
-Complete reference for all Kalco commands and options.
+This section provides comprehensive documentation for all Kalco commands and their options.
 
-## 📋 Available Commands
+## Command Overview
 
-- **[export]({{ site.baseurl }}/docs/commands/export)** - Export cluster resources to organized YAML files
-- **[validate]({{ site.baseurl }}/docs/commands/validate)** - Validate cluster resources and cross-references
-- **[analyze]({{ site.baseurl }}/docs/commands/analyze)** - Analyze cluster state and generate reports
-- **[config]({{ site.baseurl }}/docs/commands/config)** - Manage Kalco configuration
+Kalco provides a focused set of commands designed for professional Kubernetes cluster management:
 
-## 🚩 Global Options
+| Command | Description | Usage |
+|---------|-------------|-------|
+| `kalco context` | Manage cluster contexts | `kalco context set/list/use/load` |
+| `kalco export` | Export cluster resources | `kalco export [flags]` |
+| `kalco completion` | Shell completion | `kalco completion bash\|zsh\|fish\|powershell` |
+| `kalco version` | Version information | `kalco version` |
 
-All commands support these global options:
+## Global Flags
+
+All Kalco commands support these global flags:
+
+| Flag | Description | Default |
+|------|-------------|---------|
+| `--kubeconfig` | Path to kubeconfig file | `~/.kube/config` |
+| `--verbose, -v` | Enable verbose output | `false` |
+| `--no-color` | Disable colored output | `false` |
+| `--help, -h` | Show help information | - |
+
+## Context Management
+
+The `kalco context` command manages cluster configurations and settings.
+
+### Subcommands
+
+- **`set`** - Create or update a context
+- **`list`** - List all available contexts
+- **`use`** - Switch to a specific context
+- **`show`** - Display context details
+- **`current`** - Show current active context
+- **`delete`** - Remove a context
+- **`load`** - Import context from existing directory
+
+### Usage Examples
 
 ```bash
---help, -h          Show help for the command
---version, -v       Show version information
---verbose           Enable verbose output
---quiet             Suppress non-error messages
---config            Path to configuration file
+# Create a production context
+kalco context set production \
+  --kubeconfig ~/.kube/prod-config \
+  --output ./prod-exports \
+  --description "Production cluster for customer workloads" \
+  --labels env=prod,team=platform
+
+# List all contexts
+kalco context list
+
+# Switch to production context
+kalco context use production
+
+# Show current context
+kalco context current
+
+# Load context from existing export
+kalco context load ./existing-kalco-export
 ```
 
-## 🔧 Command Structure
+## Resource Export
 
-```bash
-kalco <command> [subcommand] [flags] [arguments]
-```
+The `kalco export` command exports Kubernetes cluster resources with Git integration.
 
-### Examples
+### Flags
+
+| Flag | Description | Default |
+|------|-------------|---------|
+| `--output, -o` | Output directory path | `./kalco-export-<timestamp>` |
+| `--namespaces, -n` | Specific namespaces to export | All namespaces |
+| `--resources, -r` | Specific resource types to export | All resources |
+| `--exclude` | Resource types to exclude | None |
+| `--git-push` | Automatically push to remote origin | `false` |
+| `--commit-message, -m` | Custom Git commit message | Timestamp-based |
+| `--dry-run` | Show what would be exported | `false` |
+| `--no-commit` | Skip Git commit operations | `false` |
+
+### Usage Examples
 
 ```bash
 # Basic export
 kalco export
 
-# Export with options
-kalco export --output ./backup --namespaces default,kube-system
+# Export to specific directory
+kalco export --output ./cluster-backup
 
-# Validate cluster
-kalco validate --cross-references
+# Export specific namespaces
+kalco export --namespaces default,kube-system
 
-# Show configuration
-kalco config show
+# Export specific resource types
+kalco export --resources pods,services,deployments
+
+# Exclude noisy resources
+kalco export --exclude events,replicasets
+
+# Export with Git integration
+kalco export --git-push --commit-message "Weekly backup"
+
+# Export without committing
+kalco export --no-commit
+
+# Dry run to see what would be exported
+kalco export --dry-run
 ```
 
-## 📚 Command Categories
+## Shell Completion
 
-### Core Operations
-- **export** - Primary functionality for cluster resource extraction
-- **validate** - Resource validation and health checks
-- **analyze** - Cluster analysis and reporting
+The `kalco completion` command generates shell completion scripts.
 
-### Configuration & Management
-- **config** - Configuration management and validation
-- **completion** - Shell completion generation
+### Supported Shells
 
-## 🎯 Getting Help
+- **Bash** - `kalco completion bash`
+- **Zsh** - `kalco completion zsh`
+- **Fish** - `kalco completion fish`
+- **PowerShell** - `kalco completion powershell`
 
-### Command Help
+### Usage Examples
 
 ```bash
-# General help
-kalco --help
+# Generate bash completion
+kalco completion bash > /etc/bash_completion.d/kalco
 
-# Command-specific help
-kalco export --help
-kalco validate --help
+# Generate zsh completion
+kalco completion zsh > ~/.zsh/completion/_kalco
+
+# Source completion in current shell
+source <(kalco completion bash)
 ```
 
-### Examples
+## Version Information
+
+The `kalco version` command displays version and build information.
 
 ```bash
-# Show examples for export command
-kalco export --help | grep -A 10 "Examples"
-
-# Show all available flags
-kalco export --help | grep -E "^  --"
+kalco version
 ```
 
-## 🔍 Command Discovery
+Output includes:
+- Version number
+- Git commit hash
+- Build timestamp
+- Go version used
 
-Explore available commands:
+## Command Aliases
 
-```bash
-# List all commands
-kalco --help
+Some commands provide convenient aliases:
 
-# Show command tree
-kalco --help | grep -E "^  [a-z]"
-```
+| Command | Aliases |
+|---------|---------|
+| `kalco export` | `dump`, `backup` |
+| `kalco context list` | `ls` |
+| `kalco context show` | `info` |
 
-## 📖 Next Steps
+## Error Handling
 
-Explore the specific command categories to learn more about each command's options and usage patterns.
+Kalco provides clear error messages and exit codes:
+
+- **Exit Code 0** - Success
+- **Exit Code 1** - General error
+- **Exit Code 2** - Configuration error
+- **Exit Code 3** - Kubernetes connection error
+
+## Best Practices
+
+### Context Management
+
+1. **Use descriptive names** for contexts (e.g., `prod-eu-west`, `staging-us-east`)
+2. **Include labels** for better organization and filtering
+3. **Set output directories** that reflect the cluster purpose
+4. **Regularly clean up** unused contexts
+
+### Resource Export
+
+1. **Use meaningful commit messages** for better Git history
+2. **Exclude noisy resources** like events and replicasets
+3. **Enable Git push** for team collaboration
+4. **Use dry-run** to verify export configuration
+
+### Automation
+
+1. **Integrate with CI/CD** pipelines for automated backups
+2. **Use context switching** for multi-cluster operations
+3. **Leverage shell completion** for faster command entry
+4. **Set up regular exports** for change tracking
+
+## Troubleshooting
+
+### Common Issues
+
+- **Permission denied**: Ensure write access to output directory
+- **Git not found**: Install Git for version control functionality
+- **Kubernetes connection failed**: Verify kubeconfig and cluster access
+- **Context not found**: Use `kalco context list` to see available contexts
+
+### Getting Help
+
+- **Command help**: `kalco <command> --help`
+- **Global help**: `kalco --help`
+- **Verbose output**: Use `--verbose` flag for detailed information
+- **GitHub issues**: Report bugs and request features
+
+---
+
+*For more detailed information about specific commands, see the individual command documentation pages.*

@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"kalco/pkg/context"
 	"kalco/pkg/dumper"
 	"kalco/pkg/git"
 	"kalco/pkg/kube"
@@ -21,6 +22,7 @@ var (
 	exportResources     []string
 	exportExclude       []string
 	exportDryRun        bool
+	exportNoCommit      bool
 )
 
 var exportCmd = &cobra.Command{
@@ -56,7 +58,10 @@ Includes automatic Git integration for version control and change tracking.
   kalco export --dry-run
 
   # Export with Git integration
-  kalco export --git-push --commit-message "Weekly backup"`,
+  kalco export --git-push --commit-message "Weekly backup"
+
+  # Export without committing changes
+  kalco export --no-commit`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return runExport()
 	},
@@ -64,10 +69,43 @@ Includes automatic Git integration for version control and change tracking.
 
 func runExport() error {
 	printCommandHeader("CLUSTER EXPORT", "Exporting Kubernetes resources to organized YAML files")
-	
+
+	// Get active context if available
+	activeContext, err := getActiveContext()
+	if err != nil {
+		printWarning(fmt.Sprintf("Context not available: %v", err))
+		printInfo("Using command-line flags and default configuration")
+	} else {
+		printInfo(fmt.Sprintf("Using context: %s", colorize(ColorCyan, activeContext.Name)))
+		if activeContext.Description != "" {
+			printInfo(fmt.Sprintf("   Description: %s", activeContext.Description))
+		}
+		if activeContext.KubeConfig != "" {
+			printInfo(fmt.Sprintf("   Kubeconfig: %s", activeContext.KubeConfig))
+		}
+		if activeContext.OutputDir != "" {
+			printInfo(fmt.Sprintf("   Output Dir: %s", activeContext.OutputDir))
+		}
+		if len(activeContext.Labels) > 0 {
+			labelStrs := make([]string, 0, len(activeContext.Labels))
+			for k, v := range activeContext.Labels {
+				labelStrs = append(labelStrs, fmt.Sprintf("%s=%s", k, v))
+			}
+			printInfo(fmt.Sprintf("   Labels: %s", strings.Join(labelStrs, ", ")))
+		}
+		printSeparator()
+	}
+
 	// Create Kubernetes clients
-	printInfo("🔌 Connecting to Kubernetes cluster...")
-	clientset, discoveryClient, dynamicClient, err := kube.NewClients(kubeconfig)
+	printInfo("Connecting to Kubernetes cluster...")
+
+	// Use context kubeconfig if available, otherwise use flag
+	kubeconfigPath := kubeconfig
+	if activeContext != nil && activeContext.KubeConfig != "" {
+		kubeconfigPath = activeContext.KubeConfig
+	}
+
+	clientset, discoveryClient, dynamicClient, err := kube.NewClients(kubeconfigPath)
 	if err != nil {
 		return fmt.Errorf("failed to create Kubernetes clients: %w", err)
 	}
@@ -79,22 +117,29 @@ func runExport() error {
 
 	// Configure dumper options
 	if len(exportNamespaces) > 0 {
-		printInfo(fmt.Sprintf("📂 Filtering namespaces: %s", 
+		printInfo(fmt.Sprintf("Filtering namespaces: %s",
 			colorize(ColorYellow, strings.Join(exportNamespaces, ", "))))
 	}
 
 	if len(exportResources) > 0 {
-		printInfo(fmt.Sprintf("🎯 Filtering resources: %s", 
+		printInfo(fmt.Sprintf("Filtering resources: %s",
 			colorize(ColorYellow, strings.Join(exportResources, ", "))))
 	}
 
 	if len(exportExclude) > 0 {
-		printInfo(fmt.Sprintf("🚫 Excluding resources: %s", 
+		printInfo(fmt.Sprintf("Excluding resources: %s",
 			colorize(ColorRed, strings.Join(exportExclude, ", "))))
 	}
 
+	// Use context output directory if available, otherwise use flag
+	outputDir := exportOutputDir
+	if activeContext != nil && activeContext.OutputDir != "" {
+		outputDir = activeContext.OutputDir
+	}
+
 	if exportDryRun {
-		printWarning("🧪 Dry run mode - no files will be written")
+		printWarning("Dry run mode - no files will be written")
+		printInfo(fmt.Sprintf("Would export to: %s", colorize(ColorCyan, outputDir)))
 		return nil
 	}
 
@@ -102,29 +147,29 @@ func runExport() error {
 
 	// Execute the main dump function
 	printSubHeader("Resource Discovery & Export")
-	printInfo("🔍 Discovering available API resources...")
-	printInfo("📦 Building directory structure...")
-	printInfo("💾 Exporting resources...")
+	printInfo("Discovering available API resources...")
+	printInfo("Building directory structure...")
+	printInfo("Exporting resources...")
 
-	if err := d.DumpAllResources(exportOutputDir); err != nil {
+	if err := d.DumpAllResources(outputDir); err != nil {
 		return fmt.Errorf("failed to export resources: %w", err)
 	}
 
 	printSuccess("Resource export completed")
 
 	// Handle Git repository operations
-	if exportCommitMessage != "" || exportGitPush {
+	if !exportNoCommit {
 		printSeparator()
 		printSubHeader("Git Integration")
-		printInfo("📦 Setting up Git repository...")
-		
-		gitRepo := git.NewGitRepo(exportOutputDir)
+		printInfo("Setting up Git repository...")
+
+		gitRepo := git.NewGitRepo(outputDir)
 		if err := gitRepo.SetupAndCommit(exportCommitMessage, exportGitPush); err != nil {
 			printWarning(fmt.Sprintf("Git operations failed: %v", err))
 		} else {
 			printSuccess("Git repository updated")
 			if exportGitPush {
-				printSuccess("🚀 Changes pushed to remote origin")
+				printSuccess("Changes pushed to remote origin")
 			}
 		}
 	}
@@ -132,9 +177,9 @@ func runExport() error {
 	// Generate change report
 	printSeparator()
 	printSubHeader("Report Generation")
-	printInfo("📊 Generating cluster analysis report...")
-	
-	reportGen := reports.NewReportGenerator(exportOutputDir)
+	printInfo("Generating cluster analysis report...")
+
+	reportGen := reports.NewReportGenerator(outputDir)
 	if err := reportGen.GenerateReport(exportCommitMessage); err != nil {
 		printWarning(fmt.Sprintf("Report generation failed: %v", err))
 	} else {
@@ -144,20 +189,32 @@ func runExport() error {
 	// Success summary
 	printSeparator()
 	printHeader("EXPORT COMPLETE")
-	
-	fmt.Printf("📁 %s %s\n", 
-		colorize(ColorGreen+ColorBold, "Resources exported to:"), 
-		colorize(ColorCyan+ColorBold, exportOutputDir))
+
+	fmt.Printf("Resources exported to: %s\n",
+		colorize(ColorCyan+ColorBold, outputDir))
 	fmt.Println()
-	
-	printInfo("🎯 Your cluster snapshot is ready for:")
+
+	printInfo("Your cluster snapshot is ready for:")
 	fmt.Printf("   %s Backup and disaster recovery\n", colorize(ColorGreen, "•"))
 	fmt.Printf("   %s Resource auditing and compliance\n", colorize(ColorGreen, "•"))
 	fmt.Printf("   %s Development environment replication\n", colorize(ColorGreen, "•"))
-	fmt.Printf("   %s Documentation and resource cataloging\n", colorize(ColorGreen, "•"))
-	fmt.Println()
 
 	return nil
+}
+
+// getActiveContext returns the currently active context if available
+func getActiveContext() (*context.Context, error) {
+	configDir, err := getConfigDir()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get config directory: %w", err)
+	}
+
+	cm, err := context.NewContextManager(configDir)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create context manager: %w", err)
+	}
+
+	return cm.GetCurrentContext()
 }
 
 func init() {
@@ -175,6 +232,7 @@ func init() {
 	exportCmd.Flags().StringSliceVarP(&exportResources, "resources", "r", []string{}, "specific resource types to export (comma-separated)")
 	exportCmd.Flags().StringSliceVar(&exportExclude, "exclude", []string{}, "resource types to exclude (comma-separated)")
 	exportCmd.Flags().BoolVar(&exportDryRun, "dry-run", false, "show what would be exported without writing files")
+	exportCmd.Flags().BoolVar(&exportNoCommit, "no-commit", false, "skip Git commit operations")
 
 	// Add aliases
 	exportCmd.Aliases = []string{"dump", "backup"}

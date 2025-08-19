@@ -7,198 +7,497 @@ parent: Getting Started
 
 # Configuration
 
-Customize Kalco to fit your workflow and requirements.
+This guide covers configuring Kalco for your environment, including context management, output customization, and advanced settings.
 
-## ⚙️ Configuration Methods
+## Overview
 
-Kalco supports multiple configuration methods in order of precedence:
+Kalco uses a hierarchical configuration system:
 
-1. **Command-line flags** (highest priority)
-2. **Environment variables**
-3. **Configuration files**
-4. **Default values** (lowest priority)
+- **Global Configuration** - Application-wide settings
+- **Context Configuration** - Cluster-specific settings
+- **Environment Variables** - System-level overrides
+- **Command Line Flags** - Runtime overrides
 
-## 🚩 Command-Line Options
+## Configuration Directory
 
-### Basic Options
+Kalco stores configuration in `~/.kalco/`:
 
-```bash
-# Output directory
-kalco export --output ./cluster-backup
-
-# Specific namespaces
-kalco export --namespaces default,kube-system,production
-
-# Resource filtering
-kalco export --resources pods,services,deployments
-kalco export --exclude events,replicasets,endpoints
-
-# Verbose output
-kalco export --verbose
+```
+~/.kalco/
+├── contexts.yaml      # Context configurations
+├── current-context    # Currently active context
+└── config.json        # Global configuration
 ```
 
-### Git Integration
+### Initial Setup
+
+The configuration directory is created automatically on first run:
 
 ```bash
-# Enable Git operations
-kalco export --git-push
-
-# Custom commit message
-kalco export --commit-message "Weekly backup - $(date)"
-
-# Dry run (no actual export)
-kalco export --dry-run
+# First command creates ~/.kalco/
+kalco context list
 ```
 
-## 🌍 Environment Variables
+## Context Configuration
 
-Set these environment variables for persistent configuration:
+### Context Structure
 
-```bash
-# Output directory
-export KALCO_OUTPUT_DIR="./cluster-exports"
-
-# Default namespaces
-export KALCO_NAMESPACES="default,kube-system,production"
-
-# Git integration
-export KALCO_GIT_PUSH="true"
-export KALCO_COMMIT_MESSAGE="Cluster snapshot"
-
-# Resource filtering
-export KALCO_RESOURCES="pods,services,deployments,configmaps"
-export KALCO_EXCLUDE="events,replicasets,endpoints"
-```
-
-## 📁 Configuration Files
-
-Create a configuration file for complex setups:
+Each context stores cluster-specific information:
 
 ```yaml
-# ~/.kalco/config.yaml
-output:
-  directory: "./cluster-backups"
-  format: "yaml"
-  compress: false
+production:
+  name: production
+  kubeconfig: ~/.kube/prod-config
+  output_dir: ./prod-exports
+  description: Production cluster for customer workloads
+  labels:
+    env: prod
+    team: platform
+    region: eu-west
+  created_at: 2024-01-15T10:30:00Z
+  updated_at: 2024-01-15T14:45:00Z
 
-filtering:
-  namespaces:
-    - "default"
-    - "kube-system"
-    - "production"
-  resources:
-    include:
-      - "pods"
-      - "services"
-      - "deployments"
-      - "configmaps"
-    exclude:
-      - "events"
-      - "replicasets"
-      - "endpoints"
-
-git:
-  enabled: true
-  auto_push: false
-  commit_message: "Cluster export - {timestamp}"
-  remote_origin: "origin"
-
-validation:
-  cross_references: true
-  orphaned_resources: true
-  detailed_reporting: true
-
-output:
-  reports:
-    enabled: true
-    format: "markdown"
-    include_changes: true
-    include_validation: true
+staging:
+  name: staging
+  kubeconfig: ~/.kube/staging-config
+  output_dir: ./staging-exports
+  description: Staging cluster for testing
+  labels:
+    env: staging
+    team: qa
+    region: eu-west
+  created_at: 2024-01-10T09:15:00Z
+  updated_at: 2024-01-10T09:15:00Z
 ```
 
-## 🔧 Advanced Configuration
+### Context Fields
 
-### Custom Resource Types
+| Field | Description | Required | Default |
+|-------|-------------|----------|---------|
+| `name` | Unique context identifier | Yes | - |
+| `kubeconfig` | Path to kubeconfig file | No | Current kubeconfig |
+| `output_dir` | Export output directory | No | None |
+| `description` | Human-readable description | No | Empty |
+| `labels` | Key-value pairs for organization | No | Empty |
+| `created_at` | Creation timestamp | Auto | Current time |
+| `updated_at` | Last modification timestamp | Auto | Current time |
+
+### Managing Contexts
+
+#### Create Context
 
 ```bash
-# Include Custom Resource Definitions
-kalco export --resources pods,services,mycustomresource
+# Basic context
+kalco context set my-cluster \
+  --kubeconfig ~/.kube/config \
+  --output ./my-exports
 
-# Exclude specific CRDs
-kalco export --exclude events,replicasets,mycustomresource
+# With metadata
+kalco context set production \
+  --kubeconfig ~/.kube/prod-config \
+  --output ./prod-exports \
+  --description "Production cluster for customer workloads" \
+  --labels env=prod,team=platform,region=eu-west
 ```
 
-### Output Formatting
+#### Update Context
 
 ```bash
-# Compressed output
-kalco export --compress
+# Update description
+kalco context set production \
+  --description "Updated production cluster description"
 
-# Custom file naming
-kalco export --output "./backups/cluster-{date}-{time}"
+# Update labels
+kalco context set production \
+  --labels env=prod,team=platform,region=eu-west,customer=enterprise
+
+# Update output directory
+kalco context set production \
+  --output ./new-prod-exports
 ```
 
-### Validation Options
+#### Delete Context
 
 ```bash
-# Skip validation for faster export
-kalco export --skip-validation
-
-# Custom validation rules
-kalco export --validation-rules ./rules.yaml
+# Delete context (must not be current)
+kalco context delete staging
 ```
 
-## 📋 Configuration Examples
+### Context Best Practices
+
+#### Naming Conventions
+
+- **Environment-based**: `prod`, `staging`, `dev`
+- **Region-based**: `prod-eu-west`, `prod-us-east`
+- **Team-based**: `prod-platform`, `prod-data`
+- **Customer-based**: `prod-enterprise`, `prod-startup`
+
+#### Label Organization
+
+```yaml
+# Environment labels
+env: prod|staging|dev|testing
+
+# Team labels
+team: platform|qa|developers|data
+
+# Region labels
+region: eu-west|us-east|ap-southeast
+
+# Customer labels
+customer: enterprise|startup|internal
+
+# Project labels
+project: website|api|analytics
+```
+
+#### Output Directory Strategy
+
+```bash
+# Environment-based
+./exports/prod/
+./exports/staging/
+./exports/dev/
+
+# Date-based
+./exports/prod/2024-01-15/
+./exports/prod/2024-01-16/
+
+# Project-based
+./exports/prod/website/
+./exports/prod/api/
+```
+
+## Global Configuration
+
+### Global Settings
+
+Global configuration in `~/.kalco/config.json`:
+
+```json
+{
+  "default_kubeconfig": "~/.kube/config",
+  "default_output_dir": "./kalco-exports",
+  "git_auto_push": false,
+  "git_auto_commit": true,
+  "report_format": "markdown",
+  "exclude_resources": ["events", "replicasets"],
+  "include_resources": [],
+  "verbose_output": false,
+  "color_output": true
+}
+```
+
+### Configuration Options
+
+| Option | Description | Default | Type |
+|--------|-------------|---------|------|
+| `default_kubeconfig` | Default kubeconfig path | `~/.kube/config` | string |
+| `default_output_dir` | Default output directory | `./kalco-exports` | string |
+| `git_auto_push` | Automatically push Git changes | `false` | boolean |
+| `git_auto_commit` | Automatically commit changes | `true` | boolean |
+| `report_format` | Report output format | `markdown` | string |
+| `exclude_resources` | Resources to exclude by default | `["events"]` | array |
+| `include_resources` | Resources to include by default | `[]` | array |
+| `verbose_output` | Enable verbose output by default | `false` | boolean |
+| `color_output` | Enable colored output by default | `true` | boolean |
+
+## Environment Variables
+
+### Supported Variables
+
+Kalco respects these environment variables:
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `KUBECONFIG` | Path to kubeconfig file | `~/.kube/config` |
+| `KALCO_CONFIG_DIR` | Configuration directory | `~/.kalco` |
+| `KALCO_DEFAULT_OUTPUT` | Default output directory | `./kalco-exports` |
+| `KALCO_GIT_AUTO_PUSH` | Enable auto Git push | `false` |
+| `KALCO_VERBOSE` | Enable verbose output | `false` |
+| `NO_COLOR` | Disable colored output | `false` |
+
+### Environment Variable Usage
+
+```bash
+# Set environment variables
+export KUBECONFIG=~/.kube/prod-config
+export KALCO_DEFAULT_OUTPUT=./prod-exports
+export KALCO_GIT_AUTO_PUSH=true
+
+# Run kalco with environment settings
+kalco export
+```
+
+## Export Configuration
+
+### Default Export Settings
+
+Configure default export behavior:
+
+```bash
+# Set default exclude resources
+kalco context set production \
+  --exclude events,replicasets,endpoints
+
+# Set default include resources
+kalco context set production \
+  --resources deployments,services,configmaps,secrets
+```
+
+### Export Flags
+
+Override configuration with command-line flags:
+
+```bash
+# Override output directory
+kalco export --output ./custom-backup
+
+# Override namespace filtering
+kalco export --namespaces default,kube-system
+
+# Override resource filtering
+kalco export --resources pods,services
+
+# Override exclusions
+kalco export --exclude events,replicasets
+
+# Override Git behavior
+kalco export --no-commit
+kalco export --git-push
+```
+
+## Git Configuration
+
+### Repository Settings
+
+Kalco automatically configures Git repositories:
+
+```bash
+# Initialize Git repository
+kalco export --output ./new-export
+
+# Configure remote origin
+cd ./new-export
+git remote add origin <your-repo-url>
+
+# Enable auto-push
+kalco export --git-push
+```
+
+### Git Integration Options
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--git-push` | Automatically push to remote | `false` |
+| `--commit-message` | Custom commit message | Timestamp-based |
+| `--no-commit` | Skip Git operations | `false` |
+
+### Git Best Practices
+
+1. **Use meaningful commit messages**
+2. **Configure remote origins for collaboration**
+3. **Use branches for different environments**
+4. **Regularly clean up old export directories**
+
+## Output Configuration
+
+### Directory Structure
+
+Customize export output organization:
+
+```bash
+# Default structure
+<output_dir>/
+├── <namespace>/
+│   ├── <resource_kind>/
+│   │   └── <resource_name>.yaml
+│   └── ...
+├── _cluster/
+│   ├── <resource_kind>/
+│   │   └── <resource_name>.yaml
+│   └── ...
+├── kalco-reports/
+│   └── <timestamp>-<commit-message>.md
+└── kalco-config.json
+```
+
+### Resource Organization
+
+- **Namespaced Resources**: `<namespace>/<kind>/<name>.yaml`
+- **Cluster Resources**: `_cluster/<kind>/<name>.yaml`
+- **Reports**: `kalco-reports/<timestamp>-<commit-message>.md`
+- **Configuration**: `kalco-config.json`
+
+## Advanced Configuration
+
+### Resource Filtering
+
+Configure resource inclusion and exclusion:
+
+```bash
+# Exclude noisy resources
+kalco context set production \
+  --exclude events,replicasets,endpoints,pods
+
+# Include only specific resources
+kalco context set production \
+  --resources deployments,services,configmaps,secrets
+
+# Combine filters
+kalco export \
+  --namespaces default,monitoring \
+  --resources deployments,services \
+  --exclude events
+```
+
+### Namespace Filtering
+
+```bash
+# Export specific namespaces
+kalco export --namespaces default,kube-system
+
+# Exclude system namespaces
+kalco export --namespaces default,monitoring,applications
+
+# Export all except system
+kalco export --exclude-namespaces kube-system,kube-public
+```
+
+### Custom Output Formats
+
+Kalco supports multiple output formats:
+
+```bash
+# Markdown reports (default)
+kalco export --report-format markdown
+
+# JSON reports
+kalco export --report-format json
+
+# HTML reports
+kalco export --report-format html
+```
+
+## Configuration Examples
 
 ### Development Environment
 
 ```bash
-# Quick export for development
+# Development context
+kalco context set dev \
+  --kubeconfig ~/.kube/dev-config \
+  --output ./dev-exports \
+  --description "Development cluster for testing" \
+  --labels env=dev,team=developers
+
+# Development export settings
 kalco export \
-  --output "./dev-cluster" \
-  --namespaces "default,development" \
-  --exclude "events,replicasets" \
-  --verbose
+  --namespaces default,dev-apps \
+  --exclude events,replicasets \
+  --commit-message "Development snapshot"
 ```
 
-### Production Backup
+### Production Environment
 
 ```bash
-# Comprehensive production backup
+# Production context
+kalco context set prod \
+  --kubeconfig ~/.kube/prod-config \
+  --output ./prod-exports \
+  --description "Production cluster for customer workloads" \
+  --labels env=prod,team=platform,region=eu-west
+
+# Production export settings
 kalco export \
-  --output "./production-backup-$(date +%Y%m%d)" \
-  --namespaces "production,monitoring,security" \
+  --namespaces production,monitoring \
+  --exclude events,replicasets,pods \
   --git-push \
-  --commit-message "Production backup - $(date)"
+  --commit-message "Production backup $(date)"
 ```
 
-### CI/CD Pipeline
+### Multi-Cluster Setup
 
 ```bash
-# Automated export in CI/CD
-kalco export \
-  --output "./cluster-state" \
-  --git-push \
-  --commit-message "Automated backup - Build ${BUILD_NUMBER}"
+# Staging context
+kalco context set staging \
+  --kubeconfig ~/.kube/staging-config \
+  --output ./staging-exports \
+  --labels env=staging,team=qa
+
+# Production context
+kalco context set production \
+  --kubeconfig ~/.kube/prod-config \
+  --output ./prod-exports \
+  --labels env=prod,team=platform
+
+# Export all environments
+for env in staging production; do
+  kalco context use $env
+  kalco export --git-push --commit-message "$env backup $(date)"
+done
 ```
 
-## 🔍 Configuration Validation
+## Troubleshooting
+
+### Configuration Issues
+
+#### Context Not Found
+
+```bash
+Error: context 'production' not found
+```
+
+**Solution**: Use `kalco context list` to see available contexts.
+
+#### Invalid Configuration
+
+```bash
+Error: invalid context configuration
+```
+
+**Solution**: Check context file format and syntax.
+
+#### Permission Denied
+
+```bash
+Error: failed to create configuration directory
+```
+
+**Solution**: Ensure write permissions for `~/.kalco/`.
+
+### Configuration Validation
 
 Validate your configuration:
 
 ```bash
-# Check configuration
-kalco config validate
+# Check context configuration
+kalco context show production
 
-# Show current configuration
-kalco config show
+# Verify current context
+kalco context current
 
-# Test configuration
-kalco export --dry-run --verbose
+# Test export with current configuration
+kalco export --dry-run
 ```
 
-## 📚 Next Steps
+### Getting Help
 
-1. **[Commands Reference]({{ site.baseurl }}/docs/commands/)** - Complete command documentation
-2. **[Use Cases]({{ site.baseurl }}/docs/use-cases/)** - Common scenarios and workflows
-3. **[Troubleshooting]({{ site.baseurl }}/docs/getting-started/troubleshooting)** - Solve common issues
+- **Configuration help**: `kalco context --help`
+- **Export help**: `kalco export --help`
+- **Verbose output**: Use `--verbose` flag
+- **Dry run**: Use `--dry-run` to preview configuration
+
+## Next Steps
+
+After configuring Kalco:
+
+1. **Test your configuration** with `--dry-run`
+2. **Set up multiple contexts** for different environments
+3. **Configure automated exports** for regular backups
+4. **Customize resource filtering** for your needs
+5. **Read the [Commands Reference](../commands/index.md)** for advanced usage
+
+---
+
+*For more configuration help, see the [Commands Reference](../commands/index.md) or run `kalco --help`.*
