@@ -17,9 +17,9 @@ var (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "kalco",
-	Short: "🚀 Kubernetes Analysis & Lifecycle Control",
+	Short: "Kubernetes Analysis & Lifecycle Control",
 	Long: formatLongDescription(`
-Kalco is a powerful CLI tool for comprehensive Kubernetes cluster analysis, 
+Kalco is a CLI tool for comprehensive Kubernetes cluster analysis, 
 resource extraction, validation, and lifecycle management.
 
 Extract, validate, analyze, and version control your entire cluster with 
@@ -36,17 +36,8 @@ comprehensive validation and Git integration.
   # Export to specific directory with custom options
   kalco export --output ./my-backup --git-push
 
-  # Validate cluster resources for issues
-  kalco validate
-
-  # Analyze cluster for orphaned resources
-  kalco analyze orphaned
-
-  # Generate cluster report
-  kalco report --format json
-
-  # List all available resources in cluster
-  kalco resources list`,
+  # Load context from existing kalco directory
+  kalco context load ./existing-kalco-export`,
 	Run: func(cmd *cobra.Command, args []string) {
 		printBanner()
 		cmd.Help()

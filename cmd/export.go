@@ -22,6 +22,7 @@ var (
 	exportResources     []string
 	exportExclude       []string
 	exportDryRun        bool
+	exportNoCommit      bool
 )
 
 var exportCmd = &cobra.Command{
@@ -57,7 +58,10 @@ Includes automatic Git integration for version control and change tracking.
   kalco export --dry-run
 
   # Export with Git integration
-  kalco export --git-push --commit-message "Weekly backup"`,
+  kalco export --git-push --commit-message "Weekly backup"
+
+  # Export without committing changes
+  kalco export --no-commit`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return runExport()
 	},
@@ -72,7 +76,7 @@ func runExport() error {
 		printWarning(fmt.Sprintf("Context not available: %v", err))
 		printInfo("Using command-line flags and default configuration")
 	} else {
-		printInfo(fmt.Sprintf("📋 Using context: %s", colorize(ColorCyan, activeContext.Name)))
+		printInfo(fmt.Sprintf("Using context: %s", colorize(ColorCyan, activeContext.Name)))
 		if activeContext.Description != "" {
 			printInfo(fmt.Sprintf("   Description: %s", activeContext.Description))
 		}
@@ -93,7 +97,7 @@ func runExport() error {
 	}
 
 	// Create Kubernetes clients
-	printInfo("🔌 Connecting to Kubernetes cluster...")
+	printInfo("Connecting to Kubernetes cluster...")
 
 	// Use context kubeconfig if available, otherwise use flag
 	kubeconfigPath := kubeconfig
@@ -113,17 +117,17 @@ func runExport() error {
 
 	// Configure dumper options
 	if len(exportNamespaces) > 0 {
-		printInfo(fmt.Sprintf("📂 Filtering namespaces: %s",
+		printInfo(fmt.Sprintf("Filtering namespaces: %s",
 			colorize(ColorYellow, strings.Join(exportNamespaces, ", "))))
 	}
 
 	if len(exportResources) > 0 {
-		printInfo(fmt.Sprintf("🎯 Filtering resources: %s",
+		printInfo(fmt.Sprintf("Filtering resources: %s",
 			colorize(ColorYellow, strings.Join(exportResources, ", "))))
 	}
 
 	if len(exportExclude) > 0 {
-		printInfo(fmt.Sprintf("🚫 Excluding resources: %s",
+		printInfo(fmt.Sprintf("Excluding resources: %s",
 			colorize(ColorRed, strings.Join(exportExclude, ", "))))
 	}
 
@@ -134,7 +138,7 @@ func runExport() error {
 	}
 
 	if exportDryRun {
-		printWarning("🧪 Dry run mode - no files will be written")
+		printWarning("Dry run mode - no files will be written")
 		printInfo(fmt.Sprintf("Would export to: %s", colorize(ColorCyan, outputDir)))
 		return nil
 	}
@@ -143,9 +147,9 @@ func runExport() error {
 
 	// Execute the main dump function
 	printSubHeader("Resource Discovery & Export")
-	printInfo("🔍 Discovering available API resources...")
-	printInfo("📦 Building directory structure...")
-	printInfo("💾 Exporting resources...")
+	printInfo("Discovering available API resources...")
+	printInfo("Building directory structure...")
+	printInfo("Exporting resources...")
 
 	if err := d.DumpAllResources(outputDir); err != nil {
 		return fmt.Errorf("failed to export resources: %w", err)
@@ -154,10 +158,10 @@ func runExport() error {
 	printSuccess("Resource export completed")
 
 	// Handle Git repository operations
-	if exportCommitMessage != "" || exportGitPush {
+	if !exportNoCommit {
 		printSeparator()
 		printSubHeader("Git Integration")
-		printInfo("📦 Setting up Git repository...")
+		printInfo("Setting up Git repository...")
 
 		gitRepo := git.NewGitRepo(outputDir)
 		if err := gitRepo.SetupAndCommit(exportCommitMessage, exportGitPush); err != nil {
@@ -165,7 +169,7 @@ func runExport() error {
 		} else {
 			printSuccess("Git repository updated")
 			if exportGitPush {
-				printSuccess("🚀 Changes pushed to remote origin")
+				printSuccess("Changes pushed to remote origin")
 			}
 		}
 	}
@@ -173,7 +177,7 @@ func runExport() error {
 	// Generate change report
 	printSeparator()
 	printSubHeader("Report Generation")
-	printInfo("📊 Generating cluster analysis report...")
+	printInfo("Generating cluster analysis report...")
 
 	reportGen := reports.NewReportGenerator(outputDir)
 	if err := reportGen.GenerateReport(exportCommitMessage); err != nil {
@@ -186,12 +190,11 @@ func runExport() error {
 	printSeparator()
 	printHeader("EXPORT COMPLETE")
 
-	fmt.Printf("📁 %s %s\n",
-		colorize(ColorGreen+ColorBold, "Resources exported to:"),
+	fmt.Printf("Resources exported to: %s\n",
 		colorize(ColorCyan+ColorBold, outputDir))
 	fmt.Println()
 
-	printInfo("🎯 Your cluster snapshot is ready for:")
+	printInfo("Your cluster snapshot is ready for:")
 	fmt.Printf("   %s Backup and disaster recovery\n", colorize(ColorGreen, "•"))
 	fmt.Printf("   %s Resource auditing and compliance\n", colorize(ColorGreen, "•"))
 	fmt.Printf("   %s Development environment replication\n", colorize(ColorGreen, "•"))
@@ -229,6 +232,7 @@ func init() {
 	exportCmd.Flags().StringSliceVarP(&exportResources, "resources", "r", []string{}, "specific resource types to export (comma-separated)")
 	exportCmd.Flags().StringSliceVar(&exportExclude, "exclude", []string{}, "resource types to exclude (comma-separated)")
 	exportCmd.Flags().BoolVar(&exportDryRun, "dry-run", false, "show what would be exported without writing files")
+	exportCmd.Flags().BoolVar(&exportNoCommit, "no-commit", false, "skip Git commit operations")
 
 	// Add aliases
 	exportCmd.Aliases = []string{"dump", "backup"}

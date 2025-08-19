@@ -48,7 +48,7 @@ func (r *ReportGenerator) GenerateReport(commitMessage string) error {
 	// Generate validation report
 	validationContent, err := r.generateValidationReport()
 	if err != nil {
-		fmt.Printf("  ⚠️  Warning: Validation report generation failed: %v\n", err)
+		fmt.Printf("  Warning: Validation report generation failed: %v\n", err)
 	} else {
 		// Insert validation content before the footer
 		content = strings.Replace(content, "\n\n---\n*Report generated automatically by kalco*", "\n\n"+validationContent+"\n\n---\n*Report generated automatically by kalco*", 1)
@@ -59,7 +59,7 @@ func (r *ReportGenerator) GenerateReport(commitMessage string) error {
 		return fmt.Errorf("failed to write report file: %w", err)
 	}
 
-	fmt.Printf("  📊 Generated change report: %s\n", filename)
+	fmt.Printf("  Generated change report: %s\n", filename)
 	return nil
 }
 
@@ -152,7 +152,7 @@ func (r *ReportGenerator) generateReportContent(commitMessage string) (string, e
 	changes := r.categorizeChanges(changedFiles)
 
 	// Write resource type summary
-	content.WriteString("## 📊 Resource Type Summary\n\n")
+	content.WriteString("## Resource Type Summary\n\n")
 	for resourceType, count := range changes.ResourceTypes {
 		content.WriteString("- **" + resourceType + "**: " + strconv.Itoa(count) + " changes\n")
 	}
@@ -178,9 +178,9 @@ func (r *ReportGenerator) generateReportContent(commitMessage string) (string, e
 	// Group by namespace and show detailed changes directly
 	for namespace, resources := range changes.ByNamespace {
 		if namespace == "_cluster" {
-			content.WriteString("#### 🌐 Cluster-Scoped Resources\n\n")
+			content.WriteString("#### Cluster-Scoped Resources\n\n")
 		} else {
-			content.WriteString("#### 📁 Namespace: `" + namespace + "`\n\n")
+			content.WriteString("#### Namespace: `" + namespace + "`\n\n")
 		}
 
 		for resourceType, files := range resources {
@@ -196,7 +196,7 @@ func (r *ReportGenerator) generateReportContent(commitMessage string) (string, e
 				// Get detailed diff information directly here
 				diffInfo, err := r.getDetailedDiff(file, prevCommit, commitHash, status)
 				if err != nil {
-					content.WriteString("⚠️ Error getting diff: " + err.Error() + "\n\n")
+					content.WriteString("Warning: Error getting diff: " + err.Error() + "\n\n")
 					continue
 				}
 
@@ -207,7 +207,7 @@ func (r *ReportGenerator) generateReportContent(commitMessage string) (string, e
 	}
 
 	// Write Git commands for reference
-	content.WriteString("## 💻 Git Commands for Reference\n\n")
+	content.WriteString("## Git Commands for Reference\n\n")
 	content.WriteString("```bash\n")
 	content.WriteString("# View this commit\n")
 	content.WriteString("git show " + commitHash + "\n\n")
@@ -231,13 +231,13 @@ func (r *ReportGenerator) getDetailedDiff(file, prevCommit, currentCommit, statu
 	var content strings.Builder
 
 	switch status {
-	case "🆕":
+	case "New":
 		// New file - show the complete content
 		content.WriteString("**New Resource Created**\n\n")
 		content.WriteString("```yaml\n")
 		currentContent, err := r.getFileContent(file, currentCommit)
 		if err != nil {
-			return "⚠️ Error reading file content: " + err.Error(), nil
+			return "Warning: Error reading file content: " + err.Error(), nil
 		}
 		content.WriteString(currentContent)
 		content.WriteString("\n```\n\n")
@@ -248,13 +248,13 @@ func (r *ReportGenerator) getDetailedDiff(file, prevCommit, currentCommit, statu
 		content.WriteString("- Status: Created in this snapshot\n")
 		content.WriteString("- File: `" + file + "`\n\n")
 
-	case "🗑️":
+	case "Deleted":
 		// Deleted file - show what was removed
 		content.WriteString("**Resource Deleted**\n\n")
 		content.WriteString("```yaml\n")
 		previousContent, err := r.getFileContent(file, prevCommit)
 		if err != nil {
-			return "⚠️ Error reading previous file content: " + err.Error(), nil
+			return "Warning: Error reading previous file content: " + err.Error(), nil
 		}
 		content.WriteString(previousContent)
 		content.WriteString("\n```\n\n")
@@ -265,14 +265,14 @@ func (r *ReportGenerator) getDetailedDiff(file, prevCommit, currentCommit, statu
 		content.WriteString("- Status: Removed in this snapshot\n")
 		content.WriteString("- File: `" + file + "`\n\n")
 
-	case "✏️":
+	case "Modified":
 		// Modified file - show the diff
 		content.WriteString("**Resource Modified**\n\n")
 
 		// Get the actual diff output
 		diffOutput, err := r.getGitDiff(file, prevCommit, currentCommit)
 		if err != nil {
-			content.WriteString("⚠️ Error getting diff: " + err.Error() + "\n\n")
+			content.WriteString("Warning: Error getting diff: " + err.Error() + "\n\n")
 			// Fallback to showing before/after
 			content.WriteString("**Before (Previous Snapshot):**\n")
 			content.WriteString("```yaml\n")
@@ -448,17 +448,17 @@ func (r *ReportGenerator) getFileStatus(file, prevCommit, currentCommit string) 
 	cmd := exec.Command("git", "show", prevCommit+":"+file)
 	cmd.Dir = r.repoPath
 	if err := cmd.Run(); err != nil {
-		return "🆕" // New file
+		return "New" // New file
 	}
 
 	// Check if file exists in current commit
 	cmd = exec.Command("git", "show", currentCommit+":"+file)
 	cmd.Dir = r.repoPath
 	if err := cmd.Run(); err != nil {
-		return "🗑️" // Deleted file
+		return "Deleted" // Deleted file
 	}
 
-	return "✏️" // Modified file
+	return "Modified" // Modified file
 }
 
 // IsGitRepo checks if the directory is a Git repository
@@ -487,6 +487,7 @@ func (r *ReportGenerator) getPreviousCommitHash() (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	return strings.TrimSpace(string(output)), nil
 }
 
@@ -525,22 +526,22 @@ func (r *ReportGenerator) generateValidationReport() (string, error) {
 		return "", fmt.Errorf("failed to run validation: %w", err)
 	}
 
-	content.WriteString("## 🔍 Cross-Reference Validation Report\n\n")
+	content.WriteString("## Cross-Reference Validation Report\n\n")
 	content.WriteString("This section analyzes exported resources for broken references that could cause issues when reapplying.\n\n")
 
 	// Validation Summary
-	content.WriteString("### 📊 Validation Summary\n\n")
+	content.WriteString("### Validation Summary\n\n")
 	content.WriteString(fmt.Sprintf("| Metric | Count |\n"))
 	content.WriteString(fmt.Sprintf("|--------|-------|\n"))
 	content.WriteString(fmt.Sprintf("| **Total References** | **%d** |\n", result.Summary.TotalReferences))
-	content.WriteString(fmt.Sprintf("| **✅ Valid References** | **%d** |\n", result.Summary.ValidReferences))
-	content.WriteString(fmt.Sprintf("| **❌ Broken References** | **%d** |\n", result.Summary.BrokenReferences))
-	content.WriteString(fmt.Sprintf("| **⚠️  Warning References** | **%d** |\n", result.Summary.WarningReferences))
+	content.WriteString(fmt.Sprintf("| **Valid References** | **%d** |\n", result.Summary.ValidReferences))
+	content.WriteString(fmt.Sprintf("| **Broken References** | **%d** |\n", result.Summary.BrokenReferences))
+	content.WriteString(fmt.Sprintf("| **Warning References** | **%d** |\n", result.Summary.WarningReferences))
 	content.WriteString("\n")
 
 	// Broken References (most important)
 	if len(result.BrokenReferences) > 0 {
-		content.WriteString("### ❌ Broken References - ACTION REQUIRED\n\n")
+		content.WriteString("### Broken References - ACTION REQUIRED\n\n")
 
 		// Group by source type
 		grouped := make(map[string][]validation.ResourceReference)
@@ -563,13 +564,13 @@ func (r *ReportGenerator) generateValidationReport() (string, error) {
 			content.WriteString("\n")
 		}
 	} else {
-		content.WriteString("### ✅ No Broken References Found\n\n")
-		content.WriteString("🎉 **Excellent!** All cross-references in your cluster are valid and safe to reapply.\n\n")
+		content.WriteString("### No Broken References Found\n\n")
+		content.WriteString("**Excellent!** All cross-references in your cluster are valid and safe to reapply.\n\n")
 	}
 
 	// Warning References
 	if len(result.WarningReferences) > 0 {
-		content.WriteString("### ⚠️  Warning References - Manual Verification Needed\n\n")
+		content.WriteString("### Warning References - Manual Verification Needed\n\n")
 		content.WriteString("**These references point to external resources that kalco cannot validate:**\n\n")
 
 		// Group by source type
@@ -592,8 +593,8 @@ func (r *ReportGenerator) generateValidationReport() (string, error) {
 
 	// Valid References (summary only)
 	if len(result.ValidReferences) > 0 {
-		content.WriteString("### ✅ Valid References - All Good!\n\n")
-		content.WriteString(fmt.Sprintf("**🎉 %d references are properly configured and safe to reapply:**\n\n", len(result.ValidReferences)))
+		content.WriteString("### Valid References - All Good!\n\n")
+		content.WriteString(fmt.Sprintf("**%d references are properly configured and safe to reapply:**\n\n", len(result.ValidReferences)))
 
 		// Group by source type
 		grouped := make(map[string]int)
@@ -604,17 +605,17 @@ func (r *ReportGenerator) generateValidationReport() (string, error) {
 		content.WriteString(fmt.Sprintf("| Resource Type | Valid References | Status |\n"))
 		content.WriteString(fmt.Sprintf("|---------------|------------------|---------|\n"))
 		for sourceType, count := range grouped {
-			content.WriteString(fmt.Sprintf("| **%s** | **%d** | ✅ **Safe** |\n", sourceType, count))
+			content.WriteString(fmt.Sprintf("| **%s** | **%d** | **Safe** |\n", sourceType, count))
 		}
 		content.WriteString("\n")
 	}
 
-	content.WriteString("**📝 Note**: This validation only checks for missing resources. It does not validate resource configurations, permissions, or runtime behavior.\n\n")
+	content.WriteString("**Note**: This validation only checks for missing resources. It does not validate resource configurations, permissions, or runtime behavior.\n\n")
 
 	// Add orphaned resource detection
 	orphanedContent, err := r.generateOrphanedResourceReport()
 	if err != nil {
-		content.WriteString("\n⚠️  **Warning**: Orphaned resource detection failed: " + err.Error() + "\n\n")
+		content.WriteString("\n**Warning**: Orphaned resource detection failed: " + err.Error() + "\n\n")
 	} else {
 		content.WriteString("\n" + orphanedContent)
 	}
@@ -633,11 +634,11 @@ func (r *ReportGenerator) generateOrphanedResourceReport() (string, error) {
 		return "", fmt.Errorf("failed to run orphaned resource detection: %w", err)
 	}
 
-	content.WriteString("## 🗑️  Orphaned Resource Detection Report\n\n")
+	content.WriteString("## Orphaned Resource Detection Report\n\n")
 	content.WriteString("This section identifies resources that are no longer managed by higher-level controllers and may be consuming unnecessary resources.\n\n")
 
 	// Orphaned Resource Summary
-	content.WriteString("### 📊 Orphaned Resource Summary\n\n")
+	content.WriteString("### Orphaned Resource Summary\n\n")
 	content.WriteString(fmt.Sprintf("| Metric | Count |\n"))
 	content.WriteString(fmt.Sprintf("|--------|-------|\n"))
 	content.WriteString(fmt.Sprintf("| **Total Orphaned Resources** | **%d** |\n", result.Summary.TotalOrphanedResources))
@@ -654,7 +655,7 @@ func (r *ReportGenerator) generateOrphanedResourceReport() (string, error) {
 
 	// Orphaned Resources (most important)
 	if len(result.OrphanedResources) > 0 {
-		content.WriteString("### 🗑️  Orphaned Resources Found - Cleanup Recommended\n\n")
+		content.WriteString("### Orphaned Resources Found - Cleanup Recommended\n\n")
 
 		// Group by resource type
 		grouped := make(map[string][]orphaned.OrphanedResource)
@@ -673,11 +674,11 @@ func (r *ReportGenerator) generateOrphanedResourceReport() (string, error) {
 			content.WriteString("\n")
 		}
 	} else {
-		content.WriteString("### ✅ No Orphaned Resources Found\n\n")
-		content.WriteString("🎉 **Excellent!** All resources in your cluster are properly managed.\n\n")
+		content.WriteString("### No Orphaned Resources Found\n\n")
+		content.WriteString("**Excellent!** All resources in your cluster are properly managed.\n\n")
 	}
 
-	content.WriteString("**📝 Note**: This detection identifies resources that appear to be unused based on ownership and reference analysis. Always verify before deletion.\n\n")
+	content.WriteString("**Note**: This detection identifies resources that appear to be unused based on ownership and reference analysis. Always verify before deletion.\n\n")
 
 	return content.String(), nil
 }

@@ -1,116 +1,122 @@
 # Kalco Examples
 
-This directory contains practical examples and scripts demonstrating how to use Kalco effectively.
+This directory contains practical examples demonstrating how to use Kalco for Kubernetes cluster management and analysis.
 
-## 📁 Available Examples
+## Available Examples
 
-### 🚀 Quick Start
-- **[quickstart.sh](quickstart.sh)** - Complete workflow from cluster creation to export and analysis
+### Quickstart Script (`quickstart.sh`)
 
-### 🌐 Context Management
-- **[context-example.sh](context-example.sh)** - Demonstrates context management for multiple clusters
+A comprehensive demonstration of Kalco's core functionality:
 
-## 🎯 Quick Start Example
+- **Context Management**: Creating and managing cluster contexts
+- **Resource Export**: Simulating cluster resource export and organization
+- **Git Integration**: Demonstrating version control capabilities
+- **Report Generation**: Showing how change reports are structured
 
-The `quickstart.sh` script provides a complete end-to-end example:
-
+**Usage:**
 ```bash
-# Make executable and run
-chmod +x examples/quickstart.sh
+# Run the complete quickstart demo
 ./examples/quickstart.sh
+
+# Keep the demo directory for inspection
+./examples/quickstart.sh --keep
 ```
 
-This example:
-1. Creates a Kind cluster
-2. Deploys a sample application
-3. Runs Kalco export
-4. Makes changes to the cluster
-5. Runs Kalco again to see changes
-6. Cleans up the cluster
+**What you'll learn:**
+- How to create and manage contexts with `kalco context`
+- How contexts store cluster configuration and output directories
+- How Kalco organizes exported resources in a structured way
+- How Git integration works for version control
+- How `kalco-config.json` stores context information
 
-## 🔄 Context Management Example
+## Prerequisites
 
-The `context-example.sh` script demonstrates context management:
+Before running the example, ensure you have:
 
-```bash
-# Make executable and run
-chmod +x examples/context-example.sh
-./examples/context-example.sh
-```
+1. **Kalco installed** - Download from [releases](https://github.com/graz-dev/kalco/releases) or build from source
+2. **Git available** - For version control functionality
+3. **Basic Kubernetes knowledge** - Understanding of clusters, namespaces, and resources
 
-This example:
-1. Creates multiple contexts for different environments
-2. Shows context switching
-3. Demonstrates automatic context usage in export
-4. Shows context override with flags
-5. Cleans up example contexts
+## Running the Example
 
-## 🛠️ Prerequisites
+### Quick Start
 
-Before running the examples, ensure you have:
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/graz-dev/kalco.git
+   cd kalco
+   ```
 
-- **Kalco** installed and in your PATH
-- **Docker** running (for Kind clusters)
-- **Kind** installed (for local clusters)
-- **kubectl** configured
+2. **Install Kalco:**
+   ```bash
+   # Quick install
+   curl -fsSL https://raw.githubusercontent.com/graz-dev/kalco/master/scripts/install.sh | bash
+   
+   # Or build from source
+   go mod tidy
+   go build -o kalco
+   ```
 
-## 📚 Learning Path
+3. **Run the example:**
+   ```bash
+   # Make script executable
+   chmod +x examples/quickstart.sh
+   
+   # Run quickstart
+   ./examples/quickstart.sh
+   ```
 
-1. **Start with quickstart.sh** - Learn basic Kalco operations
-2. **Try context-example.sh** - Master context management
-3. **Experiment with your own clusters** - Apply concepts to real scenarios
+### Example Output
 
-## 🔧 Customization
+The example will show you:
 
-Feel free to modify these examples:
+- **Context Creation**: How to set up contexts for different environments
+- **Resource Organization**: How Kalco structures exported resources
+- **Git Integration**: How version control is automatically handled
+- **Configuration Management**: How contexts store cluster settings
+- **Report Generation**: How change tracking and validation work
 
-- Change cluster names and configurations
-- Add your own applications and resources
-- Modify export parameters and filters
-- Customize context labels and descriptions
+## Customizing the Example
 
-## 🐛 Troubleshooting
+You can modify this example to:
+
+- **Use Real Clusters**: Replace simulated resources with actual Kubernetes clusters
+- **Add Custom Resources**: Include your organization's specific resource types
+- **Modify Contexts**: Adjust context configurations for your environment
+- **Extend Workflows**: Add additional steps specific to your use case
+
+## Next Steps
+
+After running the example:
+
+1. **Try with Real Clusters**: Use `kalco export` with your actual Kubernetes clusters
+2. **Explore Reports**: Examine the generated reports in `kalco-reports/` directories
+3. **Share Contexts**: Use `kalco context load` to import configurations from team members
+4. **Read Documentation**: Visit [https://graz-dev.github.io/kalco](https://graz-dev.github.io/kalco)
+5. **Join Community**: Participate in [GitHub discussions](https://github.com/graz-dev/kalco/discussions)
+
+## Troubleshooting
 
 ### Common Issues
 
-**Permission denied**
-```bash
-chmod +x examples/*.sh
-```
+- **Permission Denied**: Ensure script is executable with `chmod +x examples/quickstart.sh`
+- **Kalco Not Found**: Verify Kalco is installed and in your PATH
+- **Git Not Available**: Install Git for version control functionality
+- **Directory Issues**: Ensure you have write permissions in the current directory
 
-**Command not found**
-```bash
-# Ensure Kalco is in your PATH
-which kalco
-```
+### Getting Help
 
-**Cluster connection issues**
-```bash
-# Check cluster status
-kubectl cluster-info
-kubectl get nodes
-```
+- **Documentation**: [https://graz-dev.github.io/kalco](https://graz-dev.github.io/kalco)
+- **Issues**: [GitHub Issues](https://github.com/graz-dev/kalco/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/graz-dev/kalco/discussions)
 
-## 📖 Next Steps
+## Contributing
 
-After running the examples:
+We welcome contributions to improve this example:
 
-1. **Read the documentation** - Explore the full command reference
-2. **Try different clusters** - Test with your own Kubernetes clusters
-3. **Customize contexts** - Create contexts for your specific use cases
-4. **Integrate with CI/CD** - Automate exports in your pipelines
+- **Bug Reports**: Report issues with the example
+- **Enhancements**: Suggest improvements
+- **Documentation**: Help improve example descriptions and usage
+- **New Examples**: Submit examples for additional use cases
 
-## 🤝 Contributing
-
-Have a great example? Feel free to contribute:
-
-1. Create a new script with descriptive name
-2. Add clear comments and documentation
-3. Include error handling and cleanup
-4. Update this README with your example
-
-## 📚 Resources
-
-- [Kalco Documentation](../docs/)
-- [Commands Reference](../docs/commands/)
-- [Getting Started](../docs/getting-started/)
+For more information, see the [main README](../README.md) and [contributing guidelines](../CONTRIBUTING.md).

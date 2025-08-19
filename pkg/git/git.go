@@ -23,15 +23,15 @@ func NewGitRepo(path string) *GitRepo {
 func (g *GitRepo) Init() error {
 	// Check if .git directory already exists
 	if g.IsGitRepo() {
-		fmt.Println("  📦 Using existing Git repository")
+		fmt.Println("  Using existing Git repository")
 		return nil
 	}
 
 	// Check if directory is new (empty or doesn't exist)
 	if g.isNewDirectory() {
-		fmt.Println("  🆕 New directory detected, initializing Git repository...")
+		fmt.Println("  New directory detected, initializing Git repository...")
 	} else {
-		fmt.Println("  📦 Initializing Git repository in existing directory...")
+		fmt.Println("  Initializing Git repository in existing directory...")
 	}
 
 	// Initialize new Git repository
@@ -46,7 +46,7 @@ func (g *GitRepo) Init() error {
 		return fmt.Errorf("failed to create .gitignore: %w", err)
 	}
 
-	fmt.Println("  ✅ Git repository initialized successfully")
+	fmt.Println("  Git repository initialized successfully")
 	return nil
 }
 
@@ -73,7 +73,7 @@ func (g *GitRepo) Commit(customMessage string) error {
 		return fmt.Errorf("failed to commit changes: %w", err)
 	}
 
-	fmt.Printf("  📝 Committed changes: %s\n", message)
+	fmt.Printf("  Committed changes: %s\n", message)
 	return nil
 }
 
@@ -81,7 +81,7 @@ func (g *GitRepo) Commit(customMessage string) error {
 func (g *GitRepo) Push() error {
 	// Check if remote origin exists
 	if !g.HasRemoteOrigin() {
-		fmt.Println("  ℹ️  No remote origin found, skipping push")
+		fmt.Println("  No remote origin found, skipping push")
 		return nil
 	}
 
@@ -97,7 +97,7 @@ func (g *GitRepo) Push() error {
 		}
 	}
 
-	fmt.Println("  🚀 Pushed changes to remote origin")
+	fmt.Println("  Pushed changes to remote origin")
 	return nil
 }
 
@@ -115,7 +115,7 @@ func (g *GitRepo) SetupAndCommit(customMessage string, shouldPush bool) error {
 
 	// Check if there are changes to commit
 	if !g.hasChanges() {
-		fmt.Println("  ℹ️  No changes detected, skipping commit")
+		fmt.Println("  No changes detected, skipping commit")
 		return nil
 	}
 
@@ -126,17 +126,17 @@ func (g *GitRepo) SetupAndCommit(customMessage string, shouldPush bool) error {
 
 	// Check for remote origin and ask user if they want to push
 	if g.HasRemoteOrigin() {
-		fmt.Println("  🌐 Remote origin detected!")
+		fmt.Println("  Remote origin detected!")
 		if shouldPush {
-			fmt.Println("  🚀 Auto-push enabled, pushing to remote origin...")
+			fmt.Println("  Auto-push enabled, pushing to remote origin...")
 			if err := g.Push(); err != nil {
 				return err
 			}
 		} else {
-			fmt.Println("  💡 Use --git-push flag to automatically push changes to remote origin")
+			fmt.Println("  Use --git-push flag to automatically push changes to remote origin")
 		}
 	} else {
-		fmt.Println("  ℹ️  No remote origin found")
+		fmt.Println("  No remote origin found")
 	}
 
 	return nil

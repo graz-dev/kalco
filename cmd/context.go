@@ -145,7 +145,7 @@ func runContextSet(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("failed to set context: %w", err)
 	}
 
-	fmt.Printf("✅ Context '%s' set successfully\n", name)
+	fmt.Printf("Context '%s' set successfully\n", name)
 	return nil
 }
 
@@ -234,7 +234,7 @@ func runContextUse(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("failed to use context: %w", err)
 	}
 
-	fmt.Printf("✅ Switched to context '%s'\n", name)
+	fmt.Printf("Switched to context '%s'\n", name)
 	return nil
 }
 
@@ -258,7 +258,7 @@ func runContextDelete(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("failed to delete context: %w", err)
 	}
 
-	fmt.Printf("✅ Context '%s' deleted successfully\n", name)
+	fmt.Printf("Context '%s' deleted successfully\n", name)
 	return nil
 }
 
@@ -312,7 +312,7 @@ func runContextCurrent(cmd *cobra.Command, args []string) error {
 	// Create context manager
 	cm, err := context.NewContextManager(configDir)
 	if err != nil {
-		return fmt.Errorf("failed to create context manager: %w", err)
+		return fmt.Errorf("no context is currently active. Use 'kalco context use <name>' to switch to a context")
 	}
 
 	// Get current context
@@ -404,7 +404,7 @@ func runContextLoad(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("failed to set context: %w", err)
 	}
 
-	fmt.Printf("✅ Context '%s' loaded successfully from '%s'\n", contextName, directory)
+	fmt.Printf("Context '%s' loaded successfully from '%s'\n", contextName, directory)
 	fmt.Printf("   Kubeconfig: %s\n", kubeconfig)
 	fmt.Printf("   Output Dir: %s\n", directory)
 	if description != "" {
