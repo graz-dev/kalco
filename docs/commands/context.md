@@ -408,7 +408,7 @@ kalco context set production \
 kalco context set staging \
   --kubeconfig ~/.kube/staging-config \
   --output ./staging-exports \
-  --description "Staging cluster for testing and validation" \
+  --description "Staging cluster for testing" \
   --labels env=staging,team=qa,region=eu-west
 
 # Development environment

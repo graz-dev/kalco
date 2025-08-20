@@ -17,7 +17,6 @@ Kalco provides a focused set of commands designed for professional Kubernetes cl
 |---------|-------------|-------|
 | `kalco context` | Manage cluster contexts | `kalco context set/list/use/load` |
 | `kalco export` | Export cluster resources | `kalco export [flags]` |
-| `kalco completion` | Shell completion | `kalco completion bash\|zsh\|fish\|powershell` |
 | `kalco version` | Version information | `kalco version` |
 
 ## Global Flags
@@ -27,7 +26,6 @@ All Kalco commands support these global flags:
 | Flag | Description | Default |
 |------|-------------|---------|
 | `--kubeconfig` | Path to kubeconfig file | `~/.kube/config` |
-| `--verbose, -v` | Enable verbose output | `false` |
 | `--no-color` | Disable colored output | `false` |
 | `--help, -h` | Show help information | - |
 
@@ -76,65 +74,24 @@ The `kalco export` command exports Kubernetes cluster resources with Git integra
 
 | Flag | Description | Default |
 |------|-------------|---------|
-| `--output, -o` | Output directory path | `./kalco-export-<timestamp>` |
-| `--namespaces, -n` | Specific namespaces to export | All namespaces |
-| `--resources, -r` | Specific resource types to export | All resources |
-| `--exclude` | Resource types to exclude | None |
 | `--git-push` | Automatically push to remote origin | `false` |
 | `--commit-message, -m` | Custom Git commit message | Timestamp-based |
 | `--dry-run` | Show what would be exported | `false` |
-| `--no-commit` | Skip Git commit operations | `false` |
 
 ### Usage Examples
 
 ```bash
-# Basic export
+# Basic export using active context
 kalco export
-
-# Export to specific directory
-kalco export --output ./cluster-backup
-
-# Export specific namespaces
-kalco export --namespaces default,kube-system
-
-# Export specific resource types
-kalco export --resources pods,services,deployments
-
-# Exclude noisy resources
-kalco export --exclude events,replicasets
 
 # Export with Git integration
 kalco export --git-push --commit-message "Weekly backup"
 
-# Export without committing
-kalco export --no-commit
+# Custom commit message
+kalco export --commit-message "Pre-deployment backup"
 
 # Dry run to see what would be exported
 kalco export --dry-run
-```
-
-## Shell Completion
-
-The `kalco completion` command generates shell completion scripts.
-
-### Supported Shells
-
-- **Bash** - `kalco completion bash`
-- **Zsh** - `kalco completion zsh`
-- **Fish** - `kalco completion fish`
-- **PowerShell** - `kalco completion powershell`
-
-### Usage Examples
-
-```bash
-# Generate bash completion
-kalco completion bash > /etc/bash_completion.d/kalco
-
-# Generate zsh completion
-kalco completion zsh > ~/.zsh/completion/_kalco
-
-# Source completion in current shell
-source <(kalco completion bash)
 ```
 
 ## Version Information
@@ -142,7 +99,7 @@ source <(kalco completion bash)
 The `kalco version` command displays version and build information.
 
 ```bash
-kalco version
+ kalco version
 ```
 
 Output includes:
@@ -182,16 +139,16 @@ Kalco provides clear error messages and exit codes:
 ### Resource Export
 
 1. **Use meaningful commit messages** for better Git history
-2. **Exclude noisy resources** like events and replicasets
-3. **Enable Git push** for team collaboration
-4. **Use dry-run** to verify export configuration
+2. **Enable Git push** for team collaboration
+3. **Use dry-run** to verify export configuration
+4. **Leverage context-based configuration** for consistent exports
 
 ### Automation
 
 1. **Integrate with CI/CD** pipelines for automated backups
 2. **Use context switching** for multi-cluster operations
-3. **Leverage shell completion** for faster command entry
-4. **Set up regular exports** for change tracking
+3. **Set up regular exports** for change tracking
+4. **Use Git integration** for version control
 
 ## Troubleshooting
 
@@ -206,7 +163,6 @@ Kalco provides clear error messages and exit codes:
 
 - **Command help**: `kalco <command> --help`
 - **Global help**: `kalco --help`
-- **Verbose output**: Use `--verbose` flag for detailed information
 - **GitHub issues**: Report bugs and request features
 
 ---

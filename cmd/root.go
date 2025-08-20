@@ -10,7 +10,6 @@ import (
 // Global flags
 var (
 	kubeconfig string
-	verbose    bool
 	noColor    bool
 )
 
@@ -20,10 +19,10 @@ var rootCmd = &cobra.Command{
 	Short: "Kubernetes Analysis & Lifecycle Control",
 	Long: formatLongDescription(`
 Kalco is a CLI tool for comprehensive Kubernetes cluster analysis, 
-resource extraction, validation, and lifecycle management.
+resource extraction, and lifecycle management.
 
-Extract, validate, analyze, and version control your entire cluster with 
-comprehensive validation and Git integration.
+Extract, analyze, and version control your entire cluster with 
+Git integration and change tracking.
 `),
 
 	Run: func(cmd *cobra.Command, args []string) {
@@ -43,7 +42,6 @@ func Execute() {
 func init() {
 	// Add persistent flags
 	rootCmd.PersistentFlags().StringVar(&kubeconfig, "kubeconfig", "", "path to the kubeconfig file")
-	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "enable verbose output")
 	rootCmd.PersistentFlags().BoolVar(&noColor, "no-color", false, "disable colored output")
 
 	// Disable completion command

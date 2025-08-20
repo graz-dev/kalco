@@ -6,7 +6,7 @@ nav_order: 1
 
 # Kalco Documentation
 
-Welcome to the Kalco documentation. Kalco is a professional CLI tool for Kubernetes cluster analysis, resource extraction, validation, and lifecycle management.
+Welcome to the Kalco documentation. Kalco is a professional CLI tool for Kubernetes cluster analysis, resource extraction, and lifecycle management.
 
 ## What is Kalco?
 
@@ -17,7 +17,7 @@ Kalco transforms your Kubernetes cluster management experience by providing a co
 - **Context Management** - Manage multiple Kubernetes clusters through unified contexts
 - **Resource Export** - Export cluster resources with professional organization
 - **Git Integration** - Automatic version control with commit history and change tracking
-- **Report Generation** - Professional change analysis and validation reports
+- **Report Generation** - Professional change analysis and tracking reports
 - **Enterprise Ready** - Designed for production environments and team collaboration
 
 ## Quick Start
@@ -66,12 +66,12 @@ Kalco transforms your Kubernetes cluster management experience by providing a co
 ### Platform Engineers
 - Infrastructure as Code and GitOps workflows
 - Team collaboration and context sharing
-- Migration support and configuration validation
+- Migration support and configuration management
 
 ### Security Teams
 - Configuration auditing and compliance reporting
 - Access control through context management
-- Security validation and change monitoring
+- Change monitoring and analysis
 
 ## Architecture
 
@@ -80,8 +80,7 @@ Kalco is built with a modular architecture designed for enterprise use:
 - **Context Manager** - Handles cluster configurations and settings
 - **Resource Exporter** - Discovers and exports Kubernetes resources
 - **Git Integration** - Manages version control operations
-- **Report Generator** - Creates change analysis and validation reports
-- **Validation Engine** - Performs cross-reference and orphaned resource checks
+- **Report Generator** - Creates change analysis and tracking reports
 
 ## Design Principles
 

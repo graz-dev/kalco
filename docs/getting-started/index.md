@@ -20,7 +20,7 @@ Welcome to Kalco! This guide will help you get up and running with Kubernetes cl
 - How to install and configure Kalco
 - Basic cluster export operations
 - Git integration and version control
-- Validation and analysis features
+- Change tracking and reporting
 - Best practices for cluster management
 
 ## 📋 Prerequisites

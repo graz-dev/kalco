@@ -31,6 +31,15 @@ A context defines:
 		Short: "Create or update a context",
 		Long: `Create or update a Kalco context with the specified configuration.
 
+Required fields:
+- name: Context name (provided as argument)
+- --output: Output directory for exports
+
+Optional fields:
+- --kubeconfig: Path to kubeconfig file
+- --description: Description of the context
+- --labels: Labels in format key=value (can be specified multiple times)
+
 The context will be saved and can be used for future operations.`,
 		Args: cobra.ExactArgs(1),
 		RunE: runContextSet,
@@ -105,13 +114,21 @@ func init() {
 
 	// Add flags for context set
 	contextSetCmd.Flags().StringVar(&contextKubeConfig, "kubeconfig", "", "Path to kubeconfig file")
-	contextSetCmd.Flags().StringVar(&contextOutputDir, "output", "", "Output directory for exports")
+	contextSetCmd.Flags().StringVar(&contextOutputDir, "output", "", "Output directory for exports (required)")
 	contextSetCmd.Flags().StringVar(&contextDescription, "description", "", "Description of the context")
 	contextSetCmd.Flags().StringArrayVar(&contextLabels, "labels", []string{}, "Labels in format key=value (can be specified multiple times)")
 }
 
 func runContextSet(cmd *cobra.Command, args []string) error {
 	name := args[0]
+
+	// Validate required fields
+	if name == "" {
+		return fmt.Errorf("context name is required")
+	}
+	if contextOutputDir == "" {
+		return fmt.Errorf("--output flag is required")
+	}
 
 	// Get config directory
 	configDir, err := getConfigDir()

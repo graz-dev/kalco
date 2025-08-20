@@ -6,7 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Documentation](https://img.shields.io/badge/docs-available-brightgreen)](https://graz-dev.github.io/kalco)
 
-*Extract, validate, analyze, and version control your entire Kubernetes cluster with comprehensive validation and Git integration*
+*Extract, analyze, and version control your entire Kubernetes cluster with Git integration*
 
 [Quick Start](#quick-start) • [Documentation](https://graz-dev.github.io/kalco) • [Examples](#examples) • [Contributing](#contributing)
 
@@ -14,14 +14,14 @@
 
 ## Overview
 
-Kalco is a professional-grade CLI tool designed for comprehensive Kubernetes cluster analysis, resource extraction, validation, and lifecycle management. Built with enterprise needs in mind, Kalco provides automated cluster backup, change tracking, and validation capabilities through a clean, professional interface.
+Kalco is a professional-grade CLI tool designed for comprehensive Kubernetes cluster analysis, resource extraction, and lifecycle management. Built with enterprise needs in mind, Kalco provides automated cluster backup and change tracking capabilities through a clean, professional interface.
 
 ### Key Benefits
 
 - **Automated Cluster Management** - Streamlined workflows for cluster operations
 - **Professional CLI Experience** - Clean, emoji-free interface designed for production use
 - **Git Integration** - Automatic version control with commit history and change tracking
-- **Comprehensive Validation** - Cross-reference checking and orphaned resource detection
+- **Change Tracking** - Comprehensive analysis of cluster modifications over time
 - **Enterprise Ready** - Designed for production environments and team collaboration
 
 ## Core Features
@@ -40,7 +40,7 @@ Export cluster resources with professional organization:
 - **Structured Output** - Intuitive directory organization by namespace and resource type
 - **Complete Coverage** - Native Kubernetes resources and Custom Resource Definitions (CRDs)
 - **Clean YAML** - Metadata optimization for re-application
-- **Flexible Filtering** - Namespace, resource type, and exclusion options
+- **Context-Based Configuration** - Output directory automatically derived from active context
 
 ### Git Integration
 Automatic version control for cluster changes:
@@ -51,11 +51,10 @@ Automatic version control for cluster changes:
 - **Branch Management** - Support for main/master branch conventions
 
 ### Report Generation
-Professional change analysis and validation reports:
+Professional change analysis reports:
 
 - **Change Tracking** - Detailed analysis of resource modifications
-- **Cross-Reference Validation** - Detection of broken resource references
-- **Orphaned Resource Detection** - Identification of unused resources
+- **Git Integration** - Complete commit history and diff information
 - **Professional Formatting** - Clean Markdown reports with actionable insights
 
 ## Quick Start
@@ -141,23 +140,14 @@ kalco context delete <name>
 # Basic export
 kalco export
 
-# Custom output directory
-kalco export --output ./cluster-backup
-
-# Specific namespaces
-kalco export --namespaces default,kube-system
-
-# Resource filtering
-kalco export --resources pods,services,deployments
-
-# Exclude resources
-kalco export --exclude events,replicasets
-
 # Git integration
 kalco export --git-push --commit-message "Daily backup"
 
-# Skip Git operations
-kalco export --no-commit
+# Custom commit message
+kalco export --commit-message "Weekly backup $(date)"
+
+# Dry run mode
+kalco export --dry-run
 ```
 
 ## Output Structure
@@ -205,7 +195,7 @@ The quickstart demonstrates:
 - Context creation and management
 - Resource export and organization
 - Git repository initialization
-- Report generation and validation
+- Report generation and change tracking
 
 ### Production Workflow
 
@@ -228,8 +218,6 @@ kalco context load ./prod-exports
 ```bash
 # Automated backup in pipeline
 kalco export \
-  --namespaces production \
-  --exclude events,pods \
   --output ./gitops-repo \
   --commit-message "Automated backup $(date)"
 ```
@@ -256,12 +244,9 @@ labels:
 
 Customize export behavior through flags:
 
-- `--output`: Specify output directory
-- `--namespaces`: Filter by namespace
-- `--resources`: Filter by resource type
-- `--exclude`: Exclude specific resources
 - `--git-push`: Enable remote push
-- `--no-commit`: Skip Git operations
+- `--commit-message`: Custom commit message
+- `--dry-run`: Preview changes without writing files
 
 ## Architecture
 
@@ -270,8 +255,7 @@ Customize export behavior through flags:
 - **Context Manager**: Handles cluster configurations and settings
 - **Resource Exporter**: Discovers and exports Kubernetes resources
 - **Git Integration**: Manages version control operations
-- **Report Generator**: Creates change analysis and validation reports
-- **Validation Engine**: Performs cross-reference and orphaned resource checks
+- **Report Generator**: Creates change analysis reports
 
 ### Design Principles
 
@@ -299,7 +283,7 @@ Customize export behavior through flags:
 - **Configuration Auditing**: Track security-related changes
 - **Compliance Reporting**: Generate audit reports for compliance
 - **Access Control**: Manage cluster access through contexts
-- **Security Validation**: Check for security misconfigurations
+- **Change Monitoring**: Track and analyze cluster modifications
 
 ## Contributing
 

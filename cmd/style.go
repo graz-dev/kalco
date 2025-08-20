@@ -66,36 +66,36 @@ func printCommandHeader(title, subtitle string) {
 // printInfo prints informational text
 func printInfo(message string) {
 	if noColor {
-		fmt.Printf("INFO: %s\n", message)
+		fmt.Printf("[INFO] %s\n", message)
 	} else {
-		fmt.Printf("%s %s\n", colorize(ColorBlue, "INFO:"), message)
+		fmt.Printf("%s %s\n", colorize(ColorBlue, "[INFO]"), message)
 	}
 }
 
 // printSuccess prints success text
 func printSuccess(message string) {
 	if noColor {
-		fmt.Printf("SUCCESS: %s\n", message)
+		fmt.Printf("[SUCCESS] %s\n", message)
 	} else {
-		fmt.Printf("%s %s\n", colorize(ColorGreen, "SUCCESS:"), message)
+		fmt.Printf("%s %s\n", colorize(ColorGreen, "[SUCCESS]"), message)
 	}
 }
 
 // printWarning prints warning text
 func printWarning(message string) {
 	if noColor {
-		fmt.Printf("WARNING: %s\n", message)
+		fmt.Printf("[WARNING] %s\n", message)
 	} else {
-		fmt.Printf("%s %s\n", colorize(ColorYellow, "WARNING:"), message)
+		fmt.Printf("%s %s\n", colorize(ColorYellow, "[WARNING]"), message)
 	}
 }
 
 // printError prints error text
 func printError(message string) {
 	if noColor {
-		fmt.Printf("ERROR: %s\n", message)
+		fmt.Printf("[ERROR] %s\n", message)
 	} else {
-		fmt.Printf("%s %s\n", colorize(ColorRed, "ERROR:"), message)
+		fmt.Printf("%s %s\n", colorize(ColorRed, "[ERROR]"), message)
 	}
 }
 
@@ -162,10 +162,10 @@ func printProgress(current, total int, message string) {
 	if noColor {
 		fmt.Printf("Progress: %d/%d (%.1f%%) - %s\n", current, total, percentage, message)
 	} else {
-		fmt.Printf("Progress: %s/%s (%.1f%%) - %s\n", 
-			colorize(ColorGreen, fmt.Sprintf("%d", current)), 
-			colorize(ColorCyan, fmt.Sprintf("%d", total)), 
-			percentage, 
+		fmt.Printf("Progress: %s/%s (%.1f%%) - %s\n",
+			colorize(ColorGreen, fmt.Sprintf("%d", current)),
+			colorize(ColorCyan, fmt.Sprintf("%d", total)),
+			percentage,
 			message)
 	}
 }
@@ -237,14 +237,37 @@ func printResource(kind, name, namespace string) {
 		}
 	} else {
 		if namespace != "" {
-			fmt.Printf("%s %s in %s\n", 
-				colorize(ColorGreen, kind), 
-				colorize(ColorCyan, name), 
+			fmt.Printf("%s %s in %s\n",
+				colorize(ColorGreen, kind),
+				colorize(ColorCyan, name),
 				colorize(ColorYellow, namespace))
 		} else {
-			fmt.Printf("%s %s\n", 
-				colorize(ColorGreen, kind), 
+			fmt.Printf("%s %s\n",
+				colorize(ColorGreen, kind),
 				colorize(ColorCyan, name))
+		}
+	}
+}
+
+// printResourcePath prints resource with path format for export
+func printResourcePath(namespace, resourceType, resourceName string) {
+	if noColor {
+		if namespace != "" {
+			fmt.Printf("%s/%s/%s\n", strings.ToUpper(namespace), strings.ToUpper(resourceType), strings.ToUpper(resourceName))
+		} else {
+			fmt.Printf("_CLUSTER/%s/%s\n", strings.ToUpper(resourceType), strings.ToUpper(resourceName))
+		}
+	} else {
+		if namespace != "" {
+			fmt.Printf("%s %s %s\n",
+				colorize(ColorPurple, strings.ToUpper(namespace)),
+				colorize(ColorPurple, strings.ToUpper(resourceType)),
+				colorize(ColorPurple, strings.ToUpper(resourceName)))
+		} else {
+			fmt.Printf("%s %s %s\n",
+				colorize(ColorPurple, "_CLUSTER"),
+				colorize(ColorPurple, strings.ToUpper(resourceType)),
+				colorize(ColorPurple, strings.ToUpper(resourceName)))
 		}
 	}
 }
@@ -254,9 +277,9 @@ func printDiff(added, removed, modified int) {
 	if noColor {
 		fmt.Printf("Changes: +%d -%d ~%d\n", added, removed, modified)
 	} else {
-		fmt.Printf("Changes: %s %s %s\n", 
-			colorize(ColorGreen, fmt.Sprintf("+%d", added)), 
-			colorize(ColorRed, fmt.Sprintf("-%d", removed)), 
+		fmt.Printf("Changes: %s %s %s\n",
+			colorize(ColorGreen, fmt.Sprintf("+%d", added)),
+			colorize(ColorRed, fmt.Sprintf("-%d", removed)),
 			colorize(ColorYellow, fmt.Sprintf("~%d", modified)))
 	}
 }
@@ -284,6 +307,19 @@ func printFooter(message string) {
 		fmt.Printf("\n%s\n", message)
 	} else {
 		fmt.Printf("\n%s\n", colorize(ColorCyan, message))
+	}
+}
+
+// printClusterInfo prints cluster connection information
+func printClusterInfo(clusterName, serverURL, version string) {
+	if noColor {
+		fmt.Printf("Cluster: %s\n", clusterName)
+		fmt.Printf("Server: %s\n", serverURL)
+		fmt.Printf("Version: %s\n", version)
+	} else {
+		fmt.Printf("Cluster: %s\n", colorize(ColorCyan, clusterName))
+		fmt.Printf("Server: %s\n", colorize(ColorCyan, serverURL))
+		fmt.Printf("Version: %s\n", colorize(ColorCyan, version))
 	}
 }
 

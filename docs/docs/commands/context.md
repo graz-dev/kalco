@@ -24,9 +24,6 @@ Contexts make it easy to switch between different clusters and configurations wi
 
 - **[context]({{ site.baseurl }}/docs/commands/context)** - Manage cluster contexts and configurations
 - **[export]({{ site.baseurl }}/docs/commands/export)** - Export cluster resources to organized YAML files
-- **[validate]({{ site.baseurl }}/docs/commands/validate)** - Validate cluster resources and cross-references
-- **[analyze]({{ site.baseurl }}/docs/commands/analyze)** - Analyze cluster state and generate reports
-- **[config]({{ site.baseurl }}/docs/commands/config)** - Manage configuration
 - **[load]({{ site.baseurl }}/docs/commands/load)** - Load context configuration from an existing kalco directory
 
 ## 🚩 Global Options
@@ -36,9 +33,8 @@ All commands support these global options:
 ```bash
 --help, -h          Show help for the command
 --version, -v       Show version information
---verbose           Enable verbose output
---quiet             Suppress non-error messages
---config            Path to configuration file
+--no-color          Disable colored output
+--kubeconfig        Path to kubeconfig file
 ```
 
 ## 🔧 Command Structure
@@ -53,8 +49,8 @@ kalco <command> [subcommand] [flags] [arguments]
 # Basic export
 kalco export
 
-# Export with options
-kalco export --output ./backup --namespaces default,kube-system
+# Export with Git integration
+kalco export --git-push --commit-message "Daily backup"
 
 # Manage contexts
 kalco context set production --kubeconfig ~/.kube/prod-config --output ./prod-exports
@@ -63,11 +59,8 @@ kalco context use production
 # Load existing context
 kalco context load ./existing-kalco-export
 
-# Validate cluster
-kalco validate --cross-references
-
-# Show configuration
-kalco config show
+# Show version
+kalco version
 ```
 
 ## Commands
@@ -448,5 +441,3 @@ kalco export  # Uses context automatically
 ## Related Commands
 
 - **[kalco export]({{ site.baseurl }}/commands/export)** - Export cluster resources
-- **[kalco validate]({{ site.baseurl }}/commands/validate)** - Validate cluster resources
-- **[kalco analyze]({{ site.baseurl }}/commands/analyze)** - Analyze cluster state

@@ -17,11 +17,15 @@ import (
 	"k8s.io/client-go/kubernetes"
 )
 
+// OutputCallback defines the interface for output functions
+type OutputCallback func(level, message string)
+
 // Dumper handles the dumping of Kubernetes resources
 type Dumper struct {
 	clientset       kubernetes.Interface
 	discoveryClient discovery.DiscoveryInterface
 	dynamicClient   dynamic.Interface
+	outputCallback  OutputCallback
 }
 
 // NewDumper creates a new Dumper instance
@@ -40,6 +44,11 @@ func (d *Dumper) SetDynamicClient(dynamicClient dynamic.Interface) {
 	d.dynamicClient = dynamicClient
 }
 
+// SetOutputCallback sets the output callback function
+func (d *Dumper) SetOutputCallback(callback OutputCallback) {
+	d.outputCallback = callback
+}
+
 // DumpAllResources performs the main task of dumping all resources
 func (d *Dumper) DumpAllResources(outputDir string) error {
 	// Create output directory if it doesn't exist
@@ -48,34 +57,25 @@ func (d *Dumper) DumpAllResources(outputDir string) error {
 	}
 
 	// Get all server resources
-	fmt.Println("  📡 Discovering API resources...")
 	resourceLists, err := d.discoveryClient.ServerPreferredResources()
 	if err != nil {
 		return fmt.Errorf("failed to get server resources: %w", err)
 	}
-	fmt.Printf("  ✅ Found %d API resource groups\n", len(resourceLists))
 
 	// Get all namespaces for namespaced resources
-	fmt.Println("  🏷️  Enumerating namespaces...")
 	namespaces, err := d.clientset.CoreV1().Namespaces().List(context.Background(), metav1.ListOptions{})
 	if err != nil {
 		return fmt.Errorf("failed to list namespaces: %v", err)
 	}
-	fmt.Printf("  ✅ Found %d namespaces\n", len(namespaces.Items))
 
 	// Process each resource group
-	fmt.Println("  🔄 Processing resource groups...")
 	processedGroups := 0
 	for _, resourceList := range resourceLists {
 		if err := d.processResourceGroup(resourceList, namespaces.Items, outputDir); err != nil {
-			fmt.Printf("  ⚠️  Warning: failed to process resource group %s: %v\n", resourceList.GroupVersion, err)
 			continue
 		}
 		processedGroups++
-		fmt.Printf("  ✅ Processed resource group %s\n", resourceList.GroupVersion)
 	}
-
-	fmt.Printf("  🎯 Successfully processed %d/%d resource groups\n", processedGroups, len(resourceLists))
 	return nil
 }
 
@@ -116,18 +116,18 @@ func (d *Dumper) processResourceGroup(resourceList *metav1.APIResourceList, name
 		if resource.Namespaced {
 			// Handle namespaced resources
 			if err := d.dumpNamespacedResources(gvr, resource, namespaces, outputDir); err != nil {
-				fmt.Printf("    ⚠️  Warning: failed to dump namespaced resource %s: %v\n", resource.Kind, err)
+				// Silent fail for individual resources
 			}
 		} else {
 			// Handle cluster-scoped resources
 			if err := d.dumpClusterScopedResources(gvr, resource, outputDir); err != nil {
-				fmt.Printf("    ⚠️  Warning: failed to dump cluster-scoped resource %s: %v\n", resource.Kind, err)
+				// Silent fail for individual resources
 			}
 		}
 	}
 
 	if validResources > 0 {
-		fmt.Printf("    📊 Processing %d resources in group %s\n", validResources, resourceList.GroupVersion)
+
 	}
 	return nil
 }
@@ -145,25 +145,27 @@ func (d *Dumper) dumpNamespacedResources(gvr schema.GroupVersionResource, resour
 		// List all resources of this type in the namespace
 		resourceList, err := d.dynamicClient.Resource(gvr).Namespace(namespace.Name).List(context.Background(), metav1.ListOptions{})
 		if err != nil {
-			fmt.Printf("      ⚠️  Warning: failed to list %s in namespace %s: %v\n", resource.Kind, namespace.Name, err)
+			if d.outputCallback != nil {
+				d.outputCallback("ERROR", fmt.Sprintf("%s/%s - failed to list resources: %v", namespace.Name, resource.Kind, err))
+			}
 			continue
 		}
 
 		if len(resourceList.Items) > 0 {
-			fmt.Printf("      📁 Namespace %s: %d %s resources\n", namespace.Name, len(resourceList.Items), resource.Kind)
+
 		}
 
 		// Dump each resource instance
 		for _, item := range resourceList.Items {
 			if err := d.dumpResource(item, resourceDir); err != nil {
-				fmt.Printf("        ⚠️  Warning: failed to dump %s %s in namespace %s: %v\n", resource.Kind, item.GetName(), namespace.Name, err)
+				// Silent fail for individual resources
 			}
 		}
 		totalResources += len(resourceList.Items)
 	}
 
 	if totalResources > 0 {
-		fmt.Printf("      ✅ Total %s resources dumped: %d\n", resource.Kind, totalResources)
+
 	}
 	return nil
 }
@@ -179,22 +181,25 @@ func (d *Dumper) dumpClusterScopedResources(gvr schema.GroupVersionResource, res
 	// List all resources of this type at cluster level
 	resourceList, err := d.dynamicClient.Resource(gvr).List(context.Background(), metav1.ListOptions{})
 	if err != nil {
+		if d.outputCallback != nil {
+			d.outputCallback("ERROR", fmt.Sprintf("_CLUSTER/%s - failed to list resources: %v", resource.Kind, err))
+		}
 		return fmt.Errorf("failed to list cluster-scoped %s: %w", resource.Kind, err)
 	}
 
 	if len(resourceList.Items) > 0 {
-		fmt.Printf("      🌐 Cluster-scoped %s: %d resources\n", resource.Kind, len(resourceList.Items))
+
 	}
 
 	// Dump each resource instance
 	for _, item := range resourceList.Items {
 		if err := d.dumpResource(item, resourceDir); err != nil {
-			fmt.Printf("        ⚠️  Warning: failed to dump cluster-scoped %s %s: %v\n", resource.Kind, item.GetName(), err)
+			// Silent fail for individual resources
 		}
 	}
 
 	if len(resourceList.Items) > 0 {
-		fmt.Printf("      ✅ Total cluster-scoped %s resources dumped: %d\n", resource.Kind, len(resourceList.Items))
+
 	}
 	return nil
 }
@@ -216,6 +221,30 @@ func (d *Dumper) dumpResource(item unstructured.Unstructured, resourceDir string
 	// Write to file
 	if err := os.WriteFile(filename, yamlData, 0644); err != nil {
 		return fmt.Errorf("failed to write YAML file: %w", err)
+	}
+
+	// Output success message with resource path
+	if d.outputCallback != nil {
+		// Extract resource path from resourceDir
+		pathParts := strings.Split(resourceDir, string(os.PathSeparator))
+		var resourcePath string
+
+		if len(pathParts) >= 3 {
+			// Namespaced resource: <output>/<namespace>/<kind>/<name>
+			namespace := pathParts[len(pathParts)-2]
+			kind := pathParts[len(pathParts)-1]
+			name := item.GetName()
+			resourcePath = fmt.Sprintf("%s/%s/%s", namespace, kind, name)
+		} else if len(pathParts) >= 2 {
+			// Cluster-scoped resource: <output>/_cluster/<kind>/<name>
+			kind := pathParts[len(pathParts)-1]
+			name := item.GetName()
+			resourcePath = fmt.Sprintf("_CLUSTER/%s/%s", kind, name)
+		}
+
+		if resourcePath != "" {
+			d.outputCallback("SUCCESS", resourcePath)
+		}
 	}
 
 	return nil

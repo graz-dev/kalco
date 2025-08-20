@@ -13,9 +13,6 @@ Complete reference for all Kalco commands and options.
 
 - **[context]({{ site.baseurl }}/docs/commands/context)** - Manage cluster contexts and configurations
 - **[export]({{ site.baseurl }}/docs/commands/export)** - Export cluster resources to organized YAML files
-- **[validate]({{ site.baseurl }}/docs/commands/validate)** - Validate cluster resources and cross-references
-- **[analyze]({{ site.baseurl }}/docs/commands/analyze)** - Analyze cluster state and generate reports
-- **[config]({{ site.baseurl }}/docs/commands/config)** - Manage configuration
 
 ## 🚩 Global Options
 
@@ -24,9 +21,8 @@ All commands support these global options:
 ```bash
 --help, -h          Show help for the command
 --version, -v       Show version information
---verbose           Enable verbose output
---quiet             Suppress non-error messages
---config            Path to configuration file
+--no-color          Disable colored output
+--kubeconfig        Path to kubeconfig file
 ```
 
 ## 🔧 Command Structure
@@ -41,18 +37,15 @@ kalco <command> [subcommand] [flags] [arguments]
 # Basic export
 kalco export
 
-# Export with options
-kalco export --output ./backup --namespaces default,kube-system
+# Export with Git integration
+kalco export --git-push --commit-message "Daily backup"
 
 # Manage contexts
 kalco context set production --kubeconfig ~/.kube/prod-config --output ./prod-exports
 kalco context use production
 
-# Validate cluster
-kalco validate --cross-references
-
-# Show configuration
-kalco config show
+# Show version
+kalco version
 ```
 
 ## 📚 Command Categories
@@ -60,12 +53,6 @@ kalco config show
 ### Core Operations
 - **context** - Context management for different clusters and configurations
 - **export** - Primary functionality for cluster resource extraction
-- **validate** - Resource validation and health checks
-- **analyze** - Cluster analysis and reporting
-
-### Configuration & Management
-- **config** - Configuration management and validation
-- **completion** - Shell completion generation
 
 ## 🎯 Getting Help
 
@@ -78,7 +65,6 @@ kalco --help
 # Command-specific help
 kalco export --help
 kalco context --help
-kalco validate --help
 ```
 
 ### Examples

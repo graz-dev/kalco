@@ -135,11 +135,8 @@ kalco export
 # Export with Git integration
 kalco export --git-push --commit-message "Initial backup"
 
-# Export to specific directory
-kalco export --output ./custom-backup
-
-# Export specific namespaces
-kalco export --namespaces default,kube-system
+# Export with custom commit message
+kalco export --commit-message "Weekly backup"
 ```
 
 ### Understanding Export Output
@@ -147,7 +144,7 @@ kalco export --namespaces default,kube-system
 After export, you'll see:
 
 1. **Resource Discovery** - Kalco finds all available resources
-2. **Directory Creation** - Organized structure is created
+2. **Directory Creation** - Organized structure is created using context output directory
 3. **Git Setup** - Repository is initialized (if new)
 4. **Resource Export** - YAML files are created
 5. **Report Generation** - Change analysis report is created
@@ -155,7 +152,7 @@ After export, you'll see:
 
 ### Output Structure
 
-Your export creates this directory structure:
+Your export creates this directory structure in the context's output directory:
 
 ```
 my-cluster-exports/
@@ -195,7 +192,6 @@ Kalco creates comprehensive reports in `kalco-reports/`:
 
 - **Change Summary** - Overview of modifications
 - **Resource Details** - Specific changes with diffs
-- **Validation Results** - Cross-reference and orphaned resource checks
 - **Git Information** - Commit details and history
 
 ## Common Scenarios
@@ -266,7 +262,7 @@ kalco export --commit-message "Production backup"
 1. **Start with basic exports** to understand the process
 2. **Use meaningful commit messages** for better Git history
 3. **Enable Git push** for team collaboration
-4. **Exclude noisy resources** like events and replicasets
+4. **Leverage context-based configuration** for consistent exports
 
 ### Organization
 
@@ -293,7 +289,7 @@ Error: context 'my-cluster' not found
 Error: failed to create output directory
 ```
 
-**Solution**: Ensure write permissions for the output directory.
+**Solution**: Ensure write permissions for the output directory specified in the context.
 
 #### Git Not Found
 
@@ -314,7 +310,6 @@ Error: failed to create Kubernetes clients
 ### Getting Help
 
 - **Command help**: `kalco <command> --help`
-- **Verbose output**: Use `--verbose` flag for detailed information
 - **Context help**: `kalco context --help`
 - **Export help**: `kalco export --help`
 

@@ -45,10 +45,6 @@ func TestRootCommand(t *testing.T) {
 		t.Error("Expected root command to have kubeconfig persistent flag")
 	}
 
-	if rootCmd.PersistentFlags().Lookup("verbose") == nil {
-		t.Error("Expected root command to have verbose persistent flag")
-	}
-
 	if rootCmd.PersistentFlags().Lookup("no-color") == nil {
 		t.Error("Expected root command to have no-color persistent flag")
 	}
@@ -122,7 +118,7 @@ func TestExportCommand(t *testing.T) {
 	}
 
 	// Test that export command has the expected flags
-	expectedFlags := []string{"output", "git-push", "commit-message", "namespaces", "resources", "exclude", "dry-run", "no-commit"}
+	expectedFlags := []string{"git-push", "commit-message", "dry-run"}
 	for _, expected := range expectedFlags {
 		if exportCmd.Flags().Lookup(expected) == nil {
 			t.Errorf("Expected export command to have flag '%s'", expected)
@@ -195,10 +191,6 @@ func TestFlagConsistency(t *testing.T) {
 	// Test that root command has persistent flags
 	if rootCmd.PersistentFlags().Lookup("kubeconfig") == nil {
 		t.Error("Root command missing kubeconfig persistent flag")
-	}
-
-	if rootCmd.PersistentFlags().Lookup("verbose") == nil {
-		t.Error("Root command missing verbose persistent flag")
 	}
 
 	if rootCmd.PersistentFlags().Lookup("no-color") == nil {

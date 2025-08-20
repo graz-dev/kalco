@@ -236,13 +236,16 @@ kalco export
 Configure default export behavior:
 
 ```bash
-# Set default exclude resources
+# Set up production context
 kalco context set production \
-  --exclude events,replicasets,endpoints
+  --kubeconfig ~/.kube/prod-config \
+  --output ./prod-exports \
+  --description "Production cluster for customer workloads" \
+  --labels env=prod,team=platform
 
-# Set default include resources
-kalco context set production \
-  --resources deployments,services,configmaps,secrets
+# Export using context configuration
+kalco context use production
+kalco export --git-push --commit-message "Production backup"
 ```
 
 ### Export Flags
@@ -250,35 +253,23 @@ kalco context set production \
 Override configuration with command-line flags:
 
 ```bash
-# Override output directory
-kalco export --output ./custom-backup
-
-# Override namespace filtering
-kalco export --namespaces default,kube-system
-
-# Override resource filtering
-kalco export --resources pods,services
-
-# Override exclusions
-kalco export --exclude events,replicasets
-
 # Override Git behavior
-kalco export --no-commit
 kalco export --git-push
+kalco export --commit-message "Custom message"
 ```
 
 ## Git Configuration
 
 ### Repository Settings
 
-Kalco automatically configures Git repositories:
+Kalco automatically configures Git repositories using the context's output directory:
 
 ```bash
-# Initialize Git repository
-kalco export --output ./new-export
+# Export using context configuration
+kalco export
 
-# Configure remote origin
-cd ./new-export
+# Configure remote origin (if needed)
+cd <context-output-directory>
 git remote add origin <your-repo-url>
 
 # Enable auto-push
@@ -291,7 +282,6 @@ kalco export --git-push
 |--------|-------------|---------|
 | `--git-push` | Automatically push to remote | `false` |
 | `--commit-message` | Custom commit message | Timestamp-based |
-| `--no-commit` | Skip Git operations | `false` |
 
 ### Git Best Practices
 
@@ -304,11 +294,11 @@ kalco export --git-push
 
 ### Directory Structure
 
-Customize export output organization:
+Export output organization is determined by the context:
 
 ```bash
-# Default structure
-<output_dir>/
+# Structure in context output directory
+<context-output>/
 ├── <namespace>/
 │   ├── <resource_kind>/
 │   │   └── <resource_name>.yaml
@@ -331,52 +321,33 @@ Customize export output organization:
 
 ## Advanced Configuration
 
-### Resource Filtering
+### Context-Based Configuration
 
-Configure resource inclusion and exclusion:
+Kalco uses context configuration for all export settings:
 
 ```bash
-# Exclude noisy resources
-kalco context set production \
-  --exclude events,replicasets,endpoints,pods
+# Export using context settings
+kalco export
 
-# Include only specific resources
-kalco context set production \
-  --resources deployments,services,configmaps,secrets
-
-# Combine filters
-kalco export \
-  --namespaces default,monitoring \
-  --resources deployments,services \
-  --exclude events
+# Export with Git integration
+kalco export --git-push --commit-message "Custom backup"
 ```
 
-### Namespace Filtering
+### Export Configuration
+
+All export configuration is handled through contexts:
 
 ```bash
-# Export specific namespaces
-kalco export --namespaces default,kube-system
+# Set up context with specific configuration
+kalco context set production \
+  --kubeconfig ~/.kube/prod-config \
+  --output ./prod-exports \
+  --description "Production cluster for customer workloads" \
+  --labels env=prod,team=platform,region=eu-west
 
-# Exclude system namespaces
-kalco export --namespaces default,monitoring,applications
-
-# Export all except system
-kalco export --exclude-namespaces kube-system,kube-public
-```
-
-### Custom Output Formats
-
-Kalco supports multiple output formats:
-
-```bash
-# Markdown reports (default)
-kalco export --report-format markdown
-
-# JSON reports
-kalco export --report-format json
-
-# HTML reports
-kalco export --report-format html
+# Export using context
+kalco context use production
+kalco export --git-push --commit-message "Production backup $(date)"
 ```
 
 ## Configuration Examples
@@ -391,11 +362,9 @@ kalco context set dev \
   --description "Development cluster for testing" \
   --labels env=dev,team=developers
 
-# Development export settings
-kalco export \
-  --namespaces default,dev-apps \
-  --exclude events,replicasets \
-  --commit-message "Development snapshot"
+# Development export
+kalco context use dev
+kalco export --commit-message "Development snapshot"
 ```
 
 ### Production Environment
@@ -410,8 +379,6 @@ kalco context set prod \
 
 # Production export settings
 kalco export \
-  --namespaces production,monitoring \
-  --exclude events,replicasets,pods \
   --git-push \
   --commit-message "Production backup $(date)"
 ```
@@ -485,7 +452,6 @@ kalco export --dry-run
 
 - **Configuration help**: `kalco context --help`
 - **Export help**: `kalco export --help`
-- **Verbose output**: Use `--verbose` flag
 - **Dry run**: Use `--dry-run` to preview configuration
 
 ## Next Steps
@@ -495,7 +461,7 @@ After configuring Kalco:
 1. **Test your configuration** with `--dry-run`
 2. **Set up multiple contexts** for different environments
 3. **Configure automated exports** for regular backups
-4. **Customize resource filtering** for your needs
+4. **Leverage context-based configuration** for consistent exports
 5. **Read the [Commands Reference](../commands/index.md)** for advanced usage
 
 ---
