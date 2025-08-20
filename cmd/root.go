@@ -25,19 +25,7 @@ resource extraction, validation, and lifecycle management.
 Extract, validate, analyze, and version control your entire cluster with 
 comprehensive validation and Git integration.
 `),
-	Example: `  # Manage cluster contexts
-  kalco context set production --kubeconfig ~/.kube/prod-config --output ./prod-exports
-  kalco context use production
-  kalco context list
 
-  # Export entire cluster to timestamped directory
-  kalco export
-
-  # Export to specific directory with custom options
-  kalco export --output ./my-backup --git-push
-
-  # Load context from existing kalco directory
-  kalco context load ./existing-kalco-export`,
 	Run: func(cmd *cobra.Command, args []string) {
 		printBanner()
 		cmd.Help()
@@ -57,7 +45,10 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&kubeconfig, "kubeconfig", "", "path to the kubeconfig file")
 	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "enable verbose output")
 	rootCmd.PersistentFlags().BoolVar(&noColor, "no-color", false, "disable colored output")
-	
+
+	// Disable completion command
+	rootCmd.CompletionOptions.DisableDefaultCmd = true
+
 	// Set custom help template
 	rootCmd.SetHelpTemplate(getHelpTemplate())
 }
@@ -67,10 +58,10 @@ func formatLongDescription(desc string) string {
 	if noColor {
 		return strings.TrimSpace(desc)
 	}
-	
+
 	lines := strings.Split(strings.TrimSpace(desc), "\n")
 	var formatted []string
-	
+
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
 		if line == "" {
@@ -79,7 +70,7 @@ func formatLongDescription(desc string) string {
 		}
 		formatted = append(formatted, "  "+line)
 	}
-	
+
 	return strings.Join(formatted, "\n")
 }
 

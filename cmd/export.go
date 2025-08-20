@@ -5,7 +5,6 @@ import (
 	"strings"
 	"time"
 
-	"kalco/pkg/context"
 	"kalco/pkg/dumper"
 	"kalco/pkg/git"
 	"kalco/pkg/kube"
@@ -39,29 +38,7 @@ The export creates an intuitive directory structure:
 
 Includes automatic Git integration for version control and change tracking.
 `),
-	Example: `  # Export entire cluster to timestamped directory
-  kalco export
 
-  # Export to specific directory
-  kalco export --output ./cluster-backup
-
-  # Export specific namespaces only
-  kalco export --namespaces default,kube-system
-
-  # Export specific resource types
-  kalco export --resources pods,services,deployments
-
-  # Exclude certain resources
-  kalco export --exclude events,replicasets
-
-  # Dry run to see what would be exported
-  kalco export --dry-run
-
-  # Export with Git integration
-  kalco export --git-push --commit-message "Weekly backup"
-
-  # Export without committing changes
-  kalco export --no-commit`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return runExport()
 	},
@@ -70,38 +47,20 @@ Includes automatic Git integration for version control and change tracking.
 func runExport() error {
 	printCommandHeader("CLUSTER EXPORT", "Exporting Kubernetes resources to organized YAML files")
 
-	// Get active context if available
-	activeContext, err := getActiveContext()
-	if err != nil {
-		printWarning(fmt.Sprintf("Context not available: %v", err))
-		printInfo("Using command-line flags and default configuration")
-	} else {
-		printInfo(fmt.Sprintf("Using context: %s", colorize(ColorCyan, activeContext.Name)))
-		if activeContext.Description != "" {
-			printInfo(fmt.Sprintf("   Description: %s", activeContext.Description))
-		}
-		if activeContext.KubeConfig != "" {
-			printInfo(fmt.Sprintf("   Kubeconfig: %s", activeContext.KubeConfig))
-		}
-		if activeContext.OutputDir != "" {
-			printInfo(fmt.Sprintf("   Output Dir: %s", activeContext.OutputDir))
-		}
-		if len(activeContext.Labels) > 0 {
-			labelStrs := make([]string, 0, len(activeContext.Labels))
-			for k, v := range activeContext.Labels {
-				labelStrs = append(labelStrs, fmt.Sprintf("%s=%s", k, v))
-			}
-			printInfo(fmt.Sprintf("   Labels: %s", strings.Join(labelStrs, ", ")))
-		}
-		printSeparator()
-	}
+	// Require active context
+	requireActiveContext()
 
 	// Create Kubernetes clients
 	printInfo("Connecting to Kubernetes cluster...")
 
 	// Use context kubeconfig if available, otherwise use flag
+	activeContext, err := getActiveContext()
+	if err != nil {
+		return fmt.Errorf("failed to get active context: %w", err)
+	}
+
 	kubeconfigPath := kubeconfig
-	if activeContext != nil && activeContext.KubeConfig != "" {
+	if activeContext.KubeConfig != "" {
 		kubeconfigPath = activeContext.KubeConfig
 	}
 
@@ -133,7 +92,7 @@ func runExport() error {
 
 	// Use context output directory if available, otherwise use flag
 	outputDir := exportOutputDir
-	if activeContext != nil && activeContext.OutputDir != "" {
+	if activeContext.OutputDir != "" {
 		outputDir = activeContext.OutputDir
 	}
 
@@ -200,21 +159,6 @@ func runExport() error {
 	fmt.Printf("   %s Development environment replication\n", colorize(ColorGreen, "•"))
 
 	return nil
-}
-
-// getActiveContext returns the currently active context if available
-func getActiveContext() (*context.Context, error) {
-	configDir, err := getConfigDir()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get config directory: %w", err)
-	}
-
-	cm, err := context.NewContextManager(configDir)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create context manager: %w", err)
-	}
-
-	return cm.GetCurrentContext()
 }
 
 func init() {

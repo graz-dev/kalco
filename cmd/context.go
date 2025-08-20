@@ -23,12 +23,7 @@ A context defines:
 - Output directory for exports
 - Dynamic labels for context identification
 - Description for context purpose
-
-Examples:
-  kalco context set production --kubeconfig ~/.kube/prod-config --output ./prod-exports --labels env=prod,team=platform
-  kalco context list
-  kalco context use production
-  kalco context load ./existing-kalco-export`,
+	`,
 	}
 
 	contextSetCmd = &cobra.Command{

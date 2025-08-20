@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"strings"
 	"testing"
 
 	"github.com/spf13/cobra"
@@ -22,7 +21,7 @@ func TestRootCommand(t *testing.T) {
 	}
 
 	// Test that root command has the expected subcommands
-	expectedSubcommands := []string{"context", "export", "completion", "version"}
+	expectedSubcommands := []string{"context", "export", "version"}
 	actualSubcommands := make([]string, 0, len(rootCmd.Commands()))
 	for _, cmd := range rootCmd.Commands() {
 		actualSubcommands = append(actualSubcommands, cmd.Name())
@@ -143,30 +142,6 @@ func TestExportCommand(t *testing.T) {
 		if !found {
 			t.Errorf("Expected export command alias '%s' not found", expected)
 		}
-	}
-}
-
-func TestCompletionCommand(t *testing.T) {
-	// Find completion command
-	var completionCmd *cobra.Command
-	for _, cmd := range rootCmd.Commands() {
-		if cmd.Name() == "completion" {
-			completionCmd = cmd
-			break
-		}
-	}
-
-	if completionCmd == nil {
-		t.Fatal("Completion command not found")
-	}
-
-	// Test completion command properties
-	if !strings.Contains(completionCmd.Use, "completion") {
-		t.Errorf("Expected completion command use to contain 'completion', got '%s'", completionCmd.Use)
-	}
-
-	if completionCmd.Short == "" {
-		t.Error("Expected completion command to have a short description")
 	}
 }
 
