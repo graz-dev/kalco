@@ -47,11 +47,11 @@ The `kalco context` command manages cluster configurations and settings.
 
 ```bash
 # Create a production context
-kalco context set production \
-  --kubeconfig ~/.kube/prod-config \
-  --output ./prod-exports \
-  --description "Production cluster for customer workloads" \
-  --labels env=prod,team=platform
+kalco context set my-cluster \
+  --kubeconfig ~/.kube/config \
+  --output ./my-cluster-export \
+  --description "My Cluster Dump" \
+  --labels env=test,team=platform
 
 # List all contexts
 kalco context list
@@ -126,44 +126,6 @@ Kalco provides clear error messages and exit codes:
 - **Exit Code 1** - General error
 - **Exit Code 2** - Configuration error
 - **Exit Code 3** - Kubernetes connection error
-
-## Best Practices
-
-### Context Management
-
-1. **Use descriptive names** for contexts (e.g., `prod-eu-west`, `staging-us-east`)
-2. **Include labels** for better organization and filtering
-3. **Set output directories** that reflect the cluster purpose
-4. **Regularly clean up** unused contexts
-
-### Resource Export
-
-1. **Use meaningful commit messages** for better Git history
-2. **Enable Git push** for team collaboration
-3. **Use dry-run** to verify export configuration
-4. **Leverage context-based configuration** for consistent exports
-
-### Automation
-
-1. **Integrate with CI/CD** pipelines for automated backups
-2. **Use context switching** for multi-cluster operations
-3. **Set up regular exports** for change tracking
-4. **Use Git integration** for version control
-
-## Troubleshooting
-
-### Common Issues
-
-- **Permission denied**: Ensure write access to output directory
-- **Git not found**: Install Git for version control functionality
-- **Kubernetes connection failed**: Verify kubeconfig and cluster access
-- **Context not found**: Use `kalco context list` to see available contexts
-
-### Getting Help
-
-- **Command help**: `kalco <command> --help`
-- **Global help**: `kalco --help`
-- **GitHub issues**: Report bugs and request features
 
 ---
 

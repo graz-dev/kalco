@@ -14,10 +14,22 @@ This guide covers installing Kalco on various operating systems and platforms.
 Before installing Kalco, ensure you have:
 
 - **Kubernetes Access** - Valid kubeconfig or in-cluster access
-- **Git** (optional) - For version control functionality
+- **Git** - For version control functionality
 - **Go 1.21+** (if building from source) - [Download here](https://golang.org/dl/)
 
 ## Quick Install
+
+## Package Managers (recommended)
+
+### Homebrew (macOS/Linux)
+
+```bash
+# Add the tap
+brew tap graz-dev/tap
+
+# Install Kalco
+brew install kalco
+```
 
 ### Linux/macOS
 
@@ -39,18 +51,6 @@ Install Kalco on Windows using PowerShell:
 
 ```powershell
 iwr -useb https://raw.githubusercontent.com/graz-dev/kalco/master/scripts/install.ps1 | iex
-```
-
-## Package Managers
-
-### Homebrew (macOS/Linux)
-
-```bash
-# Add the tap
-brew tap graz-dev/tap
-
-# Install Kalco
-brew install kalco
 ```
 
 ### Manual Download
@@ -114,20 +114,6 @@ go build -o kalco
 sudo mv kalco /usr/local/bin/
 ```
 
-### Development Build
-
-For development and testing:
-
-```bash
-# Clone and build
-git clone https://github.com/graz-dev/kalco.git
-cd kalco
-go build -o kalco
-
-# Run locally
-./kalco --help
-```
-
 ## Verification
 
 After installation, verify Kalco is working correctly:
@@ -138,135 +124,13 @@ kalco version
 
 # Show help
 kalco --help
-
-# Test context command
-kalco context --help
 ```
 
 Expected output should show:
 - Version information
-- Available commands (context, export, completion, version)
+- Available commands (context, export, version)
 - Global flags and options
 
-## Configuration
-
-### Initial Setup
-
-Kalco creates its configuration directory on first run:
-
-```bash
-# First run creates ~/.kalco/
-kalco context list
-```
-
-The configuration directory structure:
-```
-~/.kalco/
-├── contexts.yaml      # Context configurations
-├── current-context    # Currently active context
-└── config.json        # Global configuration
-```
-
-### Environment Variables
-
-Kalco respects these environment variables:
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `KUBECONFIG` | Path to kubeconfig file | `~/.kube/config` |
-| `KALCO_CONFIG_DIR` | Configuration directory | `~/.kalco` |
-| `NO_COLOR` | Disable colored output | `false` |
-
-## Shell Completion
-
-Enable shell completion for better user experience:
-
-### Bash
-
-```bash
-# Generate completion script
-kalco completion bash > /etc/bash_completion.d/kalco
-
-# Or for current user
-kalco completion bash > ~/.bash_completion.d/kalco
-
-# Source in current shell
-source <(kalco completion bash)
-```
-
-### Zsh
-
-```bash
-# Generate completion script
-kalco completion zsh > ~/.zsh/completion/_kalco
-
-# Add to .zshrc
-echo 'fpath=(~/.zsh/completion $fpath)' >> ~/.zshrc
-echo 'autoload -U compinit && compinit' >> ~/.zshrc
-```
-
-### Fish
-
-```bash
-# Generate completion script
-kalco completion fish > ~/.config/fish/completions/kalco.fish
-```
-
-### PowerShell
-
-```powershell
-# Generate completion script
-kalco completion powershell > kalco-completion.ps1
-
-# Source in current session
-. .\kalco-completion.ps1
-```
-
-## Troubleshooting
-
-### Common Installation Issues
-
-#### Permission Denied
-
-```bash
-Error: permission denied
-```
-
-**Solutions:**
-- Use `sudo` for system-wide installation
-- Check file permissions on the binary
-- Verify PATH configuration
-
-#### Binary Not Found
-
-```bash
-kalco: command not found
-```
-
-**Solutions:**
-- Verify the binary is in your PATH
-- Check if the installation completed successfully
-- Restart your terminal session
-
-#### Go Version Issues
-
-```bash
-go: version go1.20 is not supported
-```
-
-**Solutions:**
-- Update to Go 1.21 or later
-- Use the pre-built binary instead of building from source
-
-#### Architecture Mismatch
-
-```bash
-cannot execute binary file: Exec format error
-```
-
-**Solutions:**
-- Download the correct binary for your architecture
-- Verify you're using the right OS/architecture combination
 
 ### Getting Help
 
@@ -278,10 +142,10 @@ cannot execute binary file: Exec format error
 
 After successful installation:
 
-1. **Read the [First Run](first-run.md) guide** to get started
+1. **Read the [First Run]({{ site.baseurl }}/getting-started/first-run) guide** to get started
 2. **Set up your first context** with `kalco context set`
 3. **Export your cluster** with `kalco export`
-4. **Explore the [Commands Reference](../commands/index.md)**
+4. **Explore the [Command Reference]({{ site.baseurl }}/commands/index.md)**
 
 ## Uninstallation
 
@@ -302,19 +166,6 @@ rm ~/bin/kalco
 rm -rf ~/.kalco
 ```
 
-### Remove Shell Completion
-
-```bash
-# Bash
-sudo rm /etc/bash_completion.d/kalco
-
-# Zsh
-rm ~/.zsh/completion/_kalco
-
-# Fish
-rm ~/.config/fish/completions/kalco.fish
-```
-
 ---
 
-*For more installation help, see [GitHub Issues](https://github.com/graz-dev/kalco/issues) or [Discussions](https://github.com/graz-dev/kalco/discussions).*
+*For more installation help, see [GitHub Issues](https://github.com/graz-dev/kalco/issues).*

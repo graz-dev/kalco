@@ -4,13 +4,13 @@ title: Home
 nav_order: 1
 ---
 
-# Kalco Documentation
+# Kalco
 
-Welcome to the Kalco documentation. Kalco is a professional CLI tool for Kubernetes cluster analysis, resource extraction, and lifecycle management.
+Welcome to the Kalco documentation. Kalco is a CLI tool for Kubernetes cluster dumping and audit.
 
 ## What is Kalco?
 
-Kalco transforms your Kubernetes cluster management experience by providing a comprehensive, automated, and intelligent approach to cluster analysis and lifecycle control. Whether you're managing production workloads, ensuring compliance, or planning migrations, Kalco has you covered.
+Kalco transforms your Kubernetes cluster management experience by providing a comprehensive, automated, and intelligent approach to cluster lifecycle control. Whether you're managing production workloads, ensuring compliance, or planning migrations, Kalco has you covered.
 
 ## Key Features
 
@@ -18,7 +18,6 @@ Kalco transforms your Kubernetes cluster management experience by providing a co
 - **Resource Export** - Export cluster resources with professional organization
 - **Git Integration** - Automatic version control with commit history and change tracking
 - **Report Generation** - Professional change analysis and tracking reports
-- **Enterprise Ready** - Designed for production environments and team collaboration
 
 ## Quick Start
 
@@ -27,73 +26,40 @@ Kalco transforms your Kubernetes cluster management experience by providing a co
    curl -fsSL https://raw.githubusercontent.com/graz-dev/kalco/master/scripts/install.sh | bash
    ```
 
+   or use a package manager:
+
+   ```bash
+   brew tap graz-dev/kalco
+   brew install kalco
+   ```
+
 2. **Create a Context:**
    ```bash
-   kalco context set production \
-     --kubeconfig ~/.kube/prod-config \
-     --output ./prod-exports
+   kalco context set my-cluster \
+     --kubeconfig ~/.kube/config \
+     --output ./my-cluster-dump
    ```
 
 3. **Export Cluster Resources:**
    ```bash
-   kalco export --git-push --commit-message "Initial backup"
+   kalco export --commit-message "My first dump"
    ```
 
 ## Documentation Sections
 
 ### Getting Started
-- [Installation](getting-started/installation.md) - Install Kalco on your system
-- [First Run](getting-started/first-run.md) - Get started with your first export
-- [Configuration](getting-started/configuration.md) - Configure Kalco for your environment
+
+- **[Install Kalco]({{ site.baseurl }}/getting-started/installation)**
+- **[First Run]({{ site.baseurl }}/getting-started/first-run)** - Export your first cluster
 
 ### Commands Reference
-- [Command Overview](commands/index.md) - Complete command reference
-- [Export Command](commands/export.md) - Export cluster resources
-- [Context Management](commands/context.md) - Manage cluster contexts
-
-### Examples
-- [Quickstart Demo](../examples/quickstart.sh) - Comprehensive example script
-- [Production Workflows](examples/production.md) - Real-world usage examples
-- [CI/CD Integration](examples/cicd.md) - Automation examples
-
-## Use Cases
-
-### DevOps Teams
-- Automated cluster backups and disaster recovery
-- Change tracking and compliance auditing
-- Environment replication and configuration management
-
-### Platform Engineers
-- Infrastructure as Code and GitOps workflows
-- Team collaboration and context sharing
-- Migration support and configuration management
-
-### Security Teams
-- Configuration auditing and compliance reporting
-- Access control through context management
-- Change monitoring and analysis
-
-## Architecture
-
-Kalco is built with a modular architecture designed for enterprise use:
-
-- **Context Manager** - Handles cluster configurations and settings
-- **Resource Exporter** - Discovers and exports Kubernetes resources
-- **Git Integration** - Manages version control operations
-- **Report Generator** - Creates change analysis and tracking reports
-
-## Design Principles
-
-- **Professional Interface** - Clean, emoji-free CLI design
-- **Minimal Dependencies** - Focused functionality without bloat
-- **Enterprise Ready** - Production-grade reliability and performance
-- **Team Collaboration** - Shared configurations and context sharing
-- **Automation First** - Designed for CI/CD and automated workflows
+- **[Command Overview]({{ site.baseurl }}/commands/index.md)** - Complete command reference
+- **[Context Management]({{ site.baseurl }}/commands/context.md)** - Manage cluster contexts
+- **[Export Command]({{ site.baseurl }}/commands/export.md)** - Export cluster resources
 
 ## Support
 
 - **GitHub Issues**: [Report bugs and request features](https://github.com/graz-dev/kalco/issues)
-- **Discussions**: [Join community discussions](https://github.com/graz-dev/kalco/discussions)
 - **Documentation**: This site and [GitHub repository](https://github.com/graz-dev/kalco)
 
 ## Contributing

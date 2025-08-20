@@ -13,7 +13,6 @@ Welcome to Kalco! This guide will help you get up and running with Kubernetes cl
 
 1. **[Install Kalco]({{ site.baseurl }}/getting-started/installation)** - Get Kalco running on your system
 2. **[First Run]({{ site.baseurl }}/getting-started/first-run)** - Export your first cluster
-3. **[Configuration]({{ site.baseurl }}/getting-started/configuration)** - Customize Kalco for your needs
 
 ## 🎯 What You'll Learn
 
@@ -21,7 +20,6 @@ Welcome to Kalco! This guide will help you get up and running with Kubernetes cl
 - Basic cluster export operations
 - Git integration and version control
 - Change tracking and reporting
-- Best practices for cluster management
 
 ## 📋 Prerequisites
 

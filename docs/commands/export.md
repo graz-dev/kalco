@@ -17,7 +17,7 @@ The export command is the core functionality of Kalco, providing:
 - **Structured Organization** - Creates intuitive directory structures by namespace and resource type
 - **Clean YAML Output** - Optimizes metadata for re-application
 - **Git Integration** - Automatic version control with commit history
-- **Professional Reporting** - Comprehensive change analysis and tracking reports
+- **Reporting** - Comprehensive change analysis and tracking reports
 
 ## Syntax
 
@@ -105,14 +105,13 @@ Each report includes:
 - **Change Summary** - Overview of modifications
 - **Resource Details** - Specific changes with diffs
 - **Git Information** - Commit details and history
-- **Actionable Insights** - Recommendations and next steps
 
 ### Report Types
 
 - **Initial Snapshot** - First export with complete resource inventory
 - **Change Reports** - Incremental updates with modification details
 
-## Advanced Usage
+<!-- ## Advanced Usage
 
 ### Dry Run Mode
 
@@ -163,7 +162,7 @@ fi
 
 echo "Backup completed"
 ```
-
+-->
 ---
 
 *For more information about the export command, run `kalco export --help` or see the [Commands Reference](index.md).*

@@ -14,15 +14,7 @@
 
 ## Overview
 
-Kalco is a professional-grade CLI tool designed for comprehensive Kubernetes cluster analysis, resource extraction, and lifecycle management. Built with enterprise needs in mind, Kalco provides automated cluster backup and change tracking capabilities through a clean, professional interface.
-
-### Key Benefits
-
-- **Automated Cluster Management** - Streamlined workflows for cluster operations
-- **Professional CLI Experience** - Clean, emoji-free interface designed for production use
-- **Git Integration** - Automatic version control with commit history and change tracking
-- **Change Tracking** - Comprehensive analysis of cluster modifications over time
-- **Enterprise Ready** - Designed for production environments and team collaboration
+Kalco is a CLI tool designed for comprehensive Kubernetes cluster analysis, resource extraction, and lifecycle management. Kalco provides automated cluster backup and change tracking capabilities through a clean interface.
 
 ## Core Features
 
@@ -61,6 +53,16 @@ Professional change analysis reports:
 
 ### Installation
 
+**Package Managers (recommended):**
+```bash
+# Homebrew
+brew install graz-dev/tap/kalco
+
+# Build from source
+git clone https://github.com/graz-dev/kalco.git
+cd kalco && go build -o kalco
+```
+
 **Linux/macOS:**
 ```bash
 curl -fsSL https://raw.githubusercontent.com/graz-dev/kalco/master/scripts/install.sh | bash
@@ -69,16 +71,6 @@ curl -fsSL https://raw.githubusercontent.com/graz-dev/kalco/master/scripts/insta
 **Windows (PowerShell):**
 ```powershell
 iwr -useb https://raw.githubusercontent.com/graz-dev/kalco/master/scripts/install.ps1 | iex
-```
-
-**Package Managers:**
-```bash
-# Homebrew
-brew install graz-dev/tap/kalco
-
-# Build from source
-git clone https://github.com/graz-dev/kalco.git
-cd kalco && go build -o kalco
 ```
 
 ### Basic Usage
@@ -112,212 +104,16 @@ cd kalco && go build -o kalco
 | `kalco completion` | Shell completion | `kalco completion bash\|zsh\|fish\|powershell` |
 | `kalco version` | Version information | `kalco version` |
 
-### Context Management
-
-```bash
-# Create context
-kalco context set <name> --kubeconfig <path> --output <dir>
-
-# List contexts
-kalco context list
-
-# Switch context
-kalco context use <name>
-
-# Load from existing directory
-kalco context load <directory>
-
-# Show context details
-kalco context show <name>
-
-# Delete context
-kalco context delete <name>
-```
-
-### Export Options
-
-```bash
-# Basic export
-kalco export
-
-# Git integration
-kalco export --git-push --commit-message "Daily backup"
-
-# Custom commit message
-kalco export --commit-message "Weekly backup $(date)"
-
-# Dry run mode
-kalco export --dry-run
-```
-
-## Output Structure
-
-Kalco creates a professional, organized directory structure:
-
-```
-<output_dir>/
-├── <namespace>/
-│   ├── <resource_kind>/
-│   │   ├── <resource_name>.yaml
-│   │   └── ...
-│   └── ...
-├── _cluster/
-│   ├── <resource_kind>/
-│   │   ├── <resource_name>.yaml
-│   │   └── ...
-│   └── ...
-├── kalco-reports/
-│   └── <timestamp>-<commit-message>.md
-└── kalco-config.json
-```
-
-- **Namespaced Resources**: `<output>/<namespace>/<kind>/<name>.yaml`
-- **Cluster Resources**: `<output>/_cluster/<kind>/<name>.yaml`
-- **Reports**: `<output>/kalco-reports/<timestamp>-<commit-message>.md`
-- **Configuration**: `<output>/kalco-config.json`
-
-## Examples
-
-### Quickstart Demo
-
-Run the comprehensive example to see Kalco in action:
-
-```bash
-# Make executable and run
-chmod +x examples/quickstart.sh
-./examples/quickstart.sh
-
-# Keep demo directory for inspection
-./examples/quickstart.sh --keep
-```
-
-The quickstart demonstrates:
-- Context creation and management
-- Resource export and organization
-- Git repository initialization
-- Report generation and change tracking
-
-### Production Workflow
-
-```bash
-# Set up production context
-kalco context set production \
-  --kubeconfig ~/.kube/prod-config \
-  --output ./prod-exports \
-  --labels env=prod,team=platform
-
-# Export with Git integration
-kalco export --git-push --commit-message "Production backup $(date)"
-
-# Load context on another machine
-kalco context load ./prod-exports
-```
-
-### CI/CD Integration
-
-```bash
-# Automated backup in pipeline
-kalco export \
-  --output ./gitops-repo \
-  --commit-message "Automated backup $(date)"
-```
-
-## Configuration
-
-### Context Configuration
-
-Contexts store cluster-specific settings:
-
-```yaml
-# Example context configuration
-name: production
-kubeconfig: ~/.kube/prod-config
-output_dir: ./prod-exports
-description: Production cluster for customer workloads
-labels:
-  env: production
-  team: platform
-  customer: enterprise
-```
-
-### Export Configuration
-
-Customize export behavior through flags:
-
-- `--git-push`: Enable remote push
-- `--commit-message`: Custom commit message
-- `--dry-run`: Preview changes without writing files
-
-## Architecture
-
-### Core Components
-
-- **Context Manager**: Handles cluster configurations and settings
-- **Resource Exporter**: Discovers and exports Kubernetes resources
-- **Git Integration**: Manages version control operations
-- **Report Generator**: Creates change analysis reports
-
-### Design Principles
-
-- **Professional Interface**: Clean, emoji-free CLI design
-- **Minimal Dependencies**: Focused functionality without bloat
-- **Enterprise Ready**: Production-grade reliability and performance
-- **Team Collaboration**: Shared configurations and context sharing
-- **Automation First**: Designed for CI/CD and automated workflows
-
-## Use Cases
-
-### DevOps Teams
-- **Automated Backups**: Regular cluster snapshots with Git history
-- **Change Tracking**: Monitor cluster modifications over time
-- **Disaster Recovery**: Quick cluster restoration from exports
-- **Environment Replication**: Copy configurations between clusters
-
-### Platform Engineers
-- **Infrastructure as Code**: Version-controlled cluster configurations
-- **Compliance Auditing**: Track and validate cluster changes
-- **Team Onboarding**: Share standardized cluster contexts
-- **Migration Support**: Export and import cluster configurations
-
-### Security Teams
-- **Configuration Auditing**: Track security-related changes
-- **Compliance Reporting**: Generate audit reports for compliance
-- **Access Control**: Manage cluster access through contexts
-- **Change Monitoring**: Track and analyze cluster modifications
+Read the [docs](https://graz-dev.github.io/kalco) for more details.
 
 ## Contributing
 
 We welcome contributions to improve Kalco:
 
 - **Bug Reports**: [Create an issue](https://github.com/graz-dev/kalco/issues/new)
-- **Feature Requests**: [Start a discussion](https://github.com/graz-dev/kalco/discussions)
+- **Feature Requests**: [Create an issue](https://github.com/graz-dev/kalco/issues/new)
 - **Code Contributions**: Fork, develop, and submit pull requests
 - **Documentation**: Help improve guides and examples
-
-### Development Setup
-
-```bash
-# Clone repository
-git clone https://github.com/graz-dev/kalco.git
-cd kalco
-
-# Install dependencies
-go mod tidy
-
-# Build and test
-go build -o kalco
-go test ./...
-
-# Run locally
-./kalco --help
-```
-
-## Documentation
-
-- **User Guide**: [https://graz-dev.github.io/kalco](https://graz-dev.github.io/kalco)
-- **API Reference**: [https://graz-dev.github.io/kalco/api](https://graz-dev.github.io/kalco/api)
-- **Examples**: [https://graz-dev.github.io/kalco/examples](https://graz-dev.github.io/kalco/examples)
-- **Contributing**: [https://graz-dev.github.io/kalco/contributing](https://graz-dev.github.io/kalco/contributing)
 
 ## License
 
@@ -327,8 +123,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **Documentation**: [https://graz-dev.github.io/kalco](https://graz-dev.github.io/kalco)
 - **Issues**: [GitHub Issues](https://github.com/graz-dev/kalco/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/graz-dev/kalco/discussions)
-- **Community**: Join our community discussions
 
 ---
 
@@ -336,6 +130,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Built with ❤️ for the Kubernetes community**
 
-[Star us on GitHub](https://github.com/graz-dev/kalco) • [Read the Docs](https://graz-dev.github.io/kalco) • [Join Discussions](https://github.com/graz-dev/kalco/discussions)
+[Star us on GitHub](https://github.com/graz-dev/kalco) • [Read the Docs](https://graz-dev.github.io/kalco)
 
 </div>
