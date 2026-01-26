@@ -90,8 +90,9 @@ install_kalco() {
     cd "$temp_dir"
     
     # Download the archive
-    if ! curl -L -o "kalco_archive" "$download_url"; then
-        log_error "Failed to download kalco"
+    if ! curl -fsSL -o "kalco_archive" "$download_url"; then
+        log_error "Failed to download kalco from $download_url"
+        log_error "Please check your internet connection or try again later."
         rm -rf "$temp_dir"
         exit 1
     fi

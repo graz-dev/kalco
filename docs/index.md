@@ -4,68 +4,50 @@ title: Home
 nav_order: 1
 ---
 
-# Kalco
+# Kalco Documentation
 
-Welcome to the Kalco documentation. Kalco is a CLI tool for Kubernetes cluster dumping and audit.
+Welcome to the official documentation for **Kalco** (Kubernetes Analysis & Lifecycle Control).
 
-## What is Kalco?
+Kalco is the CLI tool that bridges the gap between your Git configuration and your actual Kubernetes cluster state.
 
-Kalco transforms your Kubernetes cluster management experience by providing a comprehensive, automated, and intelligent approach to cluster lifecycle control. Whether you're managing production workloads, ensuring compliance, or planning migrations, Kalco has you covered.
+## 🌟 Why Kalco?
 
-## Key Features
+- **Backup & Audit**: Snapshot your entire cluster to Git-friendly YAML.
+- **GitOps Validation**: Detect "drift" between what you *think* is deployed (Git) and what *is* deployed (Cluster).
+- **Environment Management**: Switch context configurations easily between Prod, Staging, and Dev.
 
-- **Context Management** - Manage multiple Kubernetes clusters through unified contexts
-- **Resource Export** - Export cluster resources with professional organization
-- **Git Integration** - Automatic version control with commit history and change tracking
-- **Report Generation** - Professional change analysis and tracking reports
+## 🚀 Getting Started
 
-## Quick Start
+### Installation
 
-1. **Install Kalco:**
-   ```bash
-   curl -fsSL https://raw.githubusercontent.com/graz-dev/kalco/master/scripts/install.sh | bash
-   ```
+**Homebrew (Recommended)**
+```bash
+brew install graz-dev/tap/kalco
+```
 
-   or use a package manager:
+**Manual Install**
+```bash
+curl -fsSL https://raw.githubusercontent.com/graz-dev/kalco/master/scripts/install.sh | bash
+```
 
-   ```bash
-   brew tap graz-dev/kalco
-   brew install kalco
-   ```
+### First Steps
 
-2. **Create a Context:**
-   ```bash
-   kalco context set my-cluster \
-     --kubeconfig ~/.kube/config \
-     --output ./my-cluster-dump
-   ```
+1.  **[Configure Context]({{ site.baseurl }}/commands/context)**: Tell Kalco which cluster to manage and where to save data.
+2.  **[Export Resources]({{ site.baseurl }}/commands/export)**: Take your first snapshot.
+3.  **[Verify Drift]({{ site.baseurl }}/commands/diff)**: Compare your local manifests against the snapshot.
 
-3. **Export Cluster Resources:**
-   ```bash
-   kalco export --commit-message "My first dump"
-   ```
+## 📚 Command Reference
 
-## Documentation Sections
+| Command | Purpose |
+|---------|---------|
+| **[context]({{ site.baseurl }}/commands/context)** | Manage cluster connections and output settings. |
+| **[export]({{ site.baseurl }}/commands/export)** | Dump cluster state to local files. |
+| **[diff]({{ site.baseurl }}/commands/diff)** | **[NEW]** Compare local YAML vs Snapshot/Live state. |
+| **version** | Check version information. |
 
-### Getting Started
+## 🤝 Support & Contributing
 
-- **[Install Kalco]({{ site.baseurl }}/getting-started/installation)**
-- **[First Run]({{ site.baseurl }}/getting-started/first-run)** - Export your first cluster
+- **Issues**: [GitHub Issues](https://github.com/graz-dev/kalco/issues)
+- **Repo**: [github.com/graz-dev/kalco](https://github.com/graz-dev/kalco)
 
-### Commands Reference
-- **[Command Overview]({{ site.baseurl }}/commands/index.md)** - Complete command reference
-- **[Context Management]({{ site.baseurl }}/commands/context.md)** - Manage cluster contexts
-- **[Export Command]({{ site.baseurl }}/commands/export.md)** - Export cluster resources
-
-## Support
-
-- **GitHub Issues**: [Report bugs and request features](https://github.com/graz-dev/kalco/issues)
-- **Documentation**: This site and [GitHub repository](https://github.com/graz-dev/kalco)
-
-## Contributing
-
-We welcome contributions to improve Kalco and its documentation. See our [contributing guidelines](https://github.com/graz-dev/kalco/blob/master/CONTRIBUTING.md) for details.
-
----
-
-*Kalco - Built with ❤️ for the Kubernetes community*
+Is something missing in these docs? [Edit this page on GitHub](https://github.com/graz-dev/kalco/edit/master/docs/index.md).

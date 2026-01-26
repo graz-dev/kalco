@@ -54,6 +54,12 @@ kalco context set staging \
 # Update existing context
 kalco context set production \
   --description "Updated production cluster description"
+
+# Create ephemeral CI context
+kalco context set ci-pipeline \
+  --kubeconfig ~/.kube/config \
+  --output ./ci-artifacts \
+  --labels env=ci,job=123
 ```
 
 ### `kalco context list`

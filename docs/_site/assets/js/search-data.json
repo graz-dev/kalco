@@ -1,0 +1,324 @@
+{"0": {
+    "doc": "kalco diff",
+    "title": "Diff Command",
+    "content": "The kalco diff command compares a local manifest file (INTENTION) with the cluster snapshot or live state (REALITY). ",
+    "url": "/commands/diff.html#diff-command",
+    
+    "relUrl": "/commands/diff.html#diff-command"
+  },"1": {
+    "doc": "kalco diff",
+    "title": "Overview",
+    "content": "The diff command helps you identify “drift” between what you have defined in your local configuration and what is currently deployed or captured in your snapshot. Key features: . | Deep Diffing - Ignores irrelevant metadata (e.g., managedFields, status, uid) to focus on meaningful changes. | Snapshot Integration - Automatically maps local files to their expected location in the snapshot structure. | Live Refresh - Optionally refresh the snapshot from the live cluster before comparing. | Output Formats - Supports both human-readable text and Markdown suitable for Pull Request comments. | . ",
+    "url": "/commands/diff.html#overview",
+    
+    "relUrl": "/commands/diff.html#overview"
+  },"2": {
+    "doc": "kalco diff",
+    "title": "Syntax",
+    "content": "kalco diff [flags] . ",
+    "url": "/commands/diff.html#syntax",
+    
+    "relUrl": "/commands/diff.html#syntax"
+  },"3": {
+    "doc": "kalco diff",
+    "title": "Flags",
+    "content": "| Flag | Description | Default | Required | . | --target | Path to local manifest file | - | Yes | . | --snapshot-dir | Root directory of snapshot repository | - | Yes | . | --refresh | Fetch live resource from K8s via export | false | No | . | --format | Output format (text, markdown) | text | No | . ",
+    "url": "/commands/diff.html#flags",
+    
+    "relUrl": "/commands/diff.html#flags"
+  },"4": {
+    "doc": "kalco diff",
+    "title": "Usage Examples",
+    "content": "Basic Diff . Compare a local deployment file against the existing snapshot: . kalco diff \\ --target ./charts/my-app/deployment.yaml \\ --snapshot-dir ./cluster-exports . Diff with Live Refresh . Update the snapshot from the cluster (via export) before performing the diff. This ensures you are comparing against the latest live state. kalco diff \\ --target ./charts/my-app/deployment.yaml \\ --snapshot-dir ./cluster-exports \\ --refresh . Markdown Output . Generate a Markdown-formatted diff, useful for automated CI/CD pipelines (e.g., GitHub Actions PR comments): . kalco diff \\ --target ./charts/my-app/deployment.yaml \\ --snapshot-dir ./cluster-exports \\ --format markdown . ",
+    "url": "/commands/diff.html#usage-examples",
+    
+    "relUrl": "/commands/diff.html#usage-examples"
+  },"5": {
+    "doc": "kalco diff",
+    "title": "Output Explained",
+    "content": ". | 🟢 NEW RESOURCE: The resource exists locally but not in the snapshot. | ✅ No changes detected: The local resource matches the snapshot (ignoring K8s system fields). | 🔴 Drift Detected: Differences found. A diff will be shown highlighting added (+) or removed (-) lines. | ⚠️ Snapshot is stale: If not using --refresh, this warning appears if the snapshot is older than 24 hours. | . ",
+    "url": "/commands/diff.html#output-explained",
+    
+    "relUrl": "/commands/diff.html#output-explained"
+  },"6": {
+    "doc": "kalco diff",
+    "title": "kalco diff",
+    "content": " ",
+    "url": "/commands/diff.html",
+    
+    "relUrl": "/commands/diff.html"
+  },"7": {
+    "doc": "kalco export",
+    "title": "Export Command",
+    "content": "The kalco export command exports Kubernetes cluster resources to organized YAML files with automatic Git integration and professional report generation. ",
+    "url": "/commands/export.html#export-command",
+    
+    "relUrl": "/commands/export.html#export-command"
+  },"8": {
+    "doc": "kalco export",
+    "title": "Overview",
+    "content": "The export command is the core functionality of Kalco, providing: . | Complete Resource Discovery - Automatically finds all available API resources including CRDs | Structured Organization - Creates intuitive directory structures by namespace and resource type | Clean YAML Output - Optimizes metadata for re-application | Git Integration - Automatic version control with commit history | Git Integration - Automatic version control with commit history | Reporting - Comprehensive change analysis and tracking reports | Drift Detection Base - Serves as the source of truth for kalco diff | . ",
+    "url": "/commands/export.html#overview",
+    
+    "relUrl": "/commands/export.html#overview"
+  },"9": {
+    "doc": "kalco export",
+    "title": "Syntax",
+    "content": "kalco export [flags] . ",
+    "url": "/commands/export.html#syntax",
+    
+    "relUrl": "/commands/export.html#syntax"
+  },"10": {
+    "doc": "kalco export",
+    "title": "Flags",
+    "content": "Git Integration . | Flag | Description | Default | Required | . | --git-push | Automatically push to remote origin | false | No | . | --commit-message, -m | Custom Git commit message | Timestamp-based | No | . Execution Control . | Flag | Description | Default | Required | . | --dry-run | Show what would be exported | false | No | . | --report | Enable/disable analysis report (on/off) | on | No | . ",
+    "url": "/commands/export.html#flags",
+    
+    "relUrl": "/commands/export.html#flags"
+  },"11": {
+    "doc": "kalco export",
+    "title": "Basic Usage",
+    "content": "Simple Export . Export all cluster resources using the active context: . kalco export . This exports all resources to the output directory specified in the active context. Git Integration . Export with automatic Git commit: . kalco export --git-push --commit-message \"Daily backup\" . Custom Commit Message . Use a custom commit message: . kalco export --commit-message \"Weekly maintenance backup\" . ",
+    "url": "/commands/export.html#basic-usage",
+    
+    "relUrl": "/commands/export.html#basic-usage"
+  },"12": {
+    "doc": "kalco export",
+    "title": "Context-Based Configuration",
+    "content": "The export command automatically uses the active context: . # Set and use a context kalco context set production \\ --kubeconfig ~/.kube/prod-config \\ --output ./prod-exports kalco context use production # Export uses context settings automatically kalco export --git-push --commit-message \"Production backup\" . The export command will: . | Connect using the context’s kubeconfig | Save resources to the context’s output directory | Use context metadata in generated reports | . ",
+    "url": "/commands/export.html#context-based-configuration",
+    
+    "relUrl": "/commands/export.html#context-based-configuration"
+  },"13": {
+    "doc": "kalco export",
+    "title": "Report Generation",
+    "content": "Kalco automatically generates comprehensive reports for each export: . Report Location . Reports are saved in kalco-reports/ directory with descriptive names: . | 20240819-145542-Production-backup.md | 20240819-160000-Weekly-maintenance.md | . Report Content . Each report includes: . | Change Summary - Overview of modifications | Resource Details - Specific changes with diffs | Git Information - Commit details and history | . Report Types . | Initial Snapshot - First export with complete resource inventory | Change Reports - Incremental updates with modification details | . Controlling Report Generation . By default, Kalco generates a report for every export (--report on). You can disable this behavior using the --report flag: . # Disable report generation kalco export --report off . ",
+    "url": "/commands/export.html#report-generation",
+    
+    "relUrl": "/commands/export.html#report-generation"
+  },"14": {
+    "doc": "kalco export",
+    "title": "Next Steps",
+    "content": "Now that you have a snapshot, verify your Git manifests against it. 👉 Validate GitOps with Diff . ",
+    "url": "/commands/export.html#next-steps",
+    
+    "relUrl": "/commands/export.html#next-steps"
+  },"15": {
+    "doc": "kalco export",
+    "title": "kalco export",
+    "content": " ",
+    "url": "/commands/export.html",
+    
+    "relUrl": "/commands/export.html"
+  },"16": {
+    "doc": "First Run",
+    "title": "First Run",
+    "content": "This guide walks you through your first Kalco export, from setting up a context to generating your first cluster snapshot. ",
+    "url": "/getting-started/first-run.html",
+    
+    "relUrl": "/getting-started/first-run.html"
+  },"17": {
+    "doc": "First Run",
+    "title": "Prerequisites",
+    "content": "Before starting, ensure you have: . | Kalco installed - See Installation if needed | Kubernetes access - Valid kubeconfig or in-cluster access | Git installed (optional) - For version control functionality | . ",
+    "url": "/getting-started/first-run.html#prerequisites",
+    
+    "relUrl": "/getting-started/first-run.html#prerequisites"
+  },"18": {
+    "doc": "First Run",
+    "title": "Quick Start",
+    "content": "1. Verify Installation . First, confirm Kalco is working: . kalco version . You should see version information and build details. 2. Check Available Commands . Explore what Kalco can do: . kalco --help . This shows the available commands: context, export and version. 3. Set Up Your First Context . Create a context for your cluster: . kalco context set my-cluster \\ --kubeconfig ~/.kube/config \\ --output ./my-cluster-exports \\ --description \"My first Kalco dump\" \\ --labels env=dev,team=personal . 4. Use the Context . Activate your context: . kalco context use my-cluster . 5. Export Your Cluster . Perform your first export: . kalco export --commit-message \"Initial cluster snapshot\" . For more information about using Kalco, see the Commands Reference or run kalco --help. ",
+    "url": "/getting-started/first-run.html#quick-start",
+    
+    "relUrl": "/getting-started/first-run.html#quick-start"
+  },"19": {
+    "doc": "Getting Started",
+    "title": "Getting Started",
+    "content": "Welcome to Kalco! This guide will help you get up and running with Kubernetes cluster management in no time. ",
+    "url": "/getting-started/",
+    
+    "relUrl": "/getting-started/"
+  },"20": {
+    "doc": "Getting Started",
+    "title": "🚀 Quick Start",
+    "content": ". | Install Kalco - Get Kalco running on your system | First Run - Export your first cluster | . ",
+    "url": "/getting-started/#-quick-start",
+    
+    "relUrl": "/getting-started/#-quick-start"
+  },"21": {
+    "doc": "Getting Started",
+    "title": "🎯 What You’ll Learn",
+    "content": ". | How to install and configure Kalco | Basic cluster export operations | Git integration and version control | Change tracking and reporting | . ",
+    "url": "/getting-started/#-what-youll-learn",
+    
+    "relUrl": "/getting-started/#-what-youll-learn"
+  },"22": {
+    "doc": "Getting Started",
+    "title": "📋 Prerequisites",
+    "content": ". | A Kubernetes cluster (local or remote) | kubectl configured and working | Git repository (optional, for version control) | . Ready to get started? Begin with the installation guide to get Kalco running on your system. ",
+    "url": "/getting-started/#-prerequisites",
+    
+    "relUrl": "/getting-started/#-prerequisites"
+  },"23": {
+    "doc": "Commands Reference",
+    "title": "Commands Reference",
+    "content": "This section provides comprehensive documentation for all Kalco commands and their options. ",
+    "url": "/commands/",
+    
+    "relUrl": "/commands/"
+  },"24": {
+    "doc": "Commands Reference",
+    "title": "Command Overview",
+    "content": "Kalco provides a focused set of commands designed for professional Kubernetes cluster management: . | Command | Description | Usage | . | kalco context | Manage cluster contexts | kalco context set/list/use/load | . | kalco export | Export cluster resources | kalco export [flags] | . | kalco diff | Compare local manifest with snapshot | kalco diff [flags] | . | kalco version | Version information | kalco version | . ",
+    "url": "/commands/#command-overview",
+    
+    "relUrl": "/commands/#command-overview"
+  },"25": {
+    "doc": "Commands Reference",
+    "title": "Global Flags",
+    "content": "All Kalco commands support these global flags: . | Flag | Description | Default | . | --kubeconfig | Path to kubeconfig file | ~/.kube/config | . | --no-color | Disable colored output | false | . | --help, -h | Show help information | - | . ",
+    "url": "/commands/#global-flags",
+    
+    "relUrl": "/commands/#global-flags"
+  },"26": {
+    "doc": "Commands Reference",
+    "title": "Context Management",
+    "content": "The kalco context command manages cluster configurations and settings. Subcommands . | set - Create or update a context | list - List all available contexts | use - Switch to a specific context | show - Display context details | current - Show current active context | delete - Remove a context | load - Import context from existing directory | . Usage Examples . # Create a production context kalco context set my-cluster \\ --kubeconfig ~/.kube/config \\ --output ./my-cluster-export \\ --description \"My Cluster Dump\" \\ --labels env=test,team=platform # List all contexts kalco context list # Switch to production context kalco context use production # Show current context kalco context current # Load context from existing export kalco context load ./existing-kalco-export . ",
+    "url": "/commands/#context-management",
+    
+    "relUrl": "/commands/#context-management"
+  },"27": {
+    "doc": "Commands Reference",
+    "title": "Resource Export",
+    "content": "The kalco export command exports Kubernetes cluster resources with Git integration. Flags . | Flag | Description | Default | . | --git-push | Automatically push to remote origin | false | . | --commit-message, -m | Custom Git commit message | Timestamp-based | . | --dry-run | Show what would be exported | false | . Usage Examples . # Basic export using active context kalco export # Export with Git integration kalco export --git-push --commit-message \"Weekly backup\" # Custom commit message kalco export --commit-message \"Pre-deployment backup\" # Dry run to see what would be exported kalco export --dry-run . ",
+    "url": "/commands/#resource-export",
+    
+    "relUrl": "/commands/#resource-export"
+  },"28": {
+    "doc": "Commands Reference",
+    "title": "Diff Validation",
+    "content": "The kalco diff command detects drift between local manifests and the cluster state. Flags . | Flag | Description | Default | Required | . | --target | Local file to compare | - | Yes | . | --snapshot-dir | Path to snapshot | - | Yes | . | --refresh | Update snapshot from live cluster | false | No | . | --format | Output format (text|markdown) | text | No | . Usage Examples . # Compare local deployment against snapshot kalco diff --target ./deploy.yaml --snapshot-dir ./exports # Compare against live cluster (refreshes snapshot) kalco diff --target ./deploy.yaml --snapshot-dir ./exports --refresh # Generate Markdown report for CI kalco diff --target ./deploy.yaml --snapshot-dir ./exports --format markdown . ",
+    "url": "/commands/#diff-validation",
+    
+    "relUrl": "/commands/#diff-validation"
+  },"29": {
+    "doc": "Commands Reference",
+    "title": "Version Information",
+    "content": "The kalco version command displays version and build information. kalco version . Output includes: . | Version number | Git commit hash | Build timestamp | Go version used | . ",
+    "url": "/commands/#version-information",
+    
+    "relUrl": "/commands/#version-information"
+  },"30": {
+    "doc": "Commands Reference",
+    "title": "Command Aliases",
+    "content": "Some commands provide convenient aliases: . | Command | Aliases | . | kalco export | dump, backup | . | kalco context list | ls | . | kalco context show | info | . ",
+    "url": "/commands/#command-aliases",
+    
+    "relUrl": "/commands/#command-aliases"
+  },"31": {
+    "doc": "Commands Reference",
+    "title": "Error Handling",
+    "content": "Kalco provides clear error messages and exit codes: . | Exit Code 0 - Success | Exit Code 1 - General error | Exit Code 2 - Configuration error | Exit Code 3 - Kubernetes connection error | . For more detailed information about specific commands, see the individual command documentation pages. ",
+    "url": "/commands/#error-handling",
+    
+    "relUrl": "/commands/#error-handling"
+  },"32": {
+    "doc": "Home",
+    "title": "Kalco Documentation",
+    "content": "Welcome to the official documentation for Kalco (Kubernetes Analysis &amp; Lifecycle Control). Kalco is the CLI tool that bridges the gap between your Git configuration and your actual Kubernetes cluster state. ",
+    "url": "/#kalco-documentation",
+    
+    "relUrl": "/#kalco-documentation"
+  },"33": {
+    "doc": "Home",
+    "title": "🌟 Why Kalco?",
+    "content": ". | Backup &amp; Audit: Snapshot your entire cluster to Git-friendly YAML. | GitOps Validation: Detect “drift” between what you think is deployed (Git) and what is deployed (Cluster). | Environment Management: Switch context configurations easily between Prod, Staging, and Dev. | . ",
+    "url": "/#-why-kalco",
+    
+    "relUrl": "/#-why-kalco"
+  },"34": {
+    "doc": "Home",
+    "title": "🚀 Getting Started",
+    "content": "Installation . Homebrew (Recommended) . brew install graz-dev/tap/kalco . Manual Install . curl -fsSL https://raw.githubusercontent.com/graz-dev/kalco/master/scripts/install.sh | bash . First Steps . | Configure Context: Tell Kalco which cluster to manage and where to save data. | Export Resources: Take your first snapshot. | Verify Drift: Compare your local manifests against the snapshot. | . ",
+    "url": "/#-getting-started",
+    
+    "relUrl": "/#-getting-started"
+  },"35": {
+    "doc": "Home",
+    "title": "📚 Command Reference",
+    "content": "| Command | Purpose | . | context | Manage cluster connections and output settings. | . | export | Dump cluster state to local files. | . | diff | [NEW] Compare local YAML vs Snapshot/Live state. | . | version | Check version information. | . ",
+    "url": "/#-command-reference",
+    
+    "relUrl": "/#-command-reference"
+  },"36": {
+    "doc": "Home",
+    "title": "🤝 Support &amp; Contributing",
+    "content": ". | Issues: GitHub Issues | Repo: github.com/graz-dev/kalco | . Is something missing in these docs? Edit this page on GitHub. ",
+    "url": "/#-support--contributing",
+    
+    "relUrl": "/#-support--contributing"
+  },"37": {
+    "doc": "Home",
+    "title": "Home",
+    "content": " ",
+    "url": "/",
+    
+    "relUrl": "/"
+  },"38": {
+    "doc": "Installation",
+    "title": "Installation",
+    "content": "This guide covers installing Kalco on various operating systems and platforms. ",
+    "url": "/getting-started/installation.html",
+    
+    "relUrl": "/getting-started/installation.html"
+  },"39": {
+    "doc": "Installation",
+    "title": "Prerequisites",
+    "content": "Before installing Kalco, ensure you have: . | Kubernetes Access - Valid kubeconfig or in-cluster access | Git - For version control functionality | Go 1.21+ (if building from source) - Download here | . ",
+    "url": "/getting-started/installation.html#prerequisites",
+    
+    "relUrl": "/getting-started/installation.html#prerequisites"
+  },"40": {
+    "doc": "Installation",
+    "title": "Quick Install",
+    "content": " ",
+    "url": "/getting-started/installation.html#quick-install",
+    
+    "relUrl": "/getting-started/installation.html#quick-install"
+  },"41": {
+    "doc": "Installation",
+    "title": "Package Managers (recommended)",
+    "content": "Homebrew (macOS/Linux) . # Add the tap brew tap graz-dev/tap # Install Kalco brew install kalco . Linux/macOS . Install Kalco with a single command: . curl -fsSL https://raw.githubusercontent.com/graz-dev/kalco/master/scripts/install.sh | bash . The script will: . | Detect your operating system and architecture | Download the appropriate binary | Install it to /usr/local/bin/kalco | Make it executable | . Windows (PowerShell) . Install Kalco on Windows using PowerShell: . iwr -useb https://raw.githubusercontent.com/graz-dev/kalco/master/scripts/install.ps1 | iex . Manual Download . Download the appropriate binary for your platform: . | Visit the releases page | Download the binary for your OS and architecture | Extract and move to your PATH | . Linux: . # Download and extract wget https://github.com/graz-dev/kalco/releases/latest/download/kalco_Linux_x86_64.tar.gz tar -xzf kalco_Linux_x86_64.tar.gz # Move to PATH sudo mv kalco /usr/local/bin/ . macOS: . # Download and extract curl -L https://github.com/graz-dev/kalco/releases/latest/download/kalco_Darwin_x86_64.tar.gz | tar -xz # Move to PATH sudo mv kalco /usr/local/bin/ . Windows: . # Download and extract Invoke-WebRequest -Uri \"https://github.com/graz-dev/kalco/releases/latest/download/kalco_Windows_x86_64.zip\" -OutFile \"kalco.zip\" Expand-Archive -Path \"kalco.zip\" -DestinationPath \"kalco\" # Add to PATH (requires admin) [Environment]::SetEnvironmentVariable(\"Path\", $env:Path + \";C:\\kalco\", [EnvironmentVariableTarget]::Machine) . ",
+    "url": "/getting-started/installation.html#package-managers-recommended",
+    
+    "relUrl": "/getting-started/installation.html#package-managers-recommended"
+  },"42": {
+    "doc": "Installation",
+    "title": "Build from Source",
+    "content": "Prerequisites . | Go 1.21+ - Download and install | Git - For cloning the repository | . Build Steps . # Clone the repository git clone https://github.com/graz-dev/kalco.git cd kalco # Install dependencies go mod tidy # Build the binary go build -o kalco # Make it available system-wide (optional) sudo mv kalco /usr/local/bin/ . ",
+    "url": "/getting-started/installation.html#build-from-source",
+    
+    "relUrl": "/getting-started/installation.html#build-from-source"
+  },"43": {
+    "doc": "Installation",
+    "title": "Verification",
+    "content": "After installation, verify Kalco is working correctly: . # Check version kalco version # Show help kalco --help . Expected output should show: . | Version information | Available commands (context, export, version) | Global flags and options | . Getting Help . | Installation issues: GitHub Issues | Build problems: Check Go version and dependencies | Binary issues: Try downloading the pre-built binary | . ",
+    "url": "/getting-started/installation.html#verification",
+    
+    "relUrl": "/getting-started/installation.html#verification"
+  },"44": {
+    "doc": "Installation",
+    "title": "Next Steps",
+    "content": "After successful installation: . | Read the First Run guide to get started | Set up your first context with kalco context set | Export your cluster with kalco export | Explore the Command Reference | . ",
+    "url": "/getting-started/installation.html#next-steps",
+    
+    "relUrl": "/getting-started/installation.html#next-steps"
+  },"45": {
+    "doc": "Installation",
+    "title": "Uninstallation",
+    "content": "Remove Binary . # Remove from system PATH sudo rm /usr/local/bin/kalco # Or if installed in user directory rm ~/bin/kalco . Remove Configuration . # Remove configuration directory rm -rf ~/.kalco . For more installation help, see GitHub Issues. ",
+    "url": "/getting-started/installation.html#uninstallation",
+    
+    "relUrl": "/getting-started/installation.html#uninstallation"
+  }
+}

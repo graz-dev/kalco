@@ -17,6 +17,7 @@ Kalco provides a focused set of commands designed for professional Kubernetes cl
 |---------|-------------|-------|
 | `kalco context` | Manage cluster contexts | `kalco context set/list/use/load` |
 | `kalco export` | Export cluster resources | `kalco export [flags]` |
+| `kalco diff` | Compare local manifest with snapshot | `kalco diff [flags]` |
 | `kalco version` | Version information | `kalco version` |
 
 ## Global Flags
@@ -92,6 +93,32 @@ kalco export --commit-message "Pre-deployment backup"
 
 # Dry run to see what would be exported
 kalco export --dry-run
+```
+
+## Diff Validation
+
+The `kalco diff` command detects drift between local manifests and the cluster state.
+
+### Flags
+
+| Flag | Description | Default | Required |
+|------|-------------|---------|----------|
+| `--target` | Local file to compare | - | Yes |
+| `--snapshot-dir` | Path to snapshot | - | Yes |
+| `--refresh` | Update snapshot from live cluster | `false` | No |
+| `--format` | Output format (`text`\|`markdown`) | `text` | No |
+
+### Usage Examples
+
+```bash
+# Compare local deployment against snapshot
+kalco diff --target ./deploy.yaml --snapshot-dir ./exports
+
+# Compare against live cluster (refreshes snapshot)
+kalco diff --target ./deploy.yaml --snapshot-dir ./exports --refresh
+
+# Generate Markdown report for CI
+kalco diff --target ./deploy.yaml --snapshot-dir ./exports --format markdown
 ```
 
 ## Version Information

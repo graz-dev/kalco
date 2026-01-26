@@ -17,7 +17,9 @@ The export command is the core functionality of Kalco, providing:
 - **Structured Organization** - Creates intuitive directory structures by namespace and resource type
 - **Clean YAML Output** - Optimizes metadata for re-application
 - **Git Integration** - Automatic version control with commit history
+- **Git Integration** - Automatic version control with commit history
 - **Reporting** - Comprehensive change analysis and tracking reports
+- **Drift Detection Base** - Serves as the source of truth for `kalco diff`
 
 ## Syntax
 
@@ -39,6 +41,7 @@ kalco export [flags]
 | Flag | Description | Default | Required |
 |------|-------------|---------|----------|
 | `--dry-run` | Show what would be exported | `false` | No |
+| `--report` | Enable/disable analysis report (`on`/`off`) | `on` | No |
 
 ## Basic Usage
 
@@ -111,6 +114,15 @@ Each report includes:
 - **Initial Snapshot** - First export with complete resource inventory
 - **Change Reports** - Incremental updates with modification details
 
+### Controlling Report Generation
+
+By default, Kalco generates a report for every export (`--report on`). You can disable this behavior using the `--report` flag:
+
+```bash
+# Disable report generation
+kalco export --report off
+```
+
 <!-- ## Advanced Usage
 
 ### Dry Run Mode
@@ -165,4 +177,10 @@ echo "Backup completed"
 -->
 ---
 
-*For more information about the export command, run `kalco export --help` or see the [Commands Reference](index.md).*
+---
+
+## Next Steps
+
+Now that you have a snapshot, verify your Git manifests against it.
+
+[👉 **Validate GitOps with Diff**]({{ site.baseurl }}/commands/diff)

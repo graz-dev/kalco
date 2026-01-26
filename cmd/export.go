@@ -15,6 +15,7 @@ import (
 var (
 	exportGitPush       bool
 	exportCommitMessage string
+	exportReport        string
 	exportDryRun        bool
 )
 
@@ -126,12 +127,14 @@ func runExport() error {
 	}
 
 	// Generate change report
-	printSeparator()
-	reportGen := reports.NewReportGenerator(outputDir)
-	if err := reportGen.GenerateReport(commitMsg); err != nil {
-		printWarning(fmt.Sprintf("Report generation failed: %v", err))
-	} else {
-		printSuccess("Analysis report generated")
+	if exportReport == "on" || exportReport == "true" {
+		printSeparator()
+		reportGen := reports.NewReportGenerator(outputDir)
+		if err := reportGen.GenerateReport(commitMsg); err != nil {
+			printWarning(fmt.Sprintf("Report generation failed: %v", err))
+		} else {
+			printSuccess("Analysis report generated")
+		}
 	}
 
 	// Success summary
@@ -146,6 +149,7 @@ func init() {
 	// Add flags
 	exportCmd.Flags().BoolVar(&exportGitPush, "git-push", false, "automatically push changes to remote origin")
 	exportCmd.Flags().StringVarP(&exportCommitMessage, "commit-message", "m", "", "custom Git commit message")
+	exportCmd.Flags().StringVar(&exportReport, "report", "on", "enable/disable analysis report (on/off)")
 	exportCmd.Flags().BoolVar(&exportDryRun, "dry-run", false, "show what would be exported without writing files")
 
 	// Add aliases
