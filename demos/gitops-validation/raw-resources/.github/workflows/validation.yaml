@@ -1,0 +1,114 @@
+name: Kalco GitOps Validation
+
+on:
+  pull_request:
+    branches: [ master ]
+    paths:
+      - 'manifests/**'
+
+jobs:
+  validate-drift:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Needed for git diff
+
+      - name: Install Tools
+        run: |
+          # Install Kalco
+          curl -sL https://github.com/graz-dev/kalco/releases/download/v0.1.18/kalco_Linux_x86_64.tar.gz | tar xz
+          sudo mv kalco /usr/local/bin/
+
+      - name: Configure Kalco Context
+        env:
+          KUBECONFIG_DATA: ${{ secrets.KUBECONFIG }}
+        run: |
+          # Configure Git for Kalco's internal git operations
+          git config --global user.email "ci-bot@kalco.dev"
+          git config --global user.name "Kalco CI Bot"
+
+          mkdir -p ~/.kube
+          echo "$KUBECONFIG_DATA" | base64 -d > ~/.kube/config
+          
+          # Create a temporary directory for the snapshot
+          mkdir -p tmp-snapshot
+          
+          # Set context pointing to the temporary snapshot directory
+          kalco context set validation-ctx \
+            --kubeconfig ~/.kube/config \
+            --output $(pwd)/tmp-snapshot \
+            --description "CI Validation Context"
+
+          kalco context use validation-ctx
+
+      - name: Snapshot Live State
+        run: |
+          kalco export
+
+      - name: Kalco Validate
+        id: kalco-validate
+        run: |
+          # Fetch base for comparison
+          git fetch origin ${{ github.base_ref }}
+          
+          # Run validation
+          # Auto-detects changes against origin/base, ignores defaults, and generates report
+          kalco validate \
+            --base origin/${{ github.base_ref }} \
+            --dirs manifests \
+            --snapshot-dir tmp-snapshot \
+            --namespace guestbook \
+            --report-file report.md \
+            || echo "has_drift=true" >> $GITHUB_OUTPUT
+            
+          # Read report into output
+          echo "diff_output<<EOF" >> $GITHUB_OUTPUT
+          cat report.md >> $GITHUB_OUTPUT || echo "No changes." >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Comment PR & Label
+        uses: actions/github-script@v6
+        env:
+          DIFF_OUTPUT: ${{ steps.kalco-validate.outputs.diff_output }}
+          HAS_DRIFT: ${{ steps.kalco-validate.outputs.has_drift }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = process.env.DIFF_OUTPUT;
+            const hasDrift = process.env.HAS_DRIFT === 'true';
+            
+            if (!output || output.trim() === "" || output.trim() === "No changes.") {
+                console.log("No output to comment.");
+                return;
+            }
+
+            const labelAdd = hasDrift ? 'kalco/deny' : 'kalco/approve';
+            const labelRemove = hasDrift ? 'kalco/approve' : 'kalco/deny';
+            
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `### 🛡️ Kalco Validation Report\n\n${output}`
+            });
+            
+            try {
+              await github.rest.issues.removeLabel({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: labelRemove
+              });
+            } catch (e) {}
+            
+            await github.rest.issues.addLabels({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: [labelAdd]
+            });

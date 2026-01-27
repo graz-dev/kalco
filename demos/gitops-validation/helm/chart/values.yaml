@@ -1,0 +1,11 @@
+redis:
+  leader:
+    replicas: 1
+    image: redis:6.0.5
+  follower:
+    replicas: 2
+    image: redis:6.0.5
+
+frontend:
+  replicas: 3
+  image: us-docker.pkg.dev/google-samples/containers/gke/gb-frontend:v5

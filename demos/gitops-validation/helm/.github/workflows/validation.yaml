@@ -1,0 +1,143 @@
+name: Kalco Helm Validation
+
+on:
+  pull_request:
+    branches: [ master ]
+    paths:
+      - 'chart/**'
+
+jobs:
+  validate-drift:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v3
+
+      - name: Install Tools
+        run: |
+          curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+          # Install Kalco
+          curl -sL https://github.com/graz-dev/kalco/releases/download/v0.1.19/kalco_Linux_x86_64.tar.gz | tar xz
+          sudo mv kalco /usr/local/bin/
+
+      - name: Configure Kalco
+        env:
+          KUBECONFIG_DATA: ${{ secrets.KUBECONFIG }}
+        run: |
+          # Configure Git for Kalco's internal git operations
+          git config --global user.email "ci-bot@kalco.dev"
+          git config --global user.name "Kalco CI Bot"
+
+          mkdir -p ~/.kube
+          echo "$KUBECONFIG_DATA" | base64 -d > ~/.kube/config
+          
+          mkdir -p tmp-snapshot
+
+          kalco context set validation-ctx \
+            --kubeconfig ~/.kube/config \
+            --output $(pwd)/tmp-snapshot
+
+          kalco context use validation-ctx
+
+      - name: Snapshot Live State
+        run: |
+          kalco export
+
+      - name: Render & Diff
+        id: kalco-diff
+        run: |
+          # Fetch base branch for comparison
+          git fetch origin ${{ github.base_ref }}
+          
+          mkdir -p generated-manifests
+          
+          # 1. Render PR version (Chart at current state)
+          helm template my-release chart --namespace guestbook-helm > generated-manifests/pr-all.yaml
+          
+          # 2. Render Base version (Chart at base branch state)
+          # We need to extract the chart files from the base branch to a temp dir?
+          # Or easier: checkout base to temp dir and render there.
+          mkdir -p base-chart-source
+          git archive origin/${{ github.base_ref }} chart | tar -x -C base-chart-source
+          
+          # Check if chart existed in base
+          IGNORE_BASE_FLAG=""
+          if [ -d "base-chart-source/chart" ]; then
+             helm template my-release base-chart-source/chart --namespace guestbook-helm > generated-manifests/base-all.yaml
+             if [ -s generated-manifests/base-all.yaml ]; then
+                 IGNORE_BASE_FLAG="--ignore-base generated-manifests/base-all.yaml"
+             fi
+          fi
+          
+          TOTAL_DIFF=""
+          HAS_DRIFT="false"
+          
+          echo "Comparing generated manifests against snapshot..."
+          
+          # Use Kalco Diff directly on the multi-doc generated file
+          # Pass --ignore-base pointing to the base render
+          OUTPUT=$(kalco --no-color diff --target generated-manifests/pr-all.yaml --snapshot-dir tmp-snapshot --format markdown $IGNORE_BASE_FLAG --ignore-extra-fields || true)
+          
+          if [ -n "$OUTPUT" ]; then
+              echo "Diff Output for all.yaml:"
+              echo "$OUTPUT"
+              
+              TOTAL_DIFF+=$'\n'"#### Helm Difference Report"$'\n'"$OUTPUT"$'\n'
+              
+              if echo "$OUTPUT" | grep -q "Drift Detected"; then
+                  HAS_DRIFT="true"
+                  echo "!!! CRITICAL: DRIFT DETECTED !!!"
+              fi
+          fi
+          
+          echo "has_drift=$HAS_DRIFT" >> $GITHUB_OUTPUT
+          
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          echo "diff_output<<$EOF" >> $GITHUB_OUTPUT
+          echo "$TOTAL_DIFF" >> $GITHUB_OUTPUT
+          echo "$EOF" >> $GITHUB_OUTPUT
+
+      - name: Comment PR & Label
+        uses: actions/github-script@v6
+        env:
+          DIFF_OUTPUT: ${{ steps.kalco-diff.outputs.diff_output }}
+          HAS_DRIFT: ${{ steps.kalco-diff.outputs.has_drift }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = process.env.DIFF_OUTPUT;
+            const hasDrift = process.env.HAS_DRIFT === 'true';
+            
+            if (!output || output.trim() === "") {
+                console.log("No output to comment.");
+                return;
+            }
+            
+            const labelAdd = hasDrift ? 'kalco/deny' : 'kalco/approve';
+            const labelRemove = hasDrift ? 'kalco/approve' : 'kalco/deny';
+            
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `### 🛡️ Kalco Helm Validation Report\n\n${output}`
+            });
+            
+            try {
+              await github.rest.issues.removeLabel({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: labelRemove
+              });
+            } catch (e) {}
+            
+            await github.rest.issues.addLabels({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: [labelAdd]
+            });

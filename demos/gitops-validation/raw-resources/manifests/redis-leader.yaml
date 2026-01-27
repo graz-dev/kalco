@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-leader
+  labels:
+    app: redis
+    tier: backend
+    role: leader
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+      tier: backend
+      role: leader
+  template:
+    metadata:
+      labels:
+        app: redis
+        tier: backend
+        role: leader
+    spec:
+      containers:
+      - name: redis
+        image: redis:6.0.5
+        ports:
+        - containerPort: 6379
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 200m
+            memory: 256Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-leader
+  labels:
+    app: redis
+    tier: backend
+    role: leader
+spec:
+  ports:
+  - port: 6379
+    targetPort: 6379
+  selector:
+    app: redis
+    tier: backend
+    role: leader

@@ -182,13 +182,20 @@ func runValidate() error {
 		}
 	}
 
-	// Output for CI (GITHUB_OUTPUT)
-	// We can write to a file or stdout?
-	// The validation pipeline expects 'diff_output' and 'has_drift' outputs.
-	// Ideally this command outputs the report to stdout?
-	// But we are also logging info.
-	// Maybe we write the REPORT to a file if requested? --output-file?
-	// For now, let's print the usage instruction for the user.
+	// Output Report
+	if validateReportFile != "" {
+		if totalDiff == "" {
+			totalDiff = "No drift detected."
+		}
+		if err := os.WriteFile(validateReportFile, []byte(totalDiff), 0644); err != nil {
+			fmt.Fprintf(os.Stderr, "ERROR: Failed to write report: %v\n", err)
+		}
+	} else {
+		// If no file, print report to stdout (if not empty)
+		if totalDiff != "" {
+			fmt.Println(totalDiff)
+		}
+	}
 
 	if hasDrift {
 		return fmt.Errorf("Validation failed: Drift detected.")
