@@ -23,6 +23,7 @@ go.work
 kalco-dump-*/
 kalco-dump-*
 guestbook-exports/
+demos/
 
 # IDE files
 .vscode/
