@@ -264,6 +264,20 @@ func cleanupMetadata(item *unstructured.Unstructured) {
 	delete(metadata, "creationTimestamp")
 	delete(metadata, "managedFields")
 	delete(metadata, "ownerReferences")
+	delete(metadata, "selfLink")
+
+	// Clean annotations
+	if annotations, ok := metadata["annotations"].(map[string]interface{}); ok {
+		// Remove kubectl last-applied-configuration which is huge and redundant
+		delete(annotations, "kubectl.kubernetes.io/last-applied-configuration")
+
+		// Remove deployment revision annotation causing drift on every update
+		delete(annotations, "deployment.kubernetes.io/revision")
+
+		if len(annotations) == 0 {
+			delete(metadata, "annotations")
+		}
+	}
 
 	// Update the cleaned metadata
 	item.Object["metadata"] = metadata
