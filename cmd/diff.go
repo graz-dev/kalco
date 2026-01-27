@@ -11,12 +11,13 @@ import (
 )
 
 var (
-	diffTarget      string
-	diffSnapshotDir string
-	diffIgnoreBase  string // New flag
-	diffRefresh     bool
-	diffFormat      string
-	diffNamespace   string
+	diffTarget            string
+	diffSnapshotDir       string
+	diffIgnoreBase        string
+	diffIgnoreExtraFields bool // New flag
+	diffRefresh           bool
+	diffFormat            string
+	diffNamespace         string
 )
 
 var diffCmd = &cobra.Command{
@@ -36,6 +37,7 @@ func init() {
 	diffCmd.Flags().StringVar(&diffFormat, "format", "text", "Output format (text|markdown)")
 	diffCmd.Flags().StringVarP(&diffNamespace, "namespace", "n", "", "Override namespace for local resources if missing")
 	diffCmd.Flags().StringVar(&diffIgnoreBase, "ignore-base", "", "Path to base manifest file for exclusion of intentional changes")
+	diffCmd.Flags().BoolVar(&diffIgnoreExtraFields, "ignore-extra-fields", false, "Ignore fields in snapshot that are not present in local manifest (e.g. K8s defaults)")
 
 	diffCmd.MarkFlagRequired("target")
 	diffCmd.MarkFlagRequired("snapshot-dir")
@@ -69,7 +71,7 @@ func runDiff() error {
 	}
 
 	// 2. Initialize Differ
-	differ := diff.NewDiffer()
+	differ := diff.NewDiffer(diffIgnoreExtraFields)
 
 	// 3. Load local resources (slice)
 	localResources, err := differ.LoadLocalResource(diffTarget)

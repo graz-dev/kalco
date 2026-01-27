@@ -24,11 +24,14 @@ type Resource struct {
 
 // Differ handles the diff logic
 type Differ struct {
+	IgnoreExtraFields bool
 }
 
 // NewDiffer creates a new Differ
-func NewDiffer() *Differ {
-	return &Differ{}
+func NewDiffer(ignoreExtraFields bool) *Differ {
+	return &Differ{
+		IgnoreExtraFields: ignoreExtraFields,
+	}
 }
 
 // LoadLocalResource parses a local YAML file (supports multi-doc)
@@ -212,6 +215,11 @@ func (d *Differ) Diff(local, remote, base *Resource) (*DiffResult, error) {
 		// Effectively saying: "Pretend Remote has the new PR value for these fields"
 		// This way cmp.Diff won't report them as drift.
 		applyOverrides(r, l, prChanges)
+	}
+
+	// 3. Ignore Extra Fields (Defaults) if requested
+	if d.IgnoreExtraFields {
+		pruneExtraMapFields(r, l)
 	}
 
 	// Compare
