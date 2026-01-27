@@ -185,7 +185,9 @@ func runValidate() error {
 	// Output Report
 	if validateReportFile != "" {
 		if totalDiff == "" {
-			totalDiff = "No drift detected."
+			totalDiff = "No drift detected.\n"
+		} else if !strings.HasSuffix(totalDiff, "\n") {
+			totalDiff += "\n"
 		}
 		if err := os.WriteFile(validateReportFile, []byte(totalDiff), 0644); err != nil {
 			fmt.Fprintf(os.Stderr, "ERROR: Failed to write report: %v\n", err)
