@@ -196,15 +196,3 @@ func runValidate() error {
 
 	return nil
 }
-
-func printInfo(msg string) {
-	fmt.Printf("INFO: %s\n", msg)
-}
-
-func printSuccess(msg string) {
-	fmt.Printf("SUCCESS: %s\n", msg)
-}
-
-func printError(msg string) {
-	fmt.Fprintf(os.Stderr, "ERROR: %s\n", msg)
-}
