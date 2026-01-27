@@ -8,13 +8,23 @@ nav_order: 1
 
 Welcome to the official documentation for **Kalco** (Kubernetes Analysis & Lifecycle Control).
 
-Kalco is the CLI tool that bridges the gap between your Git configuration and your actual Kubernetes cluster state.
+Kalco is a powerful CLI tool designed to bridge the gap between your Git configuration (Intent) and your running Kubernetes cluster (Reality). It provides a robust workflow for **Snapshotting**, **Diffing**, and **Validating** cluster state.
 
 ## 🌟 Why Kalco?
 
-- **Backup & Audit**: Snapshot your entire cluster to Git-friendly YAML.
-- **GitOps Validation**: Detect "drift" between what you *think* is deployed (Git) and what *is* deployed (Cluster).
-- **Environment Management**: Switch context configurations easily between Prod, Staging, and Dev.
+In complex Kubernetes environments, "Drift" is inevitable. Someone patches a deployment manually, a controller adds default fields, or a Helm chart renders differently than expected. Kalco solves this by:
+
+- **📸 Snapshotting**: Exporting your entire cluster state into clean, Git-friendly YAML files.
+- **🔍 Diffing**: performing "Smart Diffs" that ignore noise (like timestamps, `managedFields`, and dynamic status) to show only *real* changes.
+- **🛡️ Validating**: Integrating into CI/CD pipelines to prevent drift *before* it merges.
+
+## 🏗️ How It Works
+
+Kalco operates on a simple but powerful loop:
+
+1.  **Export**: `kalco export` connects to your cluster and downloads resources, stripping away runtime noise to create a "Golden Snapshot".
+2.  **Compare**: `kalco diff` compares your local manifests (or Helm charts) against this snapshot.
+3.  **Validate**: `kalco validate` automates this process in CI, fetching the base branch, detecting changed files, and verifying that your PR matches the cluster state (or intended changes).
 
 ## 🚀 Getting Started
 
@@ -36,18 +46,22 @@ curl -fsSL https://raw.githubusercontent.com/graz-dev/kalco/master/scripts/insta
 2.  **[Export Resources]({{ site.baseurl }}/commands/export)**: Take your first snapshot.
 3.  **[Verify Drift]({{ site.baseurl }}/commands/diff)**: Compare your local manifests against the snapshot.
 
-## 📚 Command Reference
+## 📚 Documentation Sections
 
-| Command | Purpose |
-|---------|---------|
-| **[context]({{ site.baseurl }}/commands/context)** | Manage cluster connections and output settings. |
-| **[export]({{ site.baseurl }}/commands/export)** | Dump cluster state to local files. |
-| **[diff]({{ site.baseurl }}/commands/diff)** | **[NEW]** Compare local YAML vs Snapshot/Live state. |
-| **version** | Check version information. |
+### Command Reference
+Deep dive into every command and flag.
+
+- **[context]({{ site.baseurl }}/commands/context)**: Manage cluster connections.
+- **[export]({{ site.baseurl }}/commands/export)**: Snapshot cluster state.
+- **[diff]({{ site.baseurl }}/commands/diff)**: Compare local files vs cluster.
+- **[validate]({{ site.baseurl }}/commands/validate)**: **[NEW]** Automated CI/CD drift detection.
+
+### Tutorials & Use Cases
+Real-world examples of Kalco in action.
+
+- **[GitOps Validation Pipeline]({{ site.baseurl }}/tutorials/gitops-validation)**: A complete walkthrough of setting up a Drift Detection Pipeline for raw manifests using GitHub Actions and ArgoCD.
 
 ## 🤝 Support & Contributing
 
 - **Issues**: [GitHub Issues](https://github.com/graz-dev/kalco/issues)
 - **Repo**: [github.com/graz-dev/kalco](https://github.com/graz-dev/kalco)
-
-Is something missing in these docs? [Edit this page on GitHub](https://github.com/graz-dev/kalco/edit/master/docs/index.md).

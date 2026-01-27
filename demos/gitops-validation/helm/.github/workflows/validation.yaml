@@ -16,11 +16,11 @@ jobs:
       - name: Checkout Source Code
         uses: actions/checkout@v3
 
-          # Install Tools
+      - name: Install Tools
         run: |
           curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
           # Install Kalco
-          curl -sL https://github.com/graz-dev/kalco/releases/download/v0.1.21/kalco_Linux_x86_64.tar.gz | tar xz
+          curl -sL https://github.com/graz-dev/kalco/releases/latest/download/kalco_Linux_x86_64.tar.gz | tar xz
           sudo mv kalco /usr/local/bin/
 
       - name: Configure Kalco

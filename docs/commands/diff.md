@@ -33,40 +33,29 @@ kalco diff [flags]
 | `--snapshot-dir` | Root directory of snapshot repository | - | Yes |
 | `--refresh` | Fetch live resource from K8s via export | `false` | No |
 | `--format` | Output format (`text`, `markdown`) | `text` | No |
+| `--namespace` | Override namespace for local resources | - | No |
+| `--ignore-base` | Path to base manifest (from destination branch) for Smart Drift Detection | - | No |
+| `--ignore-extra-fields` | Ignore K8s default fields missing from local manifest | `false` | No |
 
-## Usage Examples
+## Advanced Features
 
-### Basic Diff
+### Smart Drift Detection (`--ignore-base`)
 
-Compare a local deployment file against the existing snapshot:
+When validating a Pull Request, you often have changes that are *intentional*. 
+- **Snapshot**: Old State
+- **Base Branch**: Current State
+- **PR Branch**: New State
 
-```bash
-kalco diff \
-  --target ./charts/my-app/deployment.yaml \
-  --snapshot-dir ./cluster-exports
-```
+If you just diff **PR vs Snapshot**, you see *all* differences.
+By providing `--ignore-base <path-to-file-in-base-branch>`, Kalco calculates:
+`(Base -> PR)` changes are **INTENTIONAL**.
+It then masks these changes when comparing **(PR vs Snapshot)**.
+Result: You *only* see drift (unexpected changes), not your PR changes.
 
-### Diff with Live Refresh
-
-Update the snapshot from the cluster (via export) before performing the diff. This ensures you are comparing against the latest live state.
-
-```bash
-kalco diff \
-  --target ./charts/my-app/deployment.yaml \
-  --snapshot-dir ./cluster-exports \
-  --refresh
-```
-
-### Markdown Output
-
-Generate a Markdown-formatted diff, useful for automated CI/CD pipelines (e.g., GitHub Actions PR comments):
-
-```bash
-kalco diff \
-  --target ./charts/my-app/deployment.yaml \
-  --snapshot-dir ./cluster-exports \
-  --format markdown
-```
+### Ignore Defaults (`--ignore-extra-fields`)
+Kubernetes often adds default fields (e.g., `dnsPolicy`, `strategy`, `revisionHistoryLimit`).
+If your local manifest doesn't specify them, a strict diff shows them as specific values on the cluster vs missing locally.
+Use `--ignore-extra-fields` to ensure Kalco only validates fields *you explicitly defined*.
 
 ## Output Explained
 
