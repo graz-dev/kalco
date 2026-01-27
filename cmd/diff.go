@@ -35,6 +35,7 @@ func init() {
 	diffCmd.Flags().BoolVar(&diffRefresh, "refresh", false, "Fetch live resource from K8s instead of snapshot")
 	diffCmd.Flags().StringVar(&diffFormat, "format", "text", "Output format (text|markdown)")
 	diffCmd.Flags().StringVarP(&diffNamespace, "namespace", "n", "", "Override namespace for local resources if missing")
+	diffCmd.Flags().StringVar(&diffIgnoreBase, "ignore-base", "", "Path to base manifest file for exclusion of intentional changes")
 
 	diffCmd.MarkFlagRequired("target")
 	diffCmd.MarkFlagRequired("snapshot-dir")
