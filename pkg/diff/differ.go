@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"time"
 
+	"strings"
+
 	"github.com/google/go-cmp/cmp"
 	"gopkg.in/yaml.v3"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -188,8 +190,8 @@ type DiffResult struct {
 	HasDrift bool
 }
 
-// Diff compares two resources
-func (d *Differ) Diff(local, remote *Resource) (*DiffResult, error) {
+// Diff compares two resources with optional base for 3-way merge
+func (d *Differ) Diff(local, remote, base *Resource) (*DiffResult, error) {
 	if !remote.Exists {
 		return &DiffResult{IsNew: true}, nil
 	}
@@ -198,13 +200,24 @@ func (d *Differ) Diff(local, remote *Resource) (*DiffResult, error) {
 	l := cleanObject(local.Object)
 	r := cleanObject(remote.Object)
 
+	// Smart Drift Detection: Exclude differences that match PR changes
+	// If base is provided, we mask changes that are present in (Base -> Local)
+	if base != nil && base.Exists {
+		b := cleanObject(base.Object)
+
+		// 1. Find what changed in the PR (Base vs Local)
+		prChanges := findChangedPaths(b, l, "")
+
+		// 2. Mask these changes in the Remote object
+		// Effectively saying: "Pretend Remote has the new PR value for these fields"
+		// This way cmp.Diff won't report them as drift.
+		applyOverrides(r, l, prChanges)
+	}
+
 	// Compare
 	diff := cmp.Diff(r, l) // Remote is "base", Local is "new" intention
 
 	hasDrift := diff != ""
-
-	// Check for critical drift if requested?
-	// For now just basic diff
 
 	isStale := false
 	if remote.Source == "snapshot" {
@@ -219,6 +232,113 @@ func (d *Differ) Diff(local, remote *Resource) (*DiffResult, error) {
 		IsStale:  isStale,
 		HasDrift: hasDrift,
 	}, nil
+}
+
+// findChangedPaths recursively finds keys that differ between a and b
+func findChangedPaths(a, b interface{}, prefix string) []string {
+	var paths []string
+
+	if a == nil && b == nil {
+		return nil
+	}
+
+	// If one is nil and other isn't, it changed
+	if a == nil || b == nil {
+		return []string{prefix}
+	}
+
+	// Type mismatch = changed
+	if fmt.Sprintf("%T", a) != fmt.Sprintf("%T", b) {
+		return []string{prefix}
+	}
+
+	switch valA := a.(type) {
+	case map[string]interface{}:
+		valB := b.(map[string]interface{})
+		// Check all keys in A
+		for k, v := range valA {
+			p := k
+			if prefix != "" {
+				p = prefix + "." + k
+			}
+
+			if vB, ok := valB[k]; ok {
+				// Key exists in both, recurse
+				paths = append(paths, findChangedPaths(v, vB, p)...)
+			} else {
+				// Key removed in B = changed
+				paths = append(paths, p)
+			}
+		}
+		// Check keys in B that are not in A (Added)
+		for k := range valB {
+			if _, ok := valA[k]; !ok {
+				p := k
+				if prefix != "" {
+					p = prefix + "." + k
+				}
+				paths = append(paths, p)
+			}
+		}
+
+	case []interface{}:
+		// For slices, deep comparison is complex.
+		// If length differs or any element differs, verify the whole slice as changed?
+		// Or try to index? K8s uses patch merge keys...
+		// For simplicity/robustness: if slice differs at all, mark the whole slice path.
+		if !cmp.Equal(a, b) {
+			return []string{prefix}
+		}
+
+	default:
+		if !cmp.Equal(a, b) {
+			return []string{prefix}
+		}
+	}
+
+	return paths
+}
+
+// applyOverrides copies values from source to target for the given paths
+// Simplified implementation: re-traverses and updates.
+// Note: This relies on dot notation which is imperfect for keys with dots,
+// but sufficient for standard K8s fields.
+func applyOverrides(target, source map[string]interface{}, paths []string) {
+	for _, path := range paths {
+		// Split path
+		parts := strings.Split(path, ".")
+
+		var t, s interface{} = target, source
+		var parentT map[string]interface{}
+		var lastKey string
+
+		valid := true
+		for _, part := range parts {
+			tMap, tOk := t.(map[string]interface{})
+			sMap, sOk := s.(map[string]interface{})
+
+			if !tOk || !sOk {
+				valid = false
+				break
+			}
+
+			parentT = tMap
+			lastKey = part
+
+			t = tMap[part]
+			s = sMap[part]
+		}
+
+		if valid && parentT != nil {
+			// Copy source value (PR value) to target (Remote)
+			// effectively masking the diff
+			if s == nil {
+				delete(parentT, lastKey)
+			} else {
+				parentT[lastKey] = s
+			}
+		}
+	}
 }
 
 func cleanObject(u *unstructured.Unstructured) map[string]interface{} {

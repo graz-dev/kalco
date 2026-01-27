@@ -13,6 +13,7 @@ import (
 var (
 	diffTarget      string
 	diffSnapshotDir string
+	diffIgnoreBase  string // New flag
 	diffRefresh     bool
 	diffFormat      string
 	diffNamespace   string
@@ -75,6 +76,16 @@ func runDiff() error {
 		return fmt.Errorf("failed to load target files: %w", err)
 	}
 
+	// Load base resources if provided
+	var baseResources []*diff.Resource
+	if diffIgnoreBase != "" {
+		baseResources, err = differ.LoadLocalResource(diffIgnoreBase)
+		if err != nil {
+			// Log warning but don't fail? Or fail? Fail is safer to ensure validation logic holds.
+			return fmt.Errorf("failed to load base file: %w", err)
+		}
+	}
+
 	for _, localResource := range localResources {
 		// 4. Get comparison resource (Snapshot)
 		// We always compare against snapshot (which might have been just refreshed)
@@ -84,8 +95,21 @@ func runDiff() error {
 			return fmt.Errorf("failed to load snapshot: %w", err)
 		}
 
-		// 5. Perform Diff
-		result, err := differ.Diff(localResource, remoteResource)
+		// Find matching base resource if available
+		var baseResource *diff.Resource
+		if len(baseResources) > 0 {
+			for _, b := range baseResources {
+				// Simple GVK + Name Match
+				if b.Object.GetKind() == localResource.Object.GetKind() &&
+					b.Object.GetName() == localResource.Object.GetName() {
+					baseResource = b
+					break
+				}
+			}
+		}
+
+		// 5. Perform Diff (3-way)
+		result, err := differ.Diff(localResource, remoteResource, baseResource)
 		if err != nil {
 			return fmt.Errorf("diff failed: %w", err)
 		}
