@@ -2,6 +2,7 @@ package diff
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"time"
@@ -28,36 +29,46 @@ func NewDiffer() *Differ {
 	return &Differ{}
 }
 
-// LoadLocalResource parses a local YAML file
-func (d *Differ) LoadLocalResource(path string) (*Resource, error) {
-	data, err := os.ReadFile(path)
+// LoadLocalResource parses a local YAML file (supports multi-doc)
+func (d *Differ) LoadLocalResource(path string) ([]*Resource, error) {
+	f, err := os.Open(path)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read local file: %w", err)
+		return nil, fmt.Errorf("failed to open local file: %w", err)
+	}
+	defer f.Close()
+
+	var resources []*Resource
+	decoder := yaml.NewDecoder(f)
+
+	for {
+		var obj map[string]interface{}
+		if err := decoder.Decode(&obj); err != nil {
+			if err == io.EOF {
+				break
+			}
+			return nil, fmt.Errorf("failed to parse YAML: %w", err)
+		}
+
+		if len(obj) == 0 {
+			continue
+		}
+
+		// Fix types for DeepCopy compatibility (int -> int64)
+		obj = fixTypes(obj).(map[string]interface{})
+
+		u := &unstructured.Unstructured{Object: obj}
+		resources = append(resources, &Resource{
+			Object: u,
+			Source: "local",
+			Exists: true,
+		})
 	}
 
-	// Parse YAML to map[string]interface{} using k8s compatible unmarshaler
-	// or unmarshal to generic map and then sanitize for DeepCopy
-	// The panic happens because yaml.v3 produces int, while k8s DeepCopy expects int64 for json conversions
-	
-	// Better approach: Use sigs.k8s.io/yaml or just standard json unmarshal flow if we had json
-	// Let's use simple yaml unmarshal but then we need to ensure types are correct.
-	// Easiest is to convert YAML to JSON then JSON unmarshal, as JSON unmarshal uses float64 which k8s handles?
-	// Or use unstructured compatible decoder.
-	
-	var obj map[string]interface{}
-	if err := yaml.Unmarshal(data, &obj); err != nil {
-		return nil, fmt.Errorf("failed to parse YAML: %w", err)
+	if len(resources) == 0 {
+		return nil, fmt.Errorf("no valid resources found in file")
 	}
 
-	// Fix types for DeepCopy compatibility (int -> int64)
-	obj = fixTypes(obj).(map[string]interface{})
-
-	u := &unstructured.Unstructured{Object: obj}
-	return &Resource{
-		Object: u,
-		Source: "local",
-		Exists: true,
-	}, nil
+	return resources, nil
 }
 
 func fixTypes(v interface{}) interface{} {
@@ -93,20 +104,18 @@ func fixTypes(v interface{}) interface{} {
 // Maps GVK from local resource to expected file path
 // Logic: <snapshotDir>/<namespace>/<Kind>/<name>.yaml
 // For cluster-scoped: <snapshotDir>/_cluster/<Kind>/<name>.yaml
-func (d *Differ) LoadSnapshotResource(snapshotDir string, local *unstructured.Unstructured) (*Resource, error) {
+func (d *Differ) LoadSnapshotResource(snapshotDir string, local *unstructured.Unstructured, overrideNamespace string) (*Resource, error) {
 	kind := local.GetKind()
 	name := local.GetName()
 	namespace := local.GetNamespace()
 
 	var path string
 	if namespace == "" {
-		// Assume cluster-scoped if no namespace, or default if it should have one but omitted.
-		// However, the prompt specifies strict structure matching. 
-		// If local doesn't have namespace, it might be cluster scoped OR implicitly 'default'.
-		// We'll check both or assume cluster scoped path first? 
-		// The prompt says: "{snapshot-dir}/{namespace}/{Kind}/{name}.yaml"
-		// If namespace is empty, we default to "default" as per prompt.
-		namespace = "default"
+		if overrideNamespace != "" {
+			namespace = overrideNamespace
+		} else {
+			namespace = "default"
+		}
 	}
 
 	// But wait, cluster resources are stored in _cluster.
@@ -114,7 +123,7 @@ func (d *Differ) LoadSnapshotResource(snapshotDir string, local *unstructured.Un
 	// The prompt says: "Leggi il file --target ... per estrarre: Kind, Metadata.Name, Metadata.Namespace (default "default")."
 	// Then: "Costruisci il path atteso nello snapshot: "{snapshot-dir}/{namespace}/{Kind}/{name}.yaml"."
 	// It doesn't explicitly mention _cluster here, but the user context (previous turns) shows _cluster.
-	// We should probably check if the Kind is usually cluster scoped? 
+	// We should probably check if the Kind is usually cluster scoped?
 	// For now, let's stick to the prompt's instruction: default namespace to "default".
 	// If the file is not found there, we could optionally check _cluster if we knew it was cluster scoped.
 	// But let's assume valid namespaces for now.
@@ -127,10 +136,10 @@ func (d *Differ) LoadSnapshotResource(snapshotDir string, local *unstructured.Un
 		}
 		return p, false
 	}
-	
+
 	// Check typical namespaced path
 	path, exists := checkPath(namespace)
-	
+
 	// If not found, and namespace was "default" (maybe it was really cluster scoped?)
 	// Try _cluster path
 	if !exists && namespace == "default" {
@@ -150,7 +159,7 @@ func (d *Differ) LoadSnapshotResource(snapshotDir string, local *unstructured.Un
 	if err != nil {
 		return nil, fmt.Errorf("failed to read snapshot: %w", err)
 	}
-	
+
 	info, err := os.Stat(path)
 	if err != nil {
 		return nil, err
@@ -160,7 +169,7 @@ func (d *Differ) LoadSnapshotResource(snapshotDir string, local *unstructured.Un
 	if err := yaml.Unmarshal(data, &obj); err != nil {
 		return nil, fmt.Errorf("failed to parse snapshot YAML: %w", err)
 	}
-	
+
 	obj = fixTypes(obj).(map[string]interface{})
 
 	return &Resource{
@@ -173,9 +182,9 @@ func (d *Differ) LoadSnapshotResource(snapshotDir string, local *unstructured.Un
 
 // DiffResult contains the result of the comparison
 type DiffResult struct {
-	Diff    string
-	IsNew   bool
-	IsStale bool
+	Diff     string
+	IsNew    bool
+	IsStale  bool
 	HasDrift bool
 }
 
@@ -191,12 +200,12 @@ func (d *Differ) Diff(local, remote *Resource) (*DiffResult, error) {
 
 	// Compare
 	diff := cmp.Diff(r, l) // Remote is "base", Local is "new" intention
-	
+
 	hasDrift := diff != ""
-	
+
 	// Check for critical drift if requested?
 	// For now just basic diff
-	
+
 	isStale := false
 	if remote.Source == "snapshot" {
 		if time.Since(remote.Timestamp) > 24*time.Hour {
@@ -214,7 +223,7 @@ func (d *Differ) Diff(local, remote *Resource) (*DiffResult, error) {
 
 func cleanObject(u *unstructured.Unstructured) map[string]interface{} {
 	obj := u.DeepCopy().Object
-	
+
 	// Remove metadata fields we don't care about for intent vs reality check
 	if meta, ok := obj["metadata"].(map[string]interface{}); ok {
 		delete(meta, "uid")
@@ -225,8 +234,8 @@ func cleanObject(u *unstructured.Unstructured) map[string]interface{} {
 		delete(meta, "ownerReferences")
 		delete(meta, "selfLink")
 	}
-	
+
 	delete(obj, "status")
-	
+
 	return obj
 }
