@@ -42,8 +42,13 @@ func (d *Differ) LoadLocalResource(path string) ([]*Resource, error) {
 	}
 	defer f.Close()
 
+	return d.ParseResources(f, "local")
+}
+
+// ParseResources parses YAML from a reader
+func (d *Differ) ParseResources(r io.Reader, source string) ([]*Resource, error) {
 	var resources []*Resource
-	decoder := yaml.NewDecoder(f)
+	decoder := yaml.NewDecoder(r)
 
 	for {
 		var obj map[string]interface{}
@@ -64,13 +69,13 @@ func (d *Differ) LoadLocalResource(path string) ([]*Resource, error) {
 		u := &unstructured.Unstructured{Object: obj}
 		resources = append(resources, &Resource{
 			Object: u,
-			Source: "local",
+			Source: source,
 			Exists: true,
 		})
 	}
 
 	if len(resources) == 0 {
-		return nil, fmt.Errorf("no valid resources found in file")
+		return nil, fmt.Errorf("no valid resources found")
 	}
 
 	return resources, nil
