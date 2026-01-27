@@ -367,3 +367,34 @@ func cleanObject(u *unstructured.Unstructured) map[string]interface{} {
 
 	return obj
 }
+
+// pruneExtraMapFields recursively removes keys from r that are not in l
+func pruneExtraMapFields(r, l interface{}) {
+	rMap, rOk := r.(map[string]interface{})
+	lMap, lOk := l.(map[string]interface{})
+
+	if rOk && lOk {
+		for k, v := range rMap {
+			if _, ok := lMap[k]; !ok {
+				delete(rMap, k)
+			} else {
+				pruneExtraMapFields(v, lMap[k])
+			}
+		}
+		return
+	}
+
+	// Handle slices by index matching
+	rSlice, rOk := r.([]interface{})
+	lSlice, lOk := l.([]interface{})
+
+	if rOk && lOk {
+		minLen := len(rSlice)
+		if len(lSlice) < minLen {
+			minLen = len(lSlice)
+		}
+		for i := 0; i < minLen; i++ {
+			pruneExtraMapFields(rSlice[i], lSlice[i])
+		}
+	}
+}
