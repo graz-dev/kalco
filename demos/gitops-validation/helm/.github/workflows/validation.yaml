@@ -16,11 +16,11 @@ jobs:
       - name: Checkout Source Code
         uses: actions/checkout@v3
 
-      - name: Install Tools
+          # Install Tools
         run: |
           curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
           # Install Kalco
-          curl -sL https://github.com/graz-dev/kalco/releases/download/v0.1.20/kalco_Linux_x86_64.tar.gz | tar xz
+          curl -sL https://github.com/graz-dev/kalco/releases/download/v0.1.21/kalco_Linux_x86_64.tar.gz | tar xz
           sudo mv kalco /usr/local/bin/
 
       - name: Configure Kalco
@@ -98,6 +98,7 @@ jobs:
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
           echo "diff_output<<$EOF" >> $GITHUB_OUTPUT
           echo "$TOTAL_DIFF" >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
           echo "$EOF" >> $GITHUB_OUTPUT
 
       - name: Comment PR & Label
